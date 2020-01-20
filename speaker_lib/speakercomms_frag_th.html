@@ -1,0 +1,33 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<th>Track
+<th>Format
+<th>Expenses
+
+<th>Short synopsis
+<th>Long
+<th>Talk tags</th>
+
+<th>Email
+<th>Co-speakers</th>
+<th>Phone
+<th>Address
+<th>Bio
+<th>Webpage
+<th>Blog
+<th>LinkedIn
+<th>Country
+<th>Twitter
+<th>Affiliation
+<th>Job Title</th>
+<th>Experience
+<th>Small Picture</th>
+<th>Full size</th>
+{% for question in conf_questions: %}
+    <th>{{question.question_text()}}</td>
+{% endfor %}

@@ -1,0 +1,119 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<script language="javascript">
+    function check_twitter_handle() {
+        while (document.getElementById("twitterId").value.startsWith("@")) {
+            document.getElementById("twitterId").value = document.getElementById("twitterId").value.substr(1);
+        }
+    }
+    function check_http(url) {
+        if (document.getElementById(url).value != "" &&
+        	!(document.getElementById(url).value.startsWith("h")) ) {
+            document.getElementById(url).value = "http://" + document.getElementById(url).value
+        }
+    }
+</script>
+
+<h2>Speaker: {{ speaker.name }}</h2>
+<table>
+	<tr><td><b>First name</b>
+		<td><input type="text" name="speaker_first_name"
+				   maxlength="20" size=50 value="{{ speaker.first_name() }}" {{readonly}}>
+		</td></tr>
+	<tr><td><b>Later names</b>
+		<td><input type="text" name="speaker_later_names"
+				   maxlength="30" size=50 value="{{ speaker.later_names() }}" {{readonly}}>
+		</td></tr>
+	<tr><td><b>Email</b>
+		<td><input type="email" name="email" maxlength="100" size=100 value="{{ speaker.email }}" {{emaillocked}}>
+		<p>Max size: 100 chars
+		</td></tr>
+	<tr><td><b>Bio</b>
+		<td><textarea name="bio" maxlength="2500" wrap="hard" cols="80" rows="10" {{readonly}}>{{ speaker.bio }}</textarea>
+		<p>Max size: 2500 chars
+	<tr><td><b>Country</b>
+	    <p>Max 130
+		<td><input name="country" size="130" maxlength="32" {{readonly}} value='{{speaker.field("country")}}'>
+	<tr><td><b>Affiliation:</b>
+		<p>Max: 130
+		<td><input name="affiliation" size="130" maxlength="64" {{readonly}} value='{{speaker.field("affiliation")}}'>
+	<tr><td><b>Job title</b>
+		<p>Max: 70
+		<td><input type="text" name="jobtitle" id="jobtitleid"
+					maxlength="64" size="70" value='{{ speaker.field("JobTitle") }}' {{readonly}}>
+		</td></tr>
+	<tr><td><b>Twitter handle:</b>
+		    <p>Max: 40
+		<td>
+			{% if readonly =="readonly": %}
+				<a target=_blank href="https://twitter.com/{{speaker.field("twitter")}}">{{speaker.field("twitter")}}</a>
+			{% else %}
+				<input name="twitter" id="twitterId" size="40" maxlength="36" {{readonly}} value='{{speaker.field("twitter")}}'
+					   onblur="check_twitter_handle()">
+			{% endif %}
+	<tr><td><b>Web homepage:</b>
+		    <p>Max: 250
+		<td>
+			{% if readonly =="readonly": %}
+				<a target=_blank href="{{speaker.field("Webpage")}}">{{speaker.field("Webpage")}}</a>
+			{% else %}
+				<input type="url" name="webpage" id="webpageId" size="250" maxlength="150" {{readonly}}
+					   value='{{speaker.field("Webpage")}}'
+				       onblur='check_http("webpageId")'>
+			{% endif %}
+	<tr><td><b>Blog:</b>
+	    <p>Max: 250
+		<td>
+			{% if readonly =="readonly": %}
+				<a target=_blank href="{{speaker.field("Blog")}}">{{speaker.field("Blog")}}</a>
+			{% else %}
+				<input type="url" name="blogpage" id="blogpageId" size="250" maxlength="150" {{readonly}}
+					   value='{{speaker.field("Blog")}}'
+					   onblur='check_http("blogpageId")'>
+			{% endif %}
+	<tr><td><b>Linkedin profile:</b>
+	    <p>Max: 250
+		<td>
+		{% if readonly =="readonly": %}
+			<a target=_blank href="{{speaker.field("Linkedin")}}">{{speaker.field("Linkedin")}}</a>
+		{% else %}
+			<input type="url" name="linkedinprofile" id="linkedinprofileId" size="150"
+				   maxlength="128" {{readonly}} value='{{speaker.field("Linkedin")}}'
+					onblur='check_http("linkedinprofileId")'>
+		{% endif %}
+	<tr><td>Telephone number:
+		<td>
+		{% if readonly =="readonly": %}
+			<a target=_blank href="{{speaker.field("Telephone")}}">{{speaker.field("Telephone")}}</a>
+		{% else %}
+			<input type="text" name="telephone" size="32" maxlength="32" {{readonly}} value='{{speaker.field("Telephone")}}'>
+		{% endif %}
+	<tr><td>Address:
+		<td><textarea name="address" maxlength="1200" wrap="hard" cols="40" rows="6" {{readonly}}>{{speaker.field("Address")}}</textarea>
+		<p>Max size: 1200 chars
+	<tr><td>Photo
+		<td>	{% if speaker.key!=None %}
+					<div>
+						{% if speaker.has_full_size_image(): %}
+                            <p>Speaker photo has been supplied. Click to
+							<a target="_blank" href="http://{{speaker.full_image_url()}}">see full size picture</a>
+						{% endif %}
+					</div>
+					{% if readonly != "readonly" %}
+						<p><input type="file" name="speakerpicture">
+						Please provide a good quality 'head and shoulders' style profile photo, max 1mb. This will be used on your online and print speaker profile.
+						<p><input type="checkbox" name="deletepicture">Delete current picture</input>
+					{% endif %}
+				{% else %}
+						<p><p>Please select a picture
+						<p><input type="file" name="speakerpicture" id="speakerpictureid">
+						Please provide a good quality 'head and shoulders' style profile photo, max 1mb. This will be used on your online and print speaker profile.
+				{% endif %}
+	<tr><td>Tags
+		<td>{{speaker_tags}}
+</table>

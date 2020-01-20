@@ -1,0 +1,48 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Mimas Speaker Directory</title>
+
+<style>
+table, th, td {
+    padding: 5px;
+}
+</style>
+</head>
+
+<body>
+<div class="container-fluid">
+<h1>Mimas Speaker Directory</h1>
+    <a href="/">Mimas home</a>
+    <form method="post">
+    <p>Search for speaker with tags:
+        <input type="text" name="searchbox" maxlength="64">
+        <input type="submit" name="searchtags" value="Search">
+    <p><i>Seperate multiple tags by comma, search will AND tags together. Case sensitive.</i></p>
+    <hr/>
+    {% if tag_filter != "" %}
+        <p>Speakers filtered by tags: {{tag_filter}}
+            <input type="submit" name="clear_tags" value="Clear tags"></p>
+    {% endif %}
+    <table cols="2">
+        <th>Speaker</th>
+        <th>Topic tags</th>
+    {% for speaker in speakers: %}
+        <tr>
+            <td><a href="/publicspage?skey={{speaker.urlsafe()}}">{{speaker.get().name}}</a>
+            <td>{{taglist(speaker).pretty_tag_list([])}}
+    {% endfor %}
+    </table>
+    </form>
+</div>
+</body>
+</html>

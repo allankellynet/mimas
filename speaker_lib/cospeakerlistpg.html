@@ -1,0 +1,66 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Add cospeakers</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Co-speakers</h1>
+{% include "scaffold/topmenu.html" %}
+
+<form method="post">
+    <label>Talk title:</label> {{ sub.title() }}
+    <br/>
+    <label>Submitted by:</label> {{ sub.submitter() }}
+    <br/>
+    <p>Maximum number of speakers per session: {{max_speakers}}
+    <p>Number of speakers: {{speaker_count}}</p>
+    {% if cospeakers != []: %}
+    <table border="1">
+        <th></th>
+        <th>Speaker name</th>
+        <th>E-mail</th>
+        <th></th>
+        {% for co in cospeakers: %}
+        <tr>
+            <td><input type="checkbox" name="checked_cospeaker" value="{{co.key.urlsafe()}}">
+            <td>{{co.name}}</td>
+            <td>{{co.email}}</td>
+            <td>
+                {% if not co.profile_exists(): %}
+                    <b>No profile provided</b>
+                    <a href="/cospeakerpagerl?cospeaker={{co.key.urlsafe()}}&sub_key={{sub.key.urlsafe()}}">
+                       Add now</a>
+                {% else %}
+                    <a href="/speakeremail?email={{co.email}}">Profile</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No co-speakers currently</p>
+    {% endif %}
+    <input type="submit" name="delete_cospeakers" value="Delete co-speaker(s)">
+    <br/><br/>
+    <strong>New co-speaker</strong>
+    <br/><label>Name: </label><input type="text" maxlength="64" name="cospeakername" {{more_speakers}}>
+    <br/>
+    <label>Email: </label><input type="text" maxlength="64" name="cospeakeremail" {{more_speakers}}>
+
+    <input type="submit" value="Add co-speaker" name="add_cospeakers" {{more_speakers}}>
+    <input type="hidden" value="{{sub.key.urlsafe()}}" name="sub_key">
+</form>
+</div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Speaker communications</title>
+</head>
+
+<script language="JavaScript">
+function toggle_checkboxes(source) {
+  checkboxes = document.getElementsByName('chosen');
+  for(var i=0, n=checkboxes.length;i<n;i++) {
+    checkboxes[i].checked = source.checked;
+  }
+}
+</script>
+
+<body>
+<div class="container-fluid">
+<h1>Speaker communications</h1>
+	{% include "scaffold/topmenu.html" %}
+<p>
+    <a href="/speakercomms?f=All&conf={{conf_safe_key}}">All</a> *
+    <a href="/speakercomms?f=Declines&conf={{conf_safe_key}}">Declines only</a> *
+    <a href="/speakercomms?f=AcceptAll&conf={{conf_safe_key}}">All Accepts</a> *
+    <a href="/speakercomms?allfields&f=AcceptAll&conf={{conf_safe_key}}">All Accepts-All details</a> *
+    <p><b>Current filter:</b> {{filter_description}}</p>
+<hr>
+
+<form method="post">
+<table border="1">
+        <th><input type="checkbox" onClick="toggle_checkboxes(this)" />
+        <th>Track
+        <th>First name</th>
+        <th>Later names</th>
+        <th>Duration
+        <th>Last round
+        <th>Decision</th>
+        <th>Communication</th>
+        <th>Title
+        {% if all_fields=="ALL": %}
+            {% include "speaker_lib/speakercomms_frag_th.html" %}
+        {% endif %}
+        {% for s in submissions: %}
+            <tr>
+            <td><input type="checkbox" name="chosen" value="{{s.key.urlsafe()}}" </td>
+            <td>{{crrt_conference.track_options()[s.track]}}</td>
+            <td>{{s.first_name()}}</td>
+            <td>{{s.last_name()}}</td>
+            <td>{{crrt_conference.duration_options()[s.duration]}}</td>
+            <td>{{s.last_review_round}}</td>
+            <td>{{s.review_decision(s.last_review_round)}}</td>
+            <td>{{s.communication}}</td>
+            <td>{{s.title()}}</td>
+            {% if all_fields=="ALL": %}
+                {% include "speaker_lib/speakercomms_fragment.html" %}
+            {% endif %}
+       {% endfor %}
+</table>
+    <p>
+    {% if crrt_conference.user_rights().has_permission(name, "SpeakerComms"): %}
+        <p><p>
+        <input type="submit" name="SendDeclines" value="Send decline e-mail">
+        <input type="submit" name="SendAccept" value="Send accept e-mail">
+        <p><b>Note:</b> Send decline & accept will only send mail to submissions which are selected and have appropriate decision.</p>
+        <p><p><p>
+        <select name="custommsglist">
+            <option value="None" selected>None</option>
+            {% for m in custom_message: %}
+                <option value="{{m.key.urlsafe()}}">{{m.name()}}</option>
+            {% endfor %}
+            <input type="submit" name="SendCustomMgs" value="Send custom message">
+            <br/>
+            <a href="/custommsgpage?conf_key={{crrt_conference.key.urlsafe()}}">Edit custom messages</a>
+        </select>
+    {% endif %}
+    {% if crrt_conference.user_rights().has_permission(name, "ConfExport"): %}
+        <p></p>
+        <input type="submit" name="Export" value="Export to CSV file">
+        <input type="submit" name="ExcelExport" value="Export to Excel file">
+    {% endif %}
+</form>
+</div>
+</body>
+</html>

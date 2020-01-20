@@ -1,0 +1,57 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Speaker main page</title>
+</head>
+{% include "scaffold/incbootstrap.html" %}
+
+<body>
+<div class="container-fluid">
+
+<h1>Speaker home</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+<h3>For speakers</h3>
+<p>1. <a href="/speaker">Speaker details</a>
+
+{% if speaker_exists: %}
+<p>2. <a href="/talk_submission">New talk</a>
+{% if talk_count > 0: %}
+<p>3. <a href="/list_submission">List existing talks and submissions</a>
+{% endif %}
+{% else %}
+<p><b>Note:</b> Speaker details must be entered before talks can be created and submitted.</p>
+{% endif %}
+
+
+<h3>To submit to a conference...</h3>
+<ul>
+    <li>First create your speaker profile in speaker details.
+    <li>Then fill in your talk details.
+    <li>Finally, list the talks you have, you can then submit the talks you have entered to a conference.</li>
+</ul>
+<p>Most likely there is only one conference you can submit to. However, if there is more than one conference
+    open for submission you can select it on the submission page.
+    The same talk can be submitted to multiple conferences.</p>
+<b>Note:</b> Some conference operate a limit on the number of submissions. This limit is shown on the submission page.
+
+<h3>Withdraw and update</h3>
+<p>If you need to you can withdraw a submission after submission. Similarly you may update personal and talk details.
+
+<h3>Co-speakers</h3>
+When you submit a talk you can specify one or two additional co-speakers if you wish.
+These speakers will need to enter their own conference details into this system. Take care to use the same e-mail
+address the co-speaker uses in their details entry and on your co-speakers list.
+Failure to do so will prevent reviewers from seeing their profile.
+
+</div>
+</body>
+</html>

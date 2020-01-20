@@ -1,0 +1,30 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Co-speaker bio page</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Co-speaker bio details</h1>
+
+Please enter co-speaker biography details for {{speaker.name}}
+
+<form method="post" enctype="multipart/form-data">
+    {% include "speaker_lib/speaker_fragment.html" %}
+
+    <input type="submit" value="Submit new speaker" name="updatespeaker">
+    <input type="hidden" value="{{sub_key}}" name="sub_key">
+</form>
+</div>
+</body>
+</html>

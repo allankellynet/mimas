@@ -1,0 +1,44 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mimas Speaker page</title>
+</head>
+<body>
+<div class="container-fluid">
+<h1>Speaker page: {{ speaker.name }}</h1>
+    <a href="/speakerdir">Return to speaker directory</a>
+    {% if talk_count==0: %}
+        <p>No talks listed</p>
+    {% else %}
+        <h2>Talks</h2>
+        {% for talk in talks: %}
+            {% if talk.is_listed() %}
+            <p><b>Title:</b> <a href="/pubtalk?talk={{talk.key.urlsafe()}}"><b>{{talk.title}}</b></a>
+                <p>Tags: {{taglist_func(talk.key).pretty_tag_list([])}}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <hr/>
+    <p><label>Topic tags:</label> {{taglist_func(speaker.key).pretty_tag_list([])}}</p>
+    <p><label>Affiliation:</label> {{speaker.field("affiliation")}}
+    <p><label>Job title:</label> {{ speaker.field("JobTitle") }}
+    <p><label>Twitter handle:</label> <a target=_blank href="https://twitter.com/{{speaker.field("twitter")}}">{{speaker.field("twitter")}}</a>
+    <p><label>Homepage:</label> <a target=_blank href="{{speaker.field("Webpage")}}">{{speaker.field("Webpage")}}</a>
+    <p><label>Bio:</label><p><textarea maxlength="1024" wrap="hard" cols="80" rows="10" readonly>{{ speaker.bio }}</textarea>
+    <p><label>Country:</label> {{speaker.field("country")}}
+
+    <hr/>
+    <a href="/speakerdir">Return to speaker directory</a>
+</div>
+</body>
+</html>

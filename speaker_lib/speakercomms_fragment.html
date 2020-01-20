@@ -1,0 +1,33 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<td>{{crrt_conference.track_options()[s.track]}}
+<td>{{crrt_conference.delivery_format_options()[s.delivery_format_text]}}
+<td>{{crrt_conference.expenses_options()[s.expense_expectations]}}
+
+<td>{{s.talk.get().field("shortsynopsis")}}
+<td>{{s.talk.get().field("longsynopsis")}}
+<td>{{taglist(s.talk).pretty_tag_list([])}}
+
+<td>{{s.email()}}
+<td>{{get_cospeakers_func(s.key)}}</td>
+<td>{{s.talk.parent().get().telephone}}
+<td>{{s.talk.parent().get().address}}
+<td>{{s.talk.parent().get().bio}}
+<td>{{s.talk.parent().get().field("Webpage")}}
+<td>{{s.talk.parent().get().field("Blog")}}
+<td>{{s.talk.parent().get().field("Linkedin")}}
+<td>{{s.talk.parent().get().field("country")}}
+<td>{{s.talk.parent().get().field("twitter")}}
+<td>{{s.talk.parent().get().field("affiliation")}}
+<td>{{s.talk.parent().get().field("JobTitle")}}
+<td>{{s.talk.parent().get().field("experience")}}
+<td>.</td>
+<td><a target="_blank" href="http://{{s.talk.parent().get().full_image_url()}}">{{s.talk.parent().get().full_image_url()}}</a>
+{% for question in conf_questions: %}
+    <td>{{retrieve_answer(s.key, question.key).answer_text}}
+{% endfor %}

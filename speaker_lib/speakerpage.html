@@ -1,0 +1,65 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<html xmlns="http://www.w3.org/1999/html">
+{% include "scaffold/incbootstrap.html" %}
+{% include "scaffold/enable_button_box.html" %}
+
+<script>
+    function post_delete() {
+        window.location.replace("/")
+    }
+
+    function confirmDelete() {
+        if (confirm('Sure you want to delete this speaker?')) {
+            $.post("speaker", { deletespeaker:1, speakerKey:"{{speakerKey}}"}, post_delete());
+            return true
+        } else {
+            return false
+        }
+    }
+</script>
+
+
+<body>
+<div class="container-fluid">
+
+<h1>Speaker details</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+
+<form method="post" enctype="multipart/form-data">
+
+{% include "speaker_lib/speaker_fragment.html" %}
+
+<p>
+{% if new_speaker %}
+    <p>List in public speaker directory: <input type="checkbox" name="speakerdir" checked>
+    (<a href="/speakerdir" target="_blank">View speaker directory in new window</a>)
+    <p><input type="submit" value="Submit new speaker" name="updatespeaker">
+    <input type="submit" value="Update and edit tags" name="updatetags">
+{% else: %}
+    {% if updateable: %}
+        <p>List in public speaker directory: <input type="checkbox" name="speakerdir" {% if dir_selected: %}checked{% endif %}>
+        (<a href="/speakerdir" target="_blank">View speaker directory in new window</a>)
+        <p><i>Contact details will not be listed in directory.</i></p>
+        <p><input type="submit" value="Update existing speaker" name="updatespeaker">
+        <input type="submit" value="Update and edit tags" name="updatetags">
+        <hr>Allow speaker delete: <input type="checkbox" id="enableDeleteId"
+                                         onclick="enable_button_box('enableDeleteId', 'deleteSpeakerId')">
+        <p>Deleting a speaker will remove contact details from the system and any open submissions will be withdrawn</p>
+        <p><input type="reset" value="Delete existing speaker" name="deletespeaker"
+                  id='deleteSpeakerId' onclick="confirmDelete()" disabled>
+    {% endif %}
+{% endif %}
+
+<input type="hidden" id="speakerKeyID" name="speakerKey" value="{{speakerKey}}"/>
+
+</form>
+</div>
+</body>
+</html>
