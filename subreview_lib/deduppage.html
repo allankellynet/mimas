@@ -1,0 +1,51 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Voting duplicates</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Voting duplicates</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+<form method="post">
+    <input type="submit" name="GenerateReport1" value="Generate round 1 vote report">
+    <hr>
+
+    <p>Report for conference: {{ crrt_conf.name }}</p>
+    {% if has_report==False %}
+        <p>No current report. Generate if needed</p>
+    {% else %}
+        <p>Voting round: {{ report.vote_round }}</p>
+        <table border="1">
+        {% for reviewer in report.duplicates %}
+            <tr>
+                <td><b>{{ report.duplicates[reviewer][0].key.parent().get().title() }}</b>
+                    <p>{{ reviewer }}
+                <td>{% for vote in report.duplicates[reviewer] %}
+                    <p>{{vote.score}}:{{vote.comment}}</p>
+                    {% endfor %}
+        {% endfor %}
+        </table>
+        {% if report.has_duplicates(): %}
+            <p><input type="submit" name="ActionReport" value="Remove duplicate votes listed">
+        {% else %}
+            <p>No duplicates found.</p>
+        {% endif %}
+    {% endif %}
+
+    <input type="hidden" name="conf_key" value="{{crrt_conf.key.urlsafe()}}">
+</form>
+</div>
+</body>
+</html>

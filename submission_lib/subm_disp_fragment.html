@@ -1,0 +1,43 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<h2>Submission</h2>
+<table>
+	<col width="25%">
+	<tr><td>Title:<td><textarea name="title" maxsize=256 rows=2 cols=60 readonly>{{ talk_details.title }}</textarea>
+	<tr><td>Session format:<td>{{submissionrecord_format}}
+	<tr><td>Suggested track:<td>{{submissionrecord_track}}
+	<tr><td>Session duration:<td>{{submissionrecord_duration}}
+	<tr><td>Expenses expectations:<td>{{submissionrecord_expenses}}
+	<tr><td>Submitted by:<td>
+		{% if show_name: %}
+			{{ talk_details.key.parent().get().name }}
+		{% else: %}
+			-
+		{% endif %}
+	on {{submission.created.strftime("%a %b %d, %Y %H:%M")}} UTC
+	<tr><td>Co-presenter(s):
+		<td>{% if show_name: %}
+				{% if cospeakers_count == 0: %} None {% endif %}
+				{% for c in cospeakers: %}
+					<p>{{c.name}} ({{c.mail}})
+				{% endfor %}
+			{% endif %}
+    {% for question in conf_questions: %}
+        <tr><td>{{question.question_text()}}</td>
+            <td>{{conf_answers[question.key].answer()}}</td>
+    {% endfor %}
+
+	<tr><td>Short synopsis:<td>
+		<textarea maxsize=500 rows=10 cols=100 name="shortsynopsis" readonly>{{ talk_details.field("shortsynopsis") }}</textarea>
+	<tr><td>Long synopsis (optional):<td>
+		<textarea maxsize=5000 rows=10 cols=100 name="longsynopsis" readonly>{{ talk_details.field("longsynopsis") }}</textarea>
+    <tr><td>Submitted:</td>
+        <td>{{submission.created.strftime("%a %b %d, %Y %H:%M")}} UTC</td>
+    </tr>
+
+</table>

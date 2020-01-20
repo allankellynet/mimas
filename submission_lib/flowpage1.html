@@ -1,0 +1,44 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Simple submission page 1 of 3</title>
+</head>
+<body>
+<div class="container-fluid">
+{% include "conference_lib/image_frag.html" %}
+<h1>Simple submission to {{ crrt_conf.name }}</h1>
+<ol>
+    <li>Using this page you can <strong>create a speaker profile</strong>. (If you have used this system before you existing details will be shown.)
+    <li>Next you will be asked to give details of your talk.
+    <li>Finally you can submit the talk to {{ crrt_conf.name }}.
+</ol>
+    <p><b>Co-speakers</b>: If your submission has more than one presenter then: one person should make the submission. This person will be the main contact. At the end of the sumission process you can add co-speakers.
+    <p>If you are submitting on behalf of someone else then please make a submission and add them as a co-speaker. Make a note in your own "speaker bio" that you are the contact but not the speaker.</p>
+    <p>If you wish to <b>edit an existing</b> submission, speaker or talk details, or you wish to review feedback,
+    then you will need to log into the <a href="/">main Mimas system</a>.</p>
+<p>All submissions are indexed using the e-mail address provided so please use the same email address for logging in.</p>
+<p>If you are making more than one submission to the same conference you will find it less work to
+    login and use the main system where you can save some repeated data entry.
+
+    <form method="post" enctype="multipart/form-data">
+        {% include "speaker_lib/speaker_fragment.html" %}
+        <p>List in public speaker directory: <input type="checkbox" name="speakerdir" checked>
+        (<a href="/speakerdir" target="_blank">View speaker directory in new window</a>)
+        <p>
+        <input type="submit" name="SpeakerSubmit" value="Submit speaker details">
+
+        <input type="hidden" name="speaker_key" value="{{speakerKey}}"/>
+    </form>
+</div>
+</body>
+</html>
+

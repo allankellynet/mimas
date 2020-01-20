@@ -1,0 +1,59 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+{% if conf_key!=None: %}
+<nav class="navbar navbar-default navbar-default">
+<nav class="navbar navbar-default navbar-default">
+    <div class="container-fluid">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#adminmenu" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+    <div class="collapse navbar-collapse" id="adminmenu">
+        <ul class="nav navbar-nav">
+            <li><a href="/chooseconf">Conferences</a></li>
+            <li class="dropdown">
+            <a href="#" class="dropdown-toggle"
+                data-toggle="dropdown" role="button"
+                aria-haspopup="true" aria-expanded="false">Reports <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/showallpage?conf={{conf_key.urlsafe()}}">List submissions</a></li>
+                    <li><a href="/speakercomms?conf={{conf_key.urlsafe()}}">Export & Speaker comms</a></li>
+                    <li><a href="/expensesreportpage?conf={{conf_key.urlsafe()}}">Expenses report</a></li>
+                    <li><a href="/speakerrptpage?conf={{conf_key.urlsafe()}}&f=Accepts">Speaker report</a></li>
+                    <li><a href="/commentreviewpage?conf={{conf_key.urlsafe()}}">Comment review report</a></li>
+                    <li><a href="/subsassignmentspage">Review assignments & votes</a></li>
+                    <li><a href="/deduppage?conf={{conf_key.urlsafe()}}">Vote duplicates report</a></li>
+                </ul>
+            <li class="dropdown">
+            <a href="#" class="dropdown-toggle"
+                data-toggle="dropdown" role="button"
+                aria-haspopup="true" aria-expanded="false">Setup <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/createconf">Edit conference</a></li>
+                    <li><a href="/confoptionspage?conf={{conf_key.urlsafe()}}">Conference options</a></li>
+                    <li><a href="/confquestionspage?conf={{conf_key.urlsafe()}}">Conference specific questions</a></li>
+                    <li><a href="/confconfigpage?conf={{conf_key.urlsafe()}}">Limits</a></li>
+                    <li><a href="/reviewconfig">Review configuration</a></li>
+                    <li><a href="/confemailcopy?conf={{conf_key.urlsafe()}}">Email recipients</a></li>
+                    <li><a href="/mailmessages?conf={{conf_key.urlsafe()}}">Email message templates</a></li>
+                    <li><a href="/permissionspage?conf={{conf_key.urlsafe()}}">Conference permissions</a></li>
+                    <li><a href="/assigntracks?conf={{conf_key.urlsafe()}}">Assign reviewers to tracks</a></li>
+                    <li><a href="/assignvolunteers?conf={{conf_key.urlsafe()}}">Assign volunteer reviewers</a></li>
+                </ul>
+
+        </ul>
+    </div>
+    </div>
+</nav>
+
+{% endif %}

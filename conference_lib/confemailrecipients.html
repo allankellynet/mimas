@@ -1,0 +1,78 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Email receiptients</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Email recipients: {{ crrt_conf.name }}</h1>
+    	{% include "scaffold/topmenu.html" %}
+
+<hr/>
+    {% include "conference_lib/adminmenu.html" %}
+
+<form name="confemailsform" method="post">
+<p><input type="hidden" value="{{conf_key.urlsafe()}}" name="crrt_conf_key">
+
+
+
+<lable>Add email:</lable>
+<input type="email" maxlength="64" name="NewMail">
+<input type="submit" value="Add email" name="AddNeweMailSubmit">
+
+<p>Use new address for:</p>
+    <p><input type="checkbox" name="AckCC">Acknowledgement CC mail</input>
+    <p><input type="checkbox" name="AckBCC">Acknowledgement BCC mail</input>
+    <p><input type="checkbox" name="AcceptCC">Accept submission CC mail</input>
+
+<h2>Submission Acknowledgements CC</h2>
+<table border="1">
+    <th></th>
+    <th>Email</th>
+    {% for mail in email_ack_cc: %}
+        <tr>
+            <td><input type="checkbox" name="selectAckCCEmail" value="{{ mail }}"></td>
+        <td>{{ email_ack_cc[mail] }}
+    {% endfor %}
+</table>
+<p><input type="submit" value="Delete selected emails" name="DeleteAckCCEmails">
+
+<h2>Submission Acknowledgements BCC</h2>
+<table border="1">
+    <th></th>
+    <th>Email</th>
+    {% for mail in email_ack_bcc: %}
+        <tr>
+            <td><input type="checkbox" name="selectAckBCCEmail" value="{{ mail }}"></td>
+        <td>{{ email_ack_bcc[mail] }}
+    {% endfor %}
+</table>
+<p><input type="submit" value="Delete selected emails" name="DeleteAckBCCEmails">
+
+<h2>Accept submission CC</h2>
+<table border="1">
+    <th></th>
+    <th>Email</th>
+    {% for mail in email_accept_cc: %}
+        <tr>
+            <td><input type="checkbox" name="selectAcceptCCEmail" value="{{ mail }}"></td>
+        <td>{{ email_accept_cc[mail] }}
+    {% endfor %}
+</table>
+<p><input type="submit" value="Delete selected emails" name="DeleteAcceptCCEmails">
+
+
+</form>
+</div>
+</body>
+</html>

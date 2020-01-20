@@ -1,0 +1,35 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Flow Submission thank you</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Thank you for your submission</h1>
+
+<p>You should receive e-mail confirmation soon.</p>
+
+The following options are avaiable:
+<ol>
+    <li><a href="/cospeakerlist?sub={{sub_key}}">Add co-speakers to this submission</a></li>
+    <li><a href="/edittags?spk={{speaker_key}}">Add tags to your speaker profile</a></li>
+    <li><a href="/edittags?talk={{talk_key}}">Add tags to this submission</a></li>
+    <li><a href="/speakermain">Submit something else, edit this submission</a>, another existing submission or speaker details
+</li>
+</ol>
+
+Or, just close the browser window.
+</div>
+</body>
+</html>

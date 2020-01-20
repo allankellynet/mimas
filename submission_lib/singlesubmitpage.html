@@ -1,0 +1,47 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Single submission page</title>
+</head>
+<body>
+<div class="container-fluid">
+{% include "conference_lib/image_frag.html" %}
+<h1>One page submission to {{ crrt_conf.name }}</h1>
+<p>If you wish to edit an existing submission, speaker or talk details, or you wish to review feedback,
+    then you will need to log into the <a href="/">main Mimas system</a>.</p>
+<p>All submissions are indexed using the e-mail address provided so please use the same email address for logging in.</p>
+<p>If you are making more than one submission to the same conference you will find it less work to
+    login and use the main system where you can save some repeated data entry.
+</p>
+    <strong>Please note:</strong> Co-speakers should <strong>not</strong> be added on this page.
+    <p>Once a submission is made you will have an opportunity to add co-speakers.
+<form method="post" enctype="multipart/form-data">
+    <input type="hidden" value="{{crrt_conf.key.urlsafe()}}" name="conf_key">
+
+    {% include "speaker_lib/speaker_fragment.html" %}
+    <p>List in public speaker directory: <input type="checkbox" name="speakerdir" checked>
+    (<a href="/speakerdir" target="_blank">View speaker directory in new window</a>)
+
+    <hr>
+    {% include "talk_lib/talk_fragment.html" %}
+    <hr>
+    <table>
+    {% include "submission_lib/subm_entry_fragment.html" %}
+    </table>
+    <hr>
+
+   	{% include "submission_lib/subm_disclaimer.html" %}
+    <input type="submit" value="Make submission" name="singlesubmit" id="singlesubmitid">
+</form>
+</div>
+</body>
+</html>

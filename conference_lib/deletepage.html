@@ -1,0 +1,40 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete conference page</title>
+</head>
+{% include "scaffold/incbootstrap.html" %}
+{% include "scaffold/enable_button_box.html" %}
+
+<body>
+
+<h1>Delete conference</h1>
+<div class="container-fluid">
+	{% include "scaffold/topmenu.html" %}
+<hr>
+    <form method="post">
+        <p>You have selected to delete: <b>{{ conference.name }}</b>.
+    <p>This action will delete the conference and all associated data. The action <b>cannot</b> be reversed.</p>
+    <p>If you are sure you wish to do this</p>
+    <ol>
+        <li>Confirm your intent by checking the box below</li>
+        <li>Press the delete conference button</li>
+    </ol>
+    <hr>
+    <label>Confirm Delete: </label><input type="checkbox" id="confirmId" name="confirm_delete"
+                                          onclick="enable_button_box('confirmId', 'DeleteSubmitId')">
+    <hr>
+    <p><input type="submit" name="DeleteConf" id="DeleteSubmitId" value="Delete conference" disabled>
+    <p><input type="hidden" name="conf_key" value="{{conference.key.urlsafe()}}"></p>
+    </form>
+</div>
+</body>
+</html>

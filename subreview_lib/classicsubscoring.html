@@ -1,0 +1,56 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<html>
+{% include "scaffold/incbootstrap.html" %}
+<body>
+<div class="container-fluid">
+
+	<h1>Submission scoring - round {{review_round}}</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr/>
+<form name="review" method="post">
+	<br><input type="radio" name="vote" value="+3"
+		{% if existing_score==3: %} checked {% endif %}
+		> +3 Really want to see this
+	<br><input type="radio" name="vote" value="+2"
+		{% if existing_score==2: %}checked{%endif%}
+		> +2 Very good
+ 	<br><input type="radio" name="vote" value="+1"
+		{% if existing_score==1: %}checked{%endif%}
+		> +1 Good
+	<br><input type="radio" name="vote" value="0"
+		{% if existing_score==0: %} checked {%endif%}
+		> 0 Neutral
+	<br><input type="radio" name="vote" value="-1"
+		{% if existing_score==-1: %}checked{%endif%}
+		> -1 Not keen
+	<br><input type="radio" name="vote" value="-2"
+		{% if existing_score==-2: %}checked{%endif%}
+		> -2 Really not keen
+	<br><input type="radio" name="vote" value="-3"
+		{% if existing_score==-3: %}checked{%endif%}
+		> -3 Don't want this at the conference
+	<p><label>Shared comment: </label><textarea rows="3" cols="80" name="review_comment" maxsize=640>{{existing_comment}}</textarea>
+	<p>Shared comments may be shared with the submitter.</p>
+	<p><label>Private comment: </label><input name="private_comment" size=80 maxsize=200 value="{{private_comment}}">
+	<p>Private comments are not shared with the submitter - please prefer shared comments</p>
+	<p><input type="submit" name="submitvote" value="Submit vote">
+
+	{% include "submission_lib/subm_disp_fragment.html" %}
+    {% for speaker in speakers: %}
+	    {% include "speaker_lib/speaker_fragment.html" %}
+	{% endfor %}
+
+
+	<input type="hidden" name="submissionrecord_key" value="{{submissionrecord_key}}"/>
+	<input type="hidden" name="review_round" value="{{review_round}}"/>
+	<input type="hidden" name="voterecord" value="{{voterecord}}"/>
+</form>
+</div>
+</body>
+</html>

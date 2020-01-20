@@ -1,0 +1,43 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Submission reviewers</title>
+</head>
+<body>
+<div class="container-fluid">
+<h1>Submission reviewers</h1>
+	{% include "scaffold/topmenu.html" %}
+<p><label>Review round:</label> {{review_round}}</p>
+<p><label>Title:</label> {{submission.title()}}
+<p><label>Speaker:</label> {{submission.first_name()}} {{submission.last_name()}}
+<form method="post">
+    <h2>Reviewers</h2>
+    <table>
+        <tr>{% for r in reviewers: %}
+            <td><input type="checkbox" name="delete_checkbox" value="{{r.key.urlsafe()}}"></td>
+            <td>{{r.email}}</td>
+            <td>{{find_vote_sugar(submission.key, r.email, review_round)}}</td>
+        </tr>{% endfor %}
+    </table>
+    <br/>
+    <input type="submit" name="delete_reviewers" value="Delete reviewers"/>
+    <hr/>
+    <input type="email" length="30" maxlength="160" name="new_reviewer_email"/>
+    <input type="submit" name="submit_new_reviewer" value="Add new reviewer"/>
+    <p>Note: Reviewers added here still need permission to review and assignment to track</p>
+
+    <input type="hidden" name="review_round" value="{{review_round}}"/>
+    <input type="hidden" name="sub_key" value="{{submission.key.urlsafe()}}"/>
+</form>
+</div>
+</body>
+</html>

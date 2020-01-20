@@ -1,0 +1,50 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.js"></script>
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.css">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Volunteer Reviewer</title>
+</head>
+<body>
+<div class="container-fluid">
+<h1>{{ crrt_conf.name }}: Thanks you for volunteering</h1>
+
+Please confirm you e-mail and the tracks you would like to review for:
+<form method="post">
+    <hr>
+    <p><label>Name: </label> <input type="text" maxlength="32" name="name" value="{{name}}"/> (Please use your real name)</p>
+    <p><label>Email: </label> <input type="email" maxlength="64" name="emailaddress" value="{{email}}" readonly/></p>
+
+    <table>
+        <th>Track </th><th> Review?</th>
+        {% for track in crrt_conf.track_options(): %}
+        <tr>
+            <td>{{crrt_conf.track_options()[track]}} </td>
+            <td><input type="checkbox" name="{{track}}"></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <hr>
+    <input type="submit" value="Submit as volunteer"}>
+
+    <input type="hidden" value="{{crrt_conf.key.urlsafe()}}" name="crrt_conf_key">
+</form>
+
+</div>
+</body>
+</html>

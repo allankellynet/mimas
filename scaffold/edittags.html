@@ -1,0 +1,62 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+
+<script>
+    function post_addtag(tag) {
+        document.getElementById("crrt_tags").innerHTML += ", " + tag;
+        document.getElementById("newtagid").value = ""
+    }
+
+    function addtag(tagtext) {
+        $.post("addtag", { key:"{{parent_key}}", tag:tagtext, tag_type:"{{tag_type}}"}, post_addtag(tagtext));
+    }
+
+    function addnewtag() {
+        tag = document.getElementById("newtagid").value
+        addtag(tag)
+    }
+</script>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Tags</title>
+</head>
+{% include "scaffold/incbootstrap.html" %}
+<body>
+<div class="container-fluid">
+
+<h1>Edit tags page</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+{% if speaker != None: %}
+    <p>Speaker: <b>{{ speaker.name }}</b></p>
+{% endif %}
+{% if talk != None: %}
+    <p>Talk: <b>{{ talk.title }}</b></p>
+{% endif %}
+    <p><div id="crrt_tags"><label>Current tags: </label> {{tags}}</div>
+    <form method="post">
+        <p><label>Add/remove tag:</label>
+            <input type="text" maxlength="32" name="newtag" id="newtagid">
+            <input type="button" name="add_newtag" value="Add tag" onclick="addnewtag()">
+            <input type="submit" name="remove_tag" value="Remove tag">
+            <p>Please only enter one tag at a time</p>
+
+        <h3>Select from existing tags</h3>
+        {% for tag in all_tags: %}
+            <p><div style="color:#0000FF" onclick="addtag('{{tag}}')">{{tag}}</div></p>
+        {% endfor %}
+
+        <input type="hidden" name="parent_key" value="{{parent_key}}">
+        <input type="hidden" name="tag_type" value="{{tag_type}}">
+    </form>
+
+</div>
+</body>
+</html>

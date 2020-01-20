@@ -1,0 +1,106 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Conference options</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Conference options: {{ crrt_conf.name }}</h1>
+{% include "scaffold/topmenu.html" %}
+<hr/>
+    {% include "conference_lib/adminmenu.html" %}
+
+<form name="confoptionsform" method="post">
+<p><input type="hidden" value="{{conf_key.urlsafe()}}" name="conf_key">
+
+<h2>Tracks</h2>
+<table border="1">
+    <th></th>
+    <th>Track</th>
+    <th>Slots</th></th>
+    {% for track in tracks: %}
+        <tr>
+            <td><input type="checkbox" name="selectTrack" value="{{ track.shortname_m }}" {{read_only}}></td>
+            <td>{{ track.full_text_m }}</td>
+            <td><input type="number" value="{{ track.slots }}" name="slots{{track.shortname_m}}" min="1" max="9" {{read_only}}/></td>
+    {% endfor %}
+</table>
+
+<lable>New track:</lable>
+<input type="text" maxlength="32" name="NewTrack" id="NewTrackId" {{read_only}}>
+<input type="submit" value="Add new track" name="NewTrackSubmit" id="NewTrackSubmitId" {{read_only}}>
+<p><b>Warning:</b> Deleting a track after submissions have been made, or reviewers assigned may render system unstable.</p>
+<p><input type="submit" value="Delete selected tracks" name="DeleteTracks" {{read_only}}>
+    <input type="submit" value="Update slots" name="UpdateTrackSlots" {{read_only}}>
+
+<h2>Duration options</h2>
+<table border="1">
+    <th></th>
+    <th>Durations</th>
+    {% for dur in durations: %}
+        <tr>
+            <td><input type="checkbox" name="selectDuration" value="{{ dur }}" {{read_only}}></td>
+        <td>{{ durations[dur] }}
+    {% endfor %}
+</table>
+
+<lable>New duration:</lable>
+<input type="text" maxlength="32" name="NewDuration" id="NewDurationId" {{read_only}}>
+<input type="submit" value="Add new duration" name="NewDurationSubmit" id="NewDurationSubmitId" {{read_only}}>
+<p><input type="submit" value="Delete selected duration" name="DeleteDuration" {{read_only}}>
+
+<h2>Talk format options</h2>
+<table border="1">
+    <th></th>
+    <th>Format</th>
+    {% for format in formats: %}
+        <tr>
+            <td><input type="checkbox" name="selectFormat" value="{{ format }}" {{read_only}}></td>
+        <td>{{ formats[format] }}
+    {% endfor %}
+</table>
+
+<lable>New format:</lable>
+<input type="text" maxlength="32" name="NewFormat" id="NewFormatId" {{read_only}}>
+<input type="submit" value="Add new format" name="NewFormatSubmit" id="NewFormatSubmitId" {{read_only}}>
+<p><input type="submit" value="Delete selected format" name="DeleteFormat" {{read_only}}>
+
+
+<h2>Expenses options</h2>
+<table border="1">
+    <th></th>
+    <th>Expenses</th>
+    {% for exp in expenses: %}
+        <tr>
+            <td><input type="checkbox" name="selectExpenses" value="{{ exp }}" {{read_only}}></td>
+        <td>{{ expenses[exp] }}
+    {% endfor %}
+</table>
+
+<lable>New expenses option:</lable>
+<input type="text" maxlength="100" name="NewExpenses" {{read_only}}>
+<input type="submit" value="Add new expenses option" name="NewExpensesSubmit" {{read_only}}>
+<p><input type="submit" value="Delete selected expenses option" name="DeleteExpenses" {{read_only}}>
+
+<p><input type="submit" value="Default setup" name="DEFAULTSETUP" {{read_only}}>
+{% if aotb_extras: %}
+<p><input type="submit" value="AOTB options" name="AOTBOPTS" {{read_only}}>
+{% endif %}
+{% if test_setup: %}
+<p><input type="submit" value="Test setup & data" name="TESTSETUP" {{read_only}}>
+{% endif %}
+
+</form>
+</div>
+</body>
+</html>

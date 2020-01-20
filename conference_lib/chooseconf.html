@@ -1,0 +1,51 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Conference administration</title>
+</head>
+{% include "scaffold/incbootstrap.html" %}
+
+<script language="javascript">
+function setConferenceKey() {
+	key = document.getElementById("conferenceListId").value;
+	document.getElementById("conferenceKeyId").value = key;
+	document.forms["confselectadmin"].submit();
+}
+</script>
+
+<body>
+<div class="container-fluid">
+
+<h1>Select Conference</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+<h2>Conference admin</h2>
+	<a href="/createconf?new">Create conference</a>
+	<p>
+	<form name="conferences" method="post">
+		<table border="1">
+			<th>Dates
+			<th>Name
+			<th>Owner</th>
+			<th>State</th>
+			{% for c in conferences: %}
+			<tr>
+				<td>{{ c.dates }}
+				<td><a href="/createconf?conf={{c.key.urlsafe()}}">{{ c.name }}</a>
+				<td>{% if c.user_rights().has_permission(name, "Creator"):%}Owner{%endif%}</td>
+				<td align="center">{{ c.state() }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</form>
+</div>
+</body>
+</html>

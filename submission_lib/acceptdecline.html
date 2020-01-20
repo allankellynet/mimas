@@ -1,0 +1,37 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Acknowledge acceptance</title>
+</head>
+<body>
+
+<div class="container-fluid">
+{% include "conference_lib/image_frag.html" %}
+<h1>Acknowledge acceptance</h1>
+
+<p>Once again, thank your for your submission to <b>{{crrt_conf.name}}</b> on {{crrt_conf.dates}}.
+<p>We would like to accept your submission "<b>{{sub.title()}}</b>" for the conference.
+<p>Can you please confirm you will be able to attend the conference?
+
+<form method="post">
+    <input type="submit" name="accept" value="Accept"> - Yes, I confirm I can attend and give my presentation.</input>
+    <hr/>
+    <input type="submit" name="decline" value="Decline"> - Sorry, I am unable to attend the conference to give my presentation</input>
+    <br/><br/>
+    <input type="submit" name="other" value="Other"> - I have a problem, I will contact your via e-mail and explain.</input>
+    <input type="hidden" name="sub_key" value="{{sub.key.urlsafe()}}">
+</form>
+<hr/>
+<b>If you need to contact us about anytihng please send e-mail to: {{crrt_conf.contact_email()}}.</b>
+</div>
+</body>
+</html>

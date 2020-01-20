@@ -1,0 +1,47 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Expenses list</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Expenses list report</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+    <p><b>Number of claims: {{submissions_count}}</b></p>
+    <p><b>Filter by:</b> {{ status_description }}
+    <p>* <a href="/expenseslist?conf={{conference.key.urlsafe()}}&expenses={{expenses_filter}}&status=All">All submissions</a>
+    * <a href="/expenseslist?conf={{conference.key.urlsafe()}}&expenses={{expenses_filter}}&status=NoDecision">No decisions</a>
+    * <a href="/expenseslist?conf={{conference.key.urlsafe()}}&expenses={{expenses_filter}}&status=AcceptAll">All accepts</a> *
+    <p><b>Expenses claim type:</b> {{ expenses_description }}
+    <p>{% for i in expenses_options.keys(): %}
+    * <a href="/expenseslist?conf={{conference.key.urlsafe()}}&expenses={{i}}&status={{status_filter}}">{{expenses_options[i]}}</a>
+    {% endfor %} *
+<br>
+<table border="1">
+    <th>Expenses claim list</th>
+    <th>Claimee</th>
+    <th>Email</th>
+    <th>Status</th>
+    {% for claimee in submissions: %}
+    <tr>
+        <td>{{expenses_options[claimee.expenses]}}</td>
+        <td>{{claimee.submitter()}}</td>
+        <td>{{claimee.email()}}</td>
+        <td>{{claimee.final_decision()}}</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+</body>
+</html>

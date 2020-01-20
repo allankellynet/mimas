@@ -1,0 +1,59 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Submission list</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Submission list: {{ crrt_conference.name }}</h1>
+{% include "scaffold/topmenu.html" %}
+<br>
+<p>
+    <a href="/showallpage?f=all&conf={{crrt_conference.key.urlsafe()}}">All</a> *
+    <a href="/showallpage?f=round1&conf={{crrt_conference.key.urlsafe()}}">Round 1 only</a> *
+    <a href="/showallpage?f=round2&conf={{crrt_conference.key.urlsafe()}}">Round 2 only</a> *
+    <a href="/showallpage?f=finalaccept&conf={{crrt_conference.key.urlsafe()}}">Final accepts</a> *
+<hr>
+    <p><b>Filter by:</b> {{ filter_description }}</p>
+    <p><b>Submission count:</b> {{subs_count["total"]}}</p>
+*
+{% for t in tracks: %}
+    <a href="#{{t}}">{{tracks[t]}}</a> *
+{% endfor %}
+{% for t in tracks: %}
+    <h2 id="{{t}}">{{tracks[t]}}</h2>
+    <p>Submission count: {{subs_count[t]}}</p>
+    <table border="1">
+        <th>Speaker
+        <th>Details</th>
+        <th>Duration
+        <th>Last round
+        <th>Decision</th>
+        <th>Title
+        <th>Comms</th>
+    {% for s in submissions[t]: %}
+        <tr>
+        <td><a target=_blank href="/speakerkey?key={{s.talk.parent().urlsafe()}}">{{s.submitter()}}</a></td>
+        <td><a target=_blank href="/submit_page?sub={{s.key.urlsafe()}}&reviewer">Details</a></td>
+        <td>{{crrt_conference.duration_options()[s.duration]}}</td>
+        <td align=center>{{s.last_review_round}}</td>
+        <td>{{s.review_decision(s.last_review_round)}}</td>
+        <td><a target=_blank href="/pubtalk?talk={{s.talk.urlsafe()}}">{{s.title()}}</a></td>
+        <td>{{s.communication}}</td>
+    {% endfor %}
+    </table>
+{% endfor %}
+<br/><hr/>
+</div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Conference specific questions</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Conference specific questions: {{crrt_conf.name}}</h1>
+{% include "scaffold/topmenu.html" %}
+<hr/>
+    {% include "conference_lib/adminmenu.html" %}
+<form method="post">
+
+<label>New question</label>
+<input type="text" name="new_question" maxlength="140" {{read_only}}>
+<input type="submit" name="addquestion" value="Add question" {{read_only}}>
+<p>New questions are initially set for free text answers. Adding specific answers turns them into dropdown lists.</p>
+    <br/><br/>
+<table border="1">
+    <th></th>
+    <th align="left">Question</th>
+    <th>  </th>
+    <th align="left">Answers</th>
+{% for q in questions: %}
+    <tr>
+        <td><input type="checkbox" name="{{q.key.urlsafe()}}">
+        <td>{{ q.question_text() }}
+        <td></td>
+        <td>{% if q.is_free_text(): %}
+                Free text answer
+            {% else: %}
+                {% for ans in q.answer_options(): %}
+                    <p>{{ans}}</p>
+                {% endfor %}
+            {% endif %}
+        </td>
+{% endfor %}
+</table>
+    <br/>
+    <label>New answer</label>
+    <input type="text" name="new_answer" maxlength="140" {{read_only}}>
+    <input type="submit" name="addanswer" value="Add answer to selected questions" {{read_only}}>
+    <br/><br/>
+    <p><input type="submit" value="Delete selected questions" name="delete_selected" {{read_only}}>
+
+    <input type="hidden" value="{{conf_key.urlsafe()}}" name="crrt_conf_key">
+</form>
+</div>
+</body>
+</html>

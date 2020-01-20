@@ -1,0 +1,49 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>New review scoring</title>
+</head>
+<body>
+<div class="container-fluid">
+
+	<h1>Submission scoring - round 1</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr/>
+<form name="review" method="post">
+    Where <b>{{newscoringconfig.min_vote()}}</b> means you don't like the session and don't think it should be at the conference
+    {% for i in range(newscoringconfig.min_vote(), newscoringconfig.max_vote()+1): %}
+	    <br><input type="radio" name="vote" value="{{i}}"
+		        {% if existing_score==i: %} checked {% endif %}
+            > {{i}} </input>
+    {% endfor %}
+    And <b>{{newscoringconfig.max_vote()}}</b> means you really want to see this session at the conference.
+	<p><label>Shared comment: </label><textarea rows="3" cols="80" name="review_comment" maxsize=640>{{existing_comment}}</textarea>
+	<p>Shared comments may be shared with the submitter.</p>
+	{% if newscoringconfig.private_comments(): %}
+		<p><label>Private comment: </label><input name="private_comment" size=80 maxsize=200 value="{{private_comment}}">
+		<p>Private comments are not shared with the submitter - please prefer shared comments</p>
+	{% endif %}
+
+	<p><input type="submit" name="submitvote" value="Submit vote">
+
+	{% include "submission_lib/subm_disp_fragment.html" %}
+    {% for speaker in speakers: %}
+	    {% include "speaker_lib/speaker_fragment.html" %}
+	{% endfor %}
+
+
+	<input type="hidden" name="submissionrecord_key" value="{{submissionrecord_key}}"/>
+<input type="hidden" name="voterecord" value="{{voterecord}}"/>
+</form>
+</div>
+</body>
+</html>

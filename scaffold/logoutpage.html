@@ -1,0 +1,39 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mimas Logout</title>
+</head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.js"></script>
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.css">
+
+<script>
+{% autoescape false %}
+{{firebase_config_variable}}
+{% endautoescape %}
+
+function logout() {
+    firebase.initializeApp(firebase_config);
+    firebase.auth().signOut()
+}
+</script>
+
+<body onload="logout()">
+<h1>Thank you for using Mimas</h1>
+<h3>You are now logged out</h3>
+<p></p>
+<h3><a href="/">Come back soon.</a></h3>
+</body>
+</html>

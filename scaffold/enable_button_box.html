@@ -1,0 +1,19 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<script>
+    // if the checkBoxId is true then enable targetControlId
+    // if checkBoxId is not checked then disable the targetControlId
+    function enable_button_box(checkBoxId, targetControlId) {
+    	if (document.getElementById(checkBoxId).checked) {
+	    	document.getElementById(targetControlId).disabled=false
+	    } else {
+		    document.getElementById(targetControlId).disabled=true
+	    }
+    }
+</script>
+

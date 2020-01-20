@@ -1,0 +1,46 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Submission assignnments</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Submission assignments count</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+    <p>Conference: {{crrt_conf.name}}</p>
+    <p>Review round: {{review_round}}</p>
+    <p><a href="/subsassignmentspage?round=1">Round 1</a> * <a href="/subsassignmentspage?round=2">Round 2</a></p>
+<form method="post">
+
+    <table border="1">
+        <th>Speaker</th>
+        <th>Title</th>
+        <th>Track</th>
+        <th>Assignments</th>
+        <th>Votes</th>
+
+        {% for s in submissions: %}
+        <tr>
+            <td>{{s.submitter()}}</td>
+            <td>{{s.title()}}</td>
+            <td>{{tracks[s.track_name]}}</td>
+            <td align="center"><a href="/subreviewers?round={{review_round}}&sub={{s.key.urlsafe()}}">{{assignment_count[s.key]}}</a></td>
+            <td align="center">{{vote_count[s.key]}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>
+</div>
+</body>
+</html>

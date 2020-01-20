@@ -1,0 +1,47 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Voting records page</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Voting records page</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+    <p>Review round: {{review_round}}</p>
+    <p><a href="/votingrecordspage?round=1">Round 1</a> * <a href="/votingrecordspage?round=2">Round 2</a>
+<form method="post">
+
+    <table border="1">
+        <th>Reviewer</th>
+        <th>Assignments</th>
+        <th>Votes</th>
+        <th>Complete</th>
+
+        {% for r in reviewers: %}
+        <tr>
+            <td>{% if reviewers[r][0]>0 %}
+                    <a href="/assignementdetailspage?reviewer={{r}}&review_round={{review_round}}">{{r}}</a></td>
+                {% else %}
+                    {{r}}
+                {% endif %}
+            <td>{{reviewers[r][0]}}</td>
+            <td>{{reviewers[r][1]}}</td>
+            <td>{{reviewer_complete_description(crrt_conf.key, r, review_round)}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>
+</div>
+</body>
+</html>

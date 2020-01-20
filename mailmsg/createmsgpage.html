@@ -1,0 +1,44 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Custom messages</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Custom messages</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+
+<form method="post">
+    <table>
+        <th>Select</th>
+        <th>Name</th>
+        {% for m in messages: %}
+            <tr>
+                <td><input type="checkbox" name="selectedmsg" value="{{m.key.urlsafe()}}"</td>
+                <td><a href="/custommsgedit?msg_key={{m.key.urlsafe()}}">{{m.name()}}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/custommsgedit?conf_key={{conf_key}}">Create new message</a>
+    <input type="hidden" name="conf_key" value="{{conf_key}}">
+    <br/><br/>
+    <input type="submit" name="deletemsgs" value="Delete selected messages">
+    <p>
+    <a href="/speakercomms?conf={{conf_key}}">Back to speaker communications</a>
+</form>
+</div>
+</body>
+</html>

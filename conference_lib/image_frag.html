@@ -1,0 +1,10 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+{% if crrt_conf.has_image(): %}
+	<img width=350 src="/image?img_id={{crrt_conf.get_image_key().urlsafe()}}"></p>
+{% endif %}

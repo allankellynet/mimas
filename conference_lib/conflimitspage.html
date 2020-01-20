@@ -1,0 +1,37 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Conference config</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Conference limits: {{ crrt_conf.name }}</h1>
+<p>
+		{% include "scaffold/topmenu.html" %}
+<hr/>
+    {% include "conference_lib/adminmenu.html" %}
+<form method="post">
+    <p>
+        <label>Max submissions:</label>
+        <input type="number" name="max_submissions" min="1" value="{{crrt_conf.max_submissions()}}" {{read_only}}>
+        <p>
+        <label>Max speakers and co-speakers:</label>
+        <input type="number" name="max_cospeakers" min="1" value="{{crrt_conf.max_cospeakers()}}" {{read_only}}>
+        Limit includes original submitter.</p>
+
+    <p><input type="submit" name="updateconfig" value="Submit config changes" {{read_only}}>
+    <input type="hidden" name="conf_key" value="{{conf_key.urlsafe()}}">
+</form>
+</div>
+</body>
+</html>

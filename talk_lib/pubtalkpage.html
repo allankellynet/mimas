@@ -1,0 +1,28 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Talk description</title>
+</head>
+<body>
+<div class="container-fluid">
+<h1>Talk: {{talk_details.title}}</h1>
+<a href="/speakerdir">Speakers directory</a>
+<hr>
+<p>Speaker: <a href="/publicspage?skey={{speaker.key.urlsafe()}}"><b>{{speaker.name}}</b></a>
+<p>
+{% include "talk_lib/talk_fragment.html" %}
+<br/>
+<a href="/speakerdir">Speakers directory</a>
+</div>
+</body>
+</html>

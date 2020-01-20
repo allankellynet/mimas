@@ -1,0 +1,86 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Assign volunteer reviewers</title>
+</head>
+
+<script language="javascript">
+function reject_button(safe_volunteer_key) {
+    if (document.getElementById(safe_volunteer_key+".reject").checked==true) {
+        document.getElementById(safe_volunteer_key+".round1").disabled = true
+        document.getElementById(safe_volunteer_key+".round1").checked = false
+        document.getElementById(safe_volunteer_key+".round2").disabled = true
+        document.getElementById(safe_volunteer_key+".round2").checked = false
+    } else {
+        document.getElementById(safe_volunteer_key+".round1").disabled = false
+        document.getElementById(safe_volunteer_key+".round2").disabled = false
+    }
+}
+</script>
+
+<body>
+<div class="container-fluid">
+
+	<h1>Reviewer volunteer revierers: {{crrt_conf.name}}</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr/>
+	{% include "conference_lib/adminmenu.html" %}
+
+    <p><strong>This is for bulk assignments only. It does not show current assignements and permissions.</strong></p>
+    <p>Use current status and edits use
+        <a href="permissionspage?conf={{conf_key.urlsafe()}}">conference permissions</a>
+        and
+        <a href="assigntracks?conf={{conf_key.urlsafe()}}">track asignment</a></p>
+    <p>Reviewers should volunteer using:
+        <a target=_blank href="https://{{home_url}}/volunteer?cf={{crrt_conf.shortname}}">
+            https://{{home_url}}/volunteer?cf={{crrt_conf.shortname}}</a>
+    </p>
+
+<form method="post">
+	<table border=1>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Tracks requested</th>
+        <th>Status</th>
+        <th>Action</th>
+        {% for v in volunteers: %}
+        <tr>
+            <td>{{v.name()}}</td>
+            <td>{{v.email()}}</td>
+            <td>{% for track in v.tracks(): %}
+                    <input type="checkbox" name="{{v.key.urlsafe()}}.{{track}}"/>{{tracks[track]}}<br/>
+                {% endfor %}
+            </td>
+            <td>{{v.accepted()}}</td>
+            <td><input type="checkbox"
+                       name="{{v.key.urlsafe()}}.reject"
+                       id="{{v.key.urlsafe()}}.reject"
+                       onclick="reject_button('{{v.key.urlsafe()}}')"/>Reject
+                <p><input type="checkbox"
+                          name="{{v.key.urlsafe()}}.round1"
+                          id="{{v.key.urlsafe()}}.round1"/>Assign round 1</p>
+                <p><input type="checkbox"
+                          name="{{v.key.urlsafe()}}.round2"
+                          id="{{v.key.urlsafe()}}.round2"/>Assign round 2</p>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br/>
+    Number of volunteers: {{ volunteer_count }}
+    <br/>
+    <input type="submit" value="Bulk assignment"/>
+   	<input type="hidden" name="conf_safe_key" value="{{conf_key.urlsafe()}}">
+</form>
+</div>
+</body>
+</html>

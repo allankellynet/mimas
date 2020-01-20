@@ -1,0 +1,47 @@
+# Mimas Agile on the Beach reviewer instructions
+
+1. Goto the Mimas submission system: 
+
+> http://mimas-aotb.appspot.com/
+
+2. Login with your Google account (Gmail address and standard password.) 
+
+The first time you login you will need to grant Google permission to access you account for this app. The Google login is only used for authentication and identification. Your access rights will have been set up for your Google address.
+
+3. The top menu bar has four options. To review submissions you must click on:
+
+> Reviewers home
+
+4. You will now have two new options:
+> Review submissions
+> Review summary
+
+During round 1 only the round 1 options will be available, when the conferences enters round 2 the round 1 options will be replaced with options for round 2.
+
+5. Choose review submissions to start reviewing 
+
+6. Submissions are sorted by track on the review submissions page. The tracks you have been assigned to can selected from the drop down list.
+
+7. To review the submission click on the title.  You will now see all the information submitted by the speaker - synopsis, bio and conference details.
+
+8. You can review as many submissions as you like in one go an return later to review more or to re-review those you have already scored. You can change your vote and comment at any time until the review process closes. Only the vote logged at the time the reviews closed is recorded. 
+
+9. For each submission please rank it from -3 to +3, where +3 is a submission you think really should be included on the programme and -3 is one you do not believe should be included.
+
+The aim of having zero as a neutral vote is so that any submission that is not reviewed is not penalised.
+
+You may also include a short comment about the submission.
+
+**Note:** anonymised votes and comments will be shared with submitters. While you are free to make derogatory comments ("This submission smells") such comments are not very constructive for speakers, please try to constructive comments (e.g. "Speak should present evidence that their suggested approach works.")
+
+9. Once you have voted click **Submit**, your vote will be logged and you will be returned the list of all submissions for the track. From here you can review the next submission, or change track or even log.
+
+10. The Review summary screen is also available. This screen allows you to see all votes and comments currently logged for a particular submission.
+
+Any problems please mail me: allan@allankelly.net
+
+The original aim was to complete reviewing by the 1 February. We've started a little late so this looks ambitious so we might slip but please do your best.
+
+Thanks
+
+allan

@@ -1,0 +1,82 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>New Scoring configuration page</title>
+</head>
+
+<script>
+function checkMaxMin() {
+    min_value = document.getElementById("min_vote_id").value;
+    max_value = document.getElementById("max_vote_id").value;
+    if (min_value > max_value) {
+        document.getElementById("min_vote_id").value = document.getElementById("max_vote_id").value
+    }
+}
+</script>
+
+<body>
+<div class="container-fluid">
+    <h1>New Scoring configuration page</h1>
+	{% include "scaffold/topmenu.html" %}
+
+    <form method="post">
+    <p>Conference: <b>{{crrt_conference.name}}</b>
+    <p>Review round: <b>{{review_round}} - {{review_config.name()}}</b>
+    <p/>
+        <p>Name speaker: <input type="checkbox" name="name_speaker"
+                                {% if review_config.is_speaker_named(): %}CHECKED{% endif %}>
+            (If not selected then reviews will be anonymous: name and bibliogrraphy will be withheld)</p>
+        <p/>
+    <p>Private comments allowed: <input type="checkbox" name="private_comments"
+                                        {% if review_config.private_comments(): %}
+                                            CHECKED
+                                        {% endif %}>
+        </p>
+    <p>Min vote: <input type="number" name="min_vote" id="min_vote_id"
+                        value="{{review_config.min_vote()}}" min=0 max="100"
+                        onchange="checkMaxMin()"/>
+    <p>Max vote: <input type="number" name="max_vote" id="max_vote_id"
+                        value="{{review_config.max_vote()}}" min=0 max="100"
+                        onchange="checkMaxMin()"/>
+
+    <table border="1">
+        <th>Track name</th>
+        <th>Review quota</th>
+        {% for track in tracks: %}
+        <tr>
+            <td>{{ conf_tracks[track] }}</td>
+            <td><input type="number" value="{{ tracks[track] }}" name="{{track}}" min="1" max="99"/></td>
+        {% endfor %}
+    </table>
+    <hr/>
+    <p><input type="submit" value="Update parameters" name="updateparams">
+    <input type="hidden" name="round_key" value="{{review_config.key.urlsafe()}}"/>
+    <hr/>
+    <h2>Review assignments</h2>
+        <table>
+        {% for track in tracks: %}
+            <tr><td colspan="2"><h3>{{conf_tracks[track]}}</h3></td></tr>
+            {% for reviewer in reviewers: %}
+                {% if crrt_conference.user_rights().is_track_reviewer(reviewer, track): %}
+                <tr><td>{{reviewer}}
+                    <td><input type="checkbox" name="{{track}}&{{reviewer}}"/> </td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        <tr><td><td><input type="submit" name="assignreviewers" value="Assign reviewers">(may take minutes)
+        </td></tr>
+        </table>
+    </form>
+</body>
+</html>

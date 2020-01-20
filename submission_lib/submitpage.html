@@ -1,0 +1,169 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html>
+{% include "scaffold/incbootstrap.html" %}
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Submit talk to conference</title>
+
+<script language="javascript">
+function setConference() {
+	key = document.getElementById("conferenceListId").value;
+    talk = document.getElementById("talk_key_id").value;
+    window.location = "/submit_page?conf=" + key + "&talk=" + talk;
+}
+
+function enableWithdraw() {
+	if (document.getElementById("enableWithdrawId").checked) {
+		document.getElementById("withdrawtalkId").disabled=false
+		document.getElementById("withdrawWarning").style.display = "block";
+	} else {
+		document.getElementById("withdrawtalkId").disabled=true
+		document.getElementById("withdrawWarning").style.display = "none";
+	}
+}
+
+{% include "scaffold/enablers.js" %}
+
+function enableEmailBoxs() {
+	enable_box('cospeakernameid1', 'cospeakeremailid1')
+	enable_box('cospeakernameid2', 'cospeakeremailid2')
+}
+
+function enable_submit(enabled) {
+	document.getElementById("submittalk_id").disabled = !document.getElementById("gdpr_policy_id").checked
+	document.getElementById("agree_message_id").hidden = document.getElementById("gdpr_policy_id").checked
+	document.getElementById("agreement_Needed_Id").hidden = document.getElementById("gdpr_policy_id").checked
+}
+</script>
+
+
+</head>
+
+<body onload="enableEmailBoxs()">
+<div class="container-fluid">
+<h1>Submit talk to conference</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr/>
+<form action="/submit_talk" method="post" id="submisson">
+	{% include "conference_lib/image_frag.html" %}
+    <table>
+        <tr><td>Talk title: <td>{{ talk.title }}</tr>
+        <tr><td>Conference:
+	            <td>{% if sub_key==None: %}
+					<select name="conference" id="conferenceListId" onchange="setConference()">
+                    		{% for c in available_conferences: %}
+                        		<option value="{{c.key.urlsafe()}}"
+                                        {% if c.name==crrt_conf.name %} selected {% endif %}
+                                        >{{ c.name }}
+                    		{% endfor %}
+					</select>
+					{% else %}
+						{{ sub_key.parent().get().name }}
+						{% if withdrawn: %}<b>Withdrawn</b>{%endif%}
+					{% endif %}
+				</td></tr>
+        <tr><td>Conference dates:<td>{{crrt_conf.dates}}</td></tr>
+		<tr><td>Maximum submissions:</td><td>{{crrt_conf.max_submissions()}} allowed</tr>
+		<tr><td>Submitted by:</td><td>{{submitter}}</td></tr>
+		<tr><td>Your submissions:</td><td>{{submissions_count}}
+				{% if submissions_count == crrt_conf.max_submissions() %}Limit reached{%endif%}
+			</tr>
+	    <tr><td>Submitted:</td>
+    	    <td>{{created.strftime("%a %b %d, %Y %H:%M")}} UTC</td>
+		</tr>
+    </table>
+
+	{% include "submission_lib/subm_entry_fragment.html" %}
+	<br>
+	<strong>Co-speakers</strong>
+    {% if cospeakers != []: %}
+    <ul>
+        {% for co in cospeakers: %}
+        <li>{{co.name}}: {{co.email}} -
+                {% if not co.profile_exists(): %}
+                    <b>No profile provided</b>
+                {% else %}
+                    <a href="/speakeremail?email={{co.email}}">Profile</a>
+                {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No co-speakers specified</p>
+    {% endif %}
+	{% if sub_key==None: %}
+		<p>Co-speakers can be added after submission</p>
+	{% else: %}
+		<a href="/cospeakerlist?sub={{sub_key.urlsafe()}}">Update co-speakers</a>
+	{% endif %}
+<br/>
+{% if crrt_conf.state() == "Open": %}
+{% if sub_key==None: %}
+	{% include "submission_lib/subm_disclaimer.html" %}
+	{% if submissions_count < crrt_conf.max_submissions() %}
+	<div id="agreement_Needed_Id">Please <b>click above</b> to accept the conference data policy before submitting.</div>
+		<input type="Submit" value="Submit talk to confernce" name="submittalk" id="submittalk_id" disabled/>
+	{% else %}
+		<p>Submission limit reached</p>
+	{% endif %}
+{% else: %}
+	{% if not(withdrawn) and is_submitter: %}
+		<input type="Submit" value="Update talk submission to conference" name="updatetalk" {{disabled}}>
+	{% endif %}
+{% endif %}
+{% else: %}
+	<p>Conference is not currently open for new submissions or submission revisions.</p>
+{% endif %}
+
+{% if sub_key!=None: %}
+	{% if not(withdrawn) %}
+		{% if is_submitter or change_authority: %}
+			<p>
+			<input type="checkbox" id="enableWithdrawId" value="Enable withdraw" onclick="enableWithdraw()">Enable withdraw
+			<div style="display:none;color:red" id="withdrawWarning"><b>Warning</b> Once a talk has been withdrawn it cannot be resubmitted.</div>
+			<input type="Submit" value="Withdraw talk submission to conference" id="withdrawtalkId" name="withdrawtalk" disabled>
+		{% endif %}
+		{% if change_authority: %}
+			<input type="submit" value="Submit authorised changes" name="authorisedChanges">
+		{% endif %}
+	{% endif %}
+
+<h2>Reviews</h2>
+{% if crrt_conf.comments_visible: %}
+	{% if review_count==0: %}
+		<p>There are currently no reviews available for your submissions.
+	{% else %}
+	<table>
+		<th>Round
+		<th>Score
+		<th>Comment
+		{% for r in reviews %}
+			<tr>
+				<td>{{r.round}}
+				<td align=center>{{r.score}}
+				<td>{{r.comment}}
+		{% endfor %}
+	</table>
+	{% endif %}
+{% else: %}
+	<p>Review comments are not currently available.
+	<p>They are normally shared when reviewing is complete.
+	<p>Please contact the conference organizer if you would like to know more.
+{% endif %}
+{% endif %}
+
+<input type="hidden" name="talk_key" id="talk_key_id" value={{talk_key.urlsafe()}}>
+<input type="hidden" name="conf_key" id="conf_key_id" value={{crrt_conf.key.urlsafe()}}>
+<input type="hidden" name="sub_key" id="sub_key_id" value={{sub_key_safe}}>
+<input type="hidden" name="next_page" value="{{next_page}}">
+</form>
+</div>
+</body>
+</html>

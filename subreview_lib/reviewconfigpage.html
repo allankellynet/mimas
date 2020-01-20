@@ -1,0 +1,62 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Review configuration</title>
+</head>
+<body>
+<div class="container-fluid">
+    <h1>Reviewer configuration: {{crrt_conference.name}}</h1>
+	{% include "scaffold/topmenu.html" %}
+   	{% include "conference_lib/adminmenu.html" %}
+
+    <form method="post">
+    <br/>
+    <p><label>Review round 1:</label>
+    <select name="round1reviews" {{creator_rights}}>
+    {% for i in review_options: %}
+        <option value="{{i}}"
+                {% if review_config.get_round_config(round=1).name()==i %}selected{%endif%}>
+            {{i}}
+        </option>
+    {% endfor %}</p>
+    </select>
+    <label>Review round 2:</label>
+    <select name="round2reviews" {{creator_rights}}>
+    {% for i in review_options: %}
+        <option value="{{i}}"
+                {% if review_config.get_round_config(round=2).name()==i %}selected{%endif%}>
+            {{i}}
+        </option>
+    {% endfor %}</p>
+    </select>
+    <p><input type="submit" name="reviewchoices" value="Set review types"/>
+    <hr/>
+
+    <p/>
+    <h3>Review round 1: {{review_config.get_round_config(round=1).name()}}</h3>
+    {% if review_config.get_round_config(round=1).has_config_options(): %}
+        <p><a href="{{review_config.get_round_config(round=1).config_page()}}?round=1">Round 1 configuration</a>
+    {% else: %}
+        <p>No configuration options for round 1
+    {% endif %}
+
+    <h3>Review round 2: {{review_config.get_round_config(round=2).name()}}</h3>
+    {% if review_config.get_round_config(round=2).has_config_options(): %}
+        <p><a href="{{review_config.get_round_config(round=2).config_page()}}?round=2">Round 2 configuration</a>
+    {% else: %}
+        <p>No configuration options for round 2
+    {% endif %}
+    </form>
+</div>
+</body>
+</html>

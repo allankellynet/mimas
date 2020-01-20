@@ -1,0 +1,55 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<html>
+{% include "scaffold/incbootstrap.html" %}
+
+<script language="javascript">
+function setTrack() {
+	track = document.getElementById("trackListId").value;
+	window.location = "/classicreview?track=" + track + "&round={{review_round}}"
+}
+</script>
+
+<body>
+<div class="container-fluid">
+
+	<h1>Review submissions - round {{review_round}}</h1>
+	<p>
+    {% include "scaffold/topmenu.html" %}
+<hr/>
+	<h2>{{selected_conf}}</h2>
+<form name="reviews" method="post">
+	<select id="trackListId" name="track" onchange="setTrack()">
+		{% for t in track_objects: %}
+			<option name="{{t}}" value="{{t}}"
+				{% if t==selected_track %} selected {% endif %}
+				>{{track_objects[t].full_text_m}}
+		{% endfor %}
+	</select>
+	Available slots: {{track_slots}}
+	<br/><br/>
+	<table border=1>
+		<th>Submitter
+		<th>Title
+		<th>Duration
+		<th>Your vote
+		{% for r in conference_submissions: %}
+			<tr><td>{{ r.submitter() }}
+				<td><a href="/submissionreviewpage?sub={{r.key.urlsafe()}}&round={{review_round}}">{{ r.title() }}</a>
+				<td>{{ durations[r.duration]}}
+				<td align="center">{{ r.reviewer_voting_score(useremail,review_round) }}
+		{% endfor %}
+	</table>
+	
+	<br/>Total submissions to date: <b>{{ count_submissions }}</b>.
+	<input type="hidden" name="review_round" value="{{review_round}}"/>
+</form>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,92 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<h2>Conference specifics</h2>
+<table>
+    <tr>
+        <td>Suggested track:
+        <td><select name="track" {{disabled}}>
+            {% for t in crrt_conf.track_options().keys(): %}
+            <option value="{{t}}"
+                    {% if t==selected_track %} selected {% endif %}
+            >{{crrt_conf.track_options()[t]}}
+            </option>
+            {% endfor %}
+        </select>
+        </td>
+    </tr>
+
+    <tr>
+        <td>Session length:
+        <td><select name="duration" {{disabled}}>
+        {% for d in crrt_conf.duration_options().keys(): %}
+        <option value="{{d}}"
+                {% if d==selected_duration %} selected {% endif %}
+        >{{crrt_conf.duration_options()[d]}}
+        </option>
+        {% endfor %}
+        </select>
+    </tr>
+
+    <tr>
+        <td>Session format:</td>
+        <td><select name="delivery_format" {{disabled}}>
+        {% for f in crrt_conf.delivery_format_options().keys(): %}
+        <option value="{{f}}"
+                {% if f==selected_format %} selected {% endif %}
+        >{{crrt_conf.delivery_format_options()[f]}}
+        </option>
+        {% endfor %}
+        </select>
+    </tr>
+
+    {% if crrt_conf.pays_expenses() %}
+    <tr>
+        <td>Expense expectations:</td>
+        <td><select name="expenses" {{disabled}}>
+        {% for f in crrt_conf.expenses_options().keys(): %}
+        <option value="{{f}}"
+                {% if f==selected_expenses %} selected {% endif %}
+        >{{crrt_conf.expenses_options()[f]}}
+        </option>
+        {% endfor %}
+        </select>
+    </tr>
+    {% endif %}
+
+    <tr>
+        <td>Agree conference privacy policy:
+            <p><a target="_blank" href="{{crrt_conf.gdpr_address()}}">Full policy statement</a></p>
+        </td>
+        <td><input type="checkbox" name="gdpr_policy" id="gdpr_policy_id" value="Agree" {{privacy_agreement_lock}}
+                   {% if agree_privacy==True: %} checked {%endif%}
+                    onchange="enable_submit()">
+            <div id="agree_message_id"><b>Unfortunately submissions without this agreement cannot be accepted.</b></div></td>
+    </tr>
+
+    <br/>
+    {% for question in conf_questions: %}
+        <tr>
+            <td>{{question.question_text()}}</td>
+            <td>{% if question.is_free_text() %}
+                    <input type="text" length=100 maxlength="256" name="{{question.shortname()}}"
+                           value="{{conf_answers[question.key].answer()}}"
+                           {{disabled}}>
+                {% else %}
+                    <select name="{{question.shortname()}}" {{disabled}}>
+                    {% for f in question.answer_options(): %}
+                        <option value="{{f}}"
+                        {% if f==   conf_answers[question.key].answer() %} selected {% endif %}
+                        >{{f}}
+                    </option>
+                    {% endfor %}
+                    </select>
+                {% endif %}
+            </td>
+    {% endfor %}
+
+</table>

@@ -1,0 +1,68 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Conferece</title>
+</head>
+
+<body>
+<div class="container-fluid">
+
+<h1>Conference: {{ conference.name }}</h1>
+    {% include "scaffold/topmenu.html" %}
+<hr/>
+        {% include "conference_lib/adminmenu.html" %}
+
+<p>Date: {{ conference.dates }}
+<p>State: {{ conference.state() }}
+
+<form name="confstate" method="post">
+
+<p><b>Options</b>
+<p>
+    <input type="submit" name="OpenSubmissions" value="Open conference for submissions"
+    {% if conference.state() == "Open": %}
+       disabled
+    {% endif %} >
+<p>
+    <input type="submit" name="CloseSubmissions" value="Close conference submissions"
+    {% if conference.state() == "Closed": %}
+       disabled
+    {% endif %} >
+<p>
+    <input type="submit" name="Round1Review" value="Start round 1 reviews"
+    {% if conference.state() == "Round1Reviews": %}
+       disabled
+    {% endif %} >
+<p>
+    <input type="submit" name="Round2Review" value="Start round 2 reviews"
+    {% if conference.state() == "Round2Reviews": %}
+       disabled
+    {% endif %} >
+
+<p>
+    <input type="submit" name="CloseRound2" value="Close round 2 reviews and finalise lineup"
+    {% if conference.state() != "Round2Reviews": %}
+       disabled
+    {% endif %} >
+
+    <p>Anonymous review comments visible to submitters:
+        {% if (conference.comments_visible==True): %} <b>Yes  </b>
+        <input type="submit" name="HideComments" value="Hide comments">
+        {% else %} <b>No  </b>
+        <input type="submit" name="ShowComments" value="Show comments">
+        {% endif %}
+
+    <input type="hidden" name="safe_key" value="{{conf_key.urlsafe()}}">
+</form>
+</div
+</body>
+</html>

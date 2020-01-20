@@ -1,0 +1,149 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Ranking - round {{review_round}}</title>
+</head>
+
+<body onload="validateRanks();">
+<div class="container-fluid">
+
+<script language="javascript">
+
+function setTrack() {
+	track = document.getElementById("trackListId").value;
+	window.location = "/rankingreview?round={{review_round}}&track=" + track
+}
+
+function enable_voting_buttons(enabled) {
+	document.getElementById("VoteCont").disabled = !enabled
+	document.getElementById("VoteExit").disabled = !enabled
+}
+
+function hide_dup_msg(key) {
+	let msg_id = "dup_" + key;
+	document.getElementById(msg_id).style.display = "none";
+}
+
+function show_dup_msg(key) {
+	let msg_id = "dup_" + key;
+	document.getElementById(msg_id).style.display = "block";
+}
+
+function hide_zero_msg(key) {
+	let msg_id = "zero_" + key;
+	document.getElementById(msg_id).style.display = "none";
+}
+
+function show_zero_msg(key) {
+	let msg_id = "zero_" + key;
+	document.getElementById(msg_id).style.display = "block";
+}
+
+function validateRanks() {
+	let none_duplicates = new Set()
+	for (let s of submissions) {
+		none_duplicates.add(s);
+	}
+
+	let zero_ranked_submissions = false
+	let rankings = new Map();
+	for (let s of submissions) {
+		let rank = document.getElementById(s).value;
+		if (rankings.has(rank)) {
+			show_dup_msg(s);
+			show_dup_msg(rankings.get(rank));
+			none_duplicates.delete(s);
+			none_duplicates.delete(rankings.get(rank));
+		}
+		else {
+			rankings.set(rank, s)
+		}
+
+		if (rank==0) {
+			show_zero_msg(s);
+			zero_ranked_submissions = true
+		} else {
+			hide_zero_msg(s);
+		}
+	}
+
+	for (let unique of none_duplicates) {
+		hide_dup_msg(unique);
+	}
+
+	enable_voting_buttons(!zero_ranked_submissions						// nothing ranked zero
+					&& (none_duplicates.size>0) 						// no duplicated
+					&& (none_duplicates.size === submissions.length));	// all ranked
+}
+</script>
+
+<h1>Review submissions - round {{review_round}}</h1>
+	<h2>{{selected_conf}}</h2>
+
+<a href="/reviewers">Review home</a>
+<hr>
+<form name="reviews" method="post">
+	<select id="trackListId" name="track" onchange="setTrack()">
+		{% for t in review_tracks: %}
+			<option name="{{t}}" value="{{t}}"
+				{% if t==selected_track %} selected {% endif %}
+				>{{track_objects[t].full_text_m}}
+		{% endfor %}
+	</select>
+	Available slots: {{track_slots}}
+	<br/><br/>
+	<script language="javascript">
+		const submissions = []
+	</script>
+
+	<table border=1>
+		<th>Submitter
+		<th>Title
+		<th>Duration
+		<th>Your rank
+		<th>Comments
+		{% for r in conference_submissions: %}
+			<script language="javascript">
+				submissions.push("{{r.key.urlsafe()}}")
+			</script>
+			<tr><td>{{ r.submitter() }}
+				<td><a href="/review_details_page?k={{r.key.urlsafe()}}&readonly" target="_blank">{{ r.title() }}</a>
+				<td>{{ crrt_conf.duration_options()[r.duration] }}
+				<td align="center">
+					<input type="number" min="1" max="{{count_submissions}}"
+						   	value="{{ vote_summary.get_vote_score(r.key.urlsafe()) }}"
+						   	name="{{r.key.urlsafe()}}"
+							id="{{r.key.urlsafe()}}"
+							onchange="validateRanks()">
+					<div style="display:none;color:red" id="dup_{{r.key.urlsafe()}}">Duplicate</div>
+					<div style="display:none;color:red" id="zero_{{r.key.urlsafe()}}">Invalid rank</div>
+				<td>Shared:
+					<textarea rows="2" cols="50" maxlength=100
+						   name="comment_{{r.key.urlsafe()}}">{{vote_summary.get_shared_comment(r.key.urlsafe()) }}</textarea>
+				<p>Private:
+					<textarea rows="1" cols="50" maxlength=100
+						   name="private_comment_{{r.key.urlsafe()}}">{{vote_summary.get_private_comment(r.key.urlsafe())}}</textarea>
+				</td>
+		{% endfor %}
+	</table>
+
+	<p>
+	<input value="Vote and refresh" type="submit" id="VoteCont" name="VoteCont" disabled>
+	<input value="Vote and exit" type="submit" id="VoteExit" name="VoteExit" disabled>
+	<p>There are <b>{{ count_submissions }}</b> submission(s) in total to date.
+	<p>Note: you may change you vote at any time upto the close of the round.
+	<p>Early votes will be saved and can be revised.
+	<input type="hidden" name="review_round" value="{{review_round}}"/>
+</form>
+</div>
+</body>
+</html>

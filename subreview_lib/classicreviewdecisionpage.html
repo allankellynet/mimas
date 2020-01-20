@@ -1,0 +1,97 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<html>
+{% include "scaffold/incbootstrap.html" %}
+
+<script language="javascript">
+function setTrack() {
+	track = document.getElementById("trackListId").value;
+	window.location = "/classic_review_decisions?track=" + track + "&round={{review_round}}"
+}
+</script>
+
+<body>
+<div class="container-fluid">
+
+	<h1>Review Summary - round {{review_round}}</h1>
+	<p>
+    {% include "scaffold/topmenu.html" %}
+	<hr>
+	<h2>Conference: {{crrt_conf.name}}</h2>
+
+<form name="classic_review_decisionsary" method="post">
+	<b>Track: </b>
+	<select name="tracklist"  id="trackListId" onchange="setTrack()">
+		{% for t in track_objects: %}
+			<option value="{{t}}"
+				{% if t==crrt_track %} selected {% endif %}
+				>{{track_objects[t].full_text_m}}
+		{% endfor %}
+	</select>
+	Available slots: {{track_slots}}
+	<br/>
+    {% if decision_maker %} <h4>Decision authority</h4>
+    {% else %} <h4>Read only permission</h4> {% endif %}
+	<table>
+		<th>Decision
+		<th>Count
+		{% for d in decisions: %}
+			<tr><td>{{d}}<td>{{decisions[d]}}
+		{% endfor %}
+		<tr><td><b>Total submissions: </b>
+			<td>{{ submissions_len }}
+	</table>
+	<hr/>
+	<table border=1>
+		<th>Speaker
+		<th>Title
+		<th>Duration
+		<th>Votes
+		<th>Scores
+		<th><a href="/classic_review_decisions?track={{crrt_track}}&round={{review_round}}&total">Total score</a>
+		<th><a href="/classic_review_decisions?track={{crrt_track}}&round={{review_round}}&mean">Mean</a>
+		<th>Decision
+		{% for sub in submissions: %}
+		<tr>
+			<td>{{sub.submitter()}}
+			<td><a href="/review_details_page?k={{sub.key.urlsafe()}}">{{sub.title()}}</a>
+			<td>{{crrt_conf.duration_options()[sub.duration]}}
+			<td><b>{{sub.get_scores(review_round).votes}}</b>
+			<td>{{sub.get_scores(review_round).scores}}
+			<td>{{sub.get_scores(review_round).total_score}}
+			<td>{{sub.get_scores(review_round).mean_score}}</td>
+			<td><select name="{{sub.key.urlsafe()}}" {% if decision_maker == False %} disabled {% endif %}>
+				<option value="No decision"
+					{% if sub.review_decision(review_round)=="" %} selected {% endif %}
+					>No decision</option>
+				<option value="Decline"
+					{% if sub.review_decision(review_round)=="Decline" %} selected {% endif %}
+					>Decline</option>
+				{% if review_round==1: %}
+					<option value="Round2"
+						{% if sub.review_decision(1)=="Round2" %} selected {% endif %}
+						>Shortlist (Next round)</option>
+				{% endif %}
+				{% if review_round==2: %}
+					<option value="Accept"
+						{% if sub.review_decision(2)=="Accept" %} selected {% endif %}
+						>Accept</option>
+				{% endif %}
+			</select>
+		{% endfor %}
+	</table>
+	<br/>
+	{% if decision_maker: %}
+		<input type="submit" name="SubmitDecision" value="Submit decisions" >
+		<input type="submit" name="DeclineNoDecisions" value="Decline 'No decision' submissions" >
+	{% endif %}
+		<input type="hidden" name="review_round" value="{{review_round}}"/>
+</from>
+<div>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<html>
+<head>
+	{% include "scaffold/incbootstrap.html" %}
+	<title>Conference system administration</title>
+</head>
+
+<script language="javascript">
+function enable_submit_conf_button() {
+	if (document.getElementById("newconfnameid").value == ""
+		|| document.getElementById("datesid").value == ""
+		|| document.getElementById("shortnameid").value == ""
+		|| document.getElementById("contact_emailId").value == ""
+		|| document.getElementById("websiteId").value == ""
+		|| document.getElementById("cfpId").value == ""
+		|| document.getElementById("gdprId").value == "") {
+		if (document.getElementById("NewConfId") != null) {
+			document.getElementById("NewConfId").disabled = true
+		}
+		if (document.getElementById("UpdateConfId") != null) {
+			document.getElementById("UpdateConfId").disabled = true
+		}
+	} else {
+		if (document.getElementById("NewConfId") != null) {
+			document.getElementById("NewConfId").disabled = false
+		}
+		if (document.getElementById("UpdateConfId") != null) {
+			document.getElementById("UpdateConfId").disabled = false
+		}
+	}
+}
+</script>
+
+<style>
+img {
+    float: right;
+    margin: 0 0 10px 10px;
+}
+</style>
+
+<body onload="enable_submit_conf_button">
+<div class="container-fluid">
+	<h1>Conference Administration: {{crrt_conf.name}}</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr/>
+	{% include "conference_lib/adminmenu.html" %}
+	<form name="conferences" method="post" enctype="multipart/form-data">
+		{% if conf_key==None: %}
+			<h2>Add new conference</h2>
+		{% else %}
+			<h2>Edit conference</h2>
+		<p>Conference is currently: <b>{{crrt_conf.state()}}</b>
+		    {% if crrt_conf.user_rights().has_permission(usr_email, "ChangeConferenceState"): %}
+		    	- <a href="/confstate_page?conf={{conf_key.urlsafe()}}">Change state</a> (Open/Close, Start/End reviews, etc.)
+		    {% endif %}
+		    {% include "conference_lib/image_frag.html" %}
+		{% endif %}
+
+	<p><lable>Name:</lable>
+		<input type="text"
+			   name="newconfname"
+			   id="newconfnameid"
+			   maxsize=99
+			   value="{{crrt_conf.name}}"
+			   oninput="enable_submit_conf_button()"
+			   {{creator_rights}}>(essential)
+	<p><lable>Dates:</lable>
+		<input type="text"
+			   name="dates"
+			   id="datesid"
+			   maxsize=32
+			   value="{{crrt_conf.conf_dates}}"
+			   oninput="enable_submit_conf_button()"
+			   {{creator_rights}}>(essential)
+	<p>Image: {% if not(crrt_conf.has_image()): %}No image suppplied{%endif%}
+		<input type="file" name="confimage">
+	<p><lable>Shortname:</lable>
+		<input type="text"
+			   name="shortname"
+			   id="shortnameid"
+			   maxsize=8
+			   value="{{crrt_conf.shortname}}"
+			   oninput="enable_submit_conf_button()"
+			   {{creator_rights}}>(essential, 8 characters maximum, no punctuation)
+		{% if crrt_conf.shortname != "": %}
+			<p>Conference welcome page: <a target=_blank
+										   	href="https://{{home_url}}/welcome?cf={{crrt_conf.shortname}}">
+											https://{{home_url}}/welcome?cf={{crrt_conf.shortname}}</a>
+		{% endif %}
+    <p>
+        <label>Contact address:</label>
+        <input type="email" name="contact_email" id="contact_emailId" value="{{crrt_conf.contact_email()}}" oninput="enable_submit_conf_button()">
+    <p>Note: this e-mail address is used as the <b>from</b> address in all mail sent.</p>
+	<p><lable>Website:</lable>
+		<input type="url"
+			   name="website" id="websiteId"
+			   maxsize=64
+			   value="{{crrt_conf.website()}}"
+			   oninput="enable_submit_conf_button()"
+			   {{creator_rights}}>
+	<p><lable>Call for paper URL:</lable>
+		<input type="url"
+			   name="cfp" id="cfpId"
+			   maxsize=64
+			   value="{{crrt_conf.cfp_address()}}"
+			   oninput="enable_submit_conf_button()"
+			   {{creator_rights}}>
+	<p><lable>Privacy statement:</lable>
+		<input type="url"
+			   name="gdpr" id="gdprId"
+			   maxsize=64
+			   value="{{crrt_conf.gdpr_address()}}"
+			   oninput="enable_submit_conf_button()"
+			   {{creator_rights}}> URL to conference policy statement
+
+   		<p>
+		{% if conf_key==None: %}
+			<input type="submit" name="SubmitNewConf" id="NewConfId" value="Submit new conference" disabled>
+		{% else %}
+			<input type="submit" name="UpdateConf" id="UpdateConfId" value="Update conference" {{creator_rights}}>
+			<input type="submit" name="DeleteConf" id="DeleteConfId" value="Delete this conference" {{creator_rights}}>
+    		<input type="hidden" name="conf_safekey" value="{{conf_key.urlsafe()}}">
+		{% endif %}
+
+	</form>
+</div>
+</body>
+</html>
+

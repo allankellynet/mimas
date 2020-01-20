@@ -1,0 +1,53 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Extra speaker details</title>
+</head>
+{% include "scaffold/incbootstrap.html" %}
+l" %}
+
+<body>
+
+<div class="container-fluid">
+<h1>Extra speaker details</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+    <form method="post">
+    <table border="1">
+        <th></th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Created</th>
+        <th>Deleted</th>
+        <th>Cospeaker</th>
+        <th>Talks</th>
+        {% for speaker in speakers: %}
+            <tr>
+                <td><input type="checkbox" name="selectedSpeakers" value="{{speaker.key.urlsafe()}}"></td>
+                <td>{{speaker.name}}</td>
+                <td>{{speaker.email}}</td>
+                <td>{{speaker.created_date}}</td>
+                <td>{{speaker.is_zero_deleted()}}</td>
+                <td>{{is_cospeaker_func(speaker.email)}}</td>
+                <td>
+                    {% for t in talks[speaker.key]: %}
+                        <p>{{t.title}} ({{t.created}})</p>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br/>
+    <input type="submit" name="deleteSpeakers" value="Delete selected speakers" disabled>
+   </form>
+</div>
+</body>
+</html>

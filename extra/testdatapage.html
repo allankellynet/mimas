@@ -1,0 +1,44 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+
+{% include "scaffold/incbootstrap.html" %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test data</title>
+</head>
+
+<body>
+<div class="container-fluid">
+
+<h1>Mimas Test data</h1>
+<p>
+    {% include "scaffold/topmenu.html" %}
+<hr>
+<h2>Do not share this page</h2>
+    Current conference set to: {{ conference.name }}
+    <hr/>
+    <p><a href="/testdata?test=EmptyConf">Create Empty conference</a>
+    <p><a href="/testdata?test=TestCon2019">Create TestCon2019 with test data</a>
+<form method="post">
+    {% if conference!=None: %}
+    <br/>
+    <p><a href="/testdata?test=DefaultData">Add default setup data to current conference</a>
+    <p><a href="/testdata?test=StandardData">Add setup and submissions to current conference</a>
+    <p><a href="/testdata?test=MoreSubs">More speakers & submissions current conference</a>
+    <p>Add <input type="number" name="how_many"
+              value="99" min="1" max="200">
+        <input type="submit" name="LotsSubs" value="speakers & submissions across tracks"</input> in current conference"
+    {% endif %}
+    <p><a href="/testdata?test=DeleteData">Delete common test data from current conference</a>
+</form>
+</div>
+</body>
+</html>
+

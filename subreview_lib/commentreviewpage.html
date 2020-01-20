@@ -1,0 +1,55 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Comment Review page</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Comment review</h1>
+{% include "scaffold/topmenu.html" %}
+<hr>
+<form method="post">
+<input type="submit" name="generatecommentreprt" value="Generate new comment report">
+{% if comment_report == None %}
+    <p>No current comment report</p>
+{% else %}
+<p>Report generated: {{comment_report.created}}.</p>
+<table border="1">
+    {% if not(comment_report.has_comments): %}
+        <p>No comments.</p>
+    {% endif %}
+    {% for sub in comment_report.comments %}
+    <tr>
+        <td>{{sub.get().title()}}</td>
+        <td>
+            <table>
+                {% for vote in comment_report.comments[sub]: %}
+                    <tr><td><input type="checkbox" name="chosen" value="{{vote.urlsafe()}}"</td>
+                        <td>{{vote.get().comment}}</td>
+                        <td>{{vote.get().round}}({{vote.get().reviewer}})</td></tr>
+                {% endfor %}
+            </table>
+        </td>
+    </tr>
+    {% endfor %}
+{% endif %}
+
+
+</table>
+    <p>
+    <input type="submit" name="deleteChosen" value="Delete chosen comments">
+    <input type="hidden" name="conf_key" value="{{conf_key}}">
+</form>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<html>
+{% include "scaffold/incbootstrap.html" %}
+<script language="javascript">
+function storeEmail(email) {
+	document.getElementById("reviewerToDelete").value = email
+}
+</script>
+
+<body>
+<div class="container-fluid">
+
+	<h1>Reviewer track assignments: {{crrt_conf.name}}</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr/>
+	{% include "conference_lib/adminmenu.html" %}
+
+<form name="confadmins" method="post">
+	<table border=1>
+		<th>Email
+		<th>Assigned tracks
+		<th>
+		{% for reviewer in rights.list_all_reviewers(): %}
+			<tr><td><a href="/assigntracks?reviewer={{reviewer}}&conf={{crrt_conf.key.urlsafe()}}">{{reviewer}}</a>
+				<td>{{ crrt_conf.tracks_string(rights.track_assignments(reviewer)) }}
+				<td><input type="submit" name="remove_reviewer" value="Delete" onclick="storeEmail('{{reviewer}}')"/>
+		{% endfor %}
+	</table>
+	
+	<br/>
+	<p><lable>Reviewer:</lable><input type="email" name="new_reviewer_email" maxsize=99 value="{{reviewer}}" readonly/>
+		<p><i>Review permissions must be granted before reviewers can be assigned to tracks.</i></p>
+		{% for t in tracks.keys(): %}
+			<p><input type="checkbox" name="{{t}}"
+				{% if crrt_conf.user_rights().is_track_reviewer(reviewer, t): %}
+					checked
+	            {% endif %}
+				/>{{tracks[t]}}</p>
+		{% endfor %}
+	<p><input type="submit" name="SubmitReviewer" value="Update reviewer tracks">
+	<input type="hidden" id="reviewerToDelete" name="reviewerToDelete" value="empty"/>
+	<input type="hidden" name="conf_safe_key" value="{{conf_key.urlsafe()}}">
+	<input type="hidden" name="reviewer" value="{{reviewer}}">
+</form>
+</div>
+</body>
+</html>

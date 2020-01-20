@@ -1,0 +1,36 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Single submit thank you</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>{{crrt_conf.name}}</h1>
+    {% if sub_key=="NoKey": %}
+        <h2>Sorry, submission has not been accepted</h2>
+    {% else %}
+        <h2>Thank you</h2>
+        Now you can <a href="/cospeakerlist?sub={{sub_key}}">add co-speakers</a>
+    {% endif %}
+
+<br/><br/>Please note:
+<ul>
+{% for msg in messages: %}
+    <li> {{ msg }}
+{% endfor %}
+</ul>
+<p>
+<p>For anything else please visit the <a href="/">Main Mimas submission system</a>
+</div>
+</body>
+</html>

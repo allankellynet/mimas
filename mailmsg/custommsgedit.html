@@ -1,0 +1,45 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit custom message</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Edit messages</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+
+<form method="post">
+    <label>Name:</label>
+    <input type="text" maxlength="64" name="MsgName" value="{{message.name()}}">
+    <br/>
+    <label>Subject line:</label>
+    <input type="text" maxlength="256" name="SubjectLine" value="{{message.subject()}}">
+    <br/>
+    <label>Message:</label>
+    <textarea name="Message" rows=16 cols=100 maxlength="10000">{{message.message()}}</textarea>
+
+    <br/>
+    {% if new_msg: %}
+        <input type="submit" name="submitmsg" value="Submit message">
+    {% else %}
+        <input type="submit" name="updatemsg" value="Update message">
+    {% endif %}
+    <input type="hidden" name="conf_key" value="{{conf_key}}">
+    <input type="hidden" name="msg_key" value="{{msg_key}}"
+</form>
+{% include "mailmsg/availfields_frag.html" %}
+</div>
+</body>
+</html>

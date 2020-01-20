@@ -1,0 +1,54 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html>
+{% include "scaffold/incbootstrap.html" %}
+{% include "scaffold/enable_button_box.html" %}
+
+<script language="JavaScript">
+function enable_save() {
+	if (document.getElementById("titleid").value == "") {
+		document.getElementById("savetalkid").disabled = true;
+		document.getElementById("savetalktags").disabled = true;
+	} else {
+		document.getElementById("savetalkid").disabled = false;
+		document.getElementById("savetalktagsid").disabled = false;
+	}
+}
+</script>
+
+<body>
+<div class="container-fluid">
+
+<h1>Talk page</h1>
+{% include "scaffold/topmenu.html" %}
+<form method="post" id="submisson">
+	
+{% include "talk_lib/talk_fragment.html" %}
+	<p><b>Note</b>: talks are listed on speaker profiles so speaker settings must be set for directory listing too.
+	<p>Check <a href="/speaker">speaker profile settings</a> here.</p>
+<p>
+	<input type="Submit" value="Save (without submitting)" name="savetalk" id="savetalkid"
+		{% if is_new: %} disabled {% endif %}>
+	<input type="Submit" value="Save (without submitting) & edit tags" name="savetalktags" id="savetalktagsid"
+		{% if is_new: %} disabled {% endif %}>
+	<p>
+	<a href="/speakermain">Cancel without saving</a>
+	<p>
+	{% if not is_new: %}
+		<input type="Submit" value="Delete talk" id="deletetalkid" name="deletetalk" disabled>
+		<p>Enable delete button	(yes I really want to delete this talk):
+		<input type="checkbox" name="enabledelete" id="deletetoggleid" value="enabledelete"
+			   onclick="enable_button_box('deletetoggleid', 'deletetalkid')">{% else: %}
+	{% endif %}
+	<input type="hidden" value="{{talk_key}}" name="talk_key">
+</form>
+
+</div>
+</body>
+</html>

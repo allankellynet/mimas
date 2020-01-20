@@ -1,0 +1,35 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Simple submission page 2 of 3: Talk details</title>
+</head>
+<body>
+<div class="container-fluid">
+{% include "conference_lib/image_frag.html" %}
+<h1>Simple submission page 2 of 3: Talk details</h1>
+    <p>Submission to: <strong>{{crrt_conf.name}}</strong>
+    <p>Submitter: {{speaker.name}} at {{speaker.email}}</p>
+<ol>
+    <li>Done: Using this page you can create a speaker profile. (If you have used this system before you existing details will be shown.)
+    <li><strong>Next you will be asked to give details of your talk.</strong>
+    <li>Finally you can sumit the talk to {{ crrt_conf.name }}.
+</ol>
+<form method="post">
+    <hr>
+    {% include "talk_lib/talk_fragment.html" %}
+    <hr>
+    <input type="submit" name="submit_talk" value="Save talk for submission">
+    <input type="hidden" name="speaker_key" value="{{speaker.key.urlsafe()}}"/>
+</form>
+</div>
+</body>
+</html>

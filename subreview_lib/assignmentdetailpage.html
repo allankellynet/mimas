@@ -1,0 +1,59 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment details</title>
+</head>
+
+<script>
+function toggleAll() {
+    status = document.getElementById("selectAll").checked
+    elements = document.getElementsByName("select_for_removal")
+    for (i=0; i<elements.length; i++) {
+        elements[i].checked = document.getElementById("selectAll").checked
+    }
+}
+</script>
+
+<body>
+<div class="container-fluid">
+
+    <h1>Submissions assigned to reviewer</h1>
+    	{% include "scaffold/topmenu.html" %}
+    <hr>
+    <p>Reviewer: {{ reviewer }}
+    <p>Round: {{ review_round }}
+    <form method="post">
+        <table border="1">
+            <th><input type="checkbox" id="selectAll" onchange="toggleAll()"></th>
+            <th>Submitter</th>
+            <th>Title</th>
+            <th>Track</th>
+            {% for sub in subs_assignments: %}
+                <tr>
+                    <td><input type="checkbox" name="select_for_removal" value="{{sub.urlsafe()}}"></td>
+                    <td>{{sub.get().submitter()}}</td>
+                    <td>{{sub.get().title()}}</td>
+                    <td>{{tracks[sub.get().track]}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <input type="hidden" value="{{review_round}}" name="review_round"/>
+        <input type="hidden" value="{{reviewer}}" name="reviewer"/>
+        <p>
+        <input type="submit" name="Remove" value="Remove selected assignments"/>
+    </form>
+    <p>
+    <a href="/votingrecordspage?round={{review_round}}">Back to assignments and votes by reviewer</a>
+</div>
+</body>
+</html>

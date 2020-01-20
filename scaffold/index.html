@@ -1,0 +1,43 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<html>
+{% include "scaffold/incbootstrap.html" %}
+<body>
+<div class="container-fluid">
+
+<h1>Mimas</h1>
+<h2>Conference submission and review system</h2>
+<b>Please send feedback to:</b> allan@allankelly.net
+
+<p>
+    {% include "scaffold/topmenu.html" %}
+<hr>
+
+<b>Welcome, {{ name }} ({{email}})</b>
+<p>
+{% if crrt_conference_key == None: %}
+    No conference selected.
+{% else %}
+    Conference selected: {{ crrt_conference_key.get().name }}
+{% endif %}
+<p><a href="/chooseconf">Select conference</a>
+
+<h3>Common actions</h3>
+<p>
+    If you wish to register as a speaker or submit a talk please goto <a href="/speakermain">Speakers home</a>
+<p>
+    If you wish to create a conference or change an existing conference please goto <a href="/chooseconf">Conference creation & admin</a>
+<p>
+    If you are a reviewer for a conference please goto <a href="/reviewers">Reviewers home</a>
+
+<p>Created by <a href="https://www.allankellyassociates.co.uk/">Allan Kelly Associates</a>.
+<br>
+<b><a target=_blank href="static/privacy.html">Privacy policy</a></b>
+</div>
+</body>
+</html>

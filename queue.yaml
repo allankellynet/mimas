@@ -1,0 +1,12 @@
+# Limit default queue to one operation at a time
+# Because: assigning reviewers to submissions should not run in parallel
+#   if run in parallel the reviewers will get the same submissions
+#   on local dev environment this doesn't happen
+#   but in cloud multiple tasks do get run together
+#
+queue:
+- name: default
+  max_concurrent_requests: 1
+  rate: 1/s
+
+

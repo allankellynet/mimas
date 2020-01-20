@@ -1,0 +1,37 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<html>
+{% include "scaffold/incbootstrap.html" %}
+	<h1>Talks and submission status</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+<body>
+<div class="container-fluid">
+
+<b>User: </b>{{ username }}
+<p><a href="/talk_submission">New talk</a>
+<p>
+<form action="/statusupdate" method="post" id="status">
+<table border="1">
+	<tr>	<th>Title
+			<th>Options
+			<th>Submitted to</TH></tr>
+	{% for t in talks %}
+		<tr><td><a href="/talk_submission?talk={{ t.key.urlsafe() }}">{{ t.title }}</a>
+			<td><a href="/submit_page?talk={{t.key.urlsafe()}}">Submit</a>
+			<td>{% for conf in conf_submits(t.key) %}
+					<p><a href="/submit_page?sub={{submit_key(t.key,conf).urlsafe()}}">{{conf}}</a></p>
+				{% endfor %}
+			</td>
+	{% endfor %}
+</table>
+
+</form>
+</div>
+</body>
+</html>

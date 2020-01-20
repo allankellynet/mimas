@@ -1,0 +1,40 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Expenses report</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Expenses report</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+
+* <a href="/expensesreportpage?conf={{conference.key.urlsafe()}}&status=All">All submissions</a>
+* <a href="/expensesreportpage?conf={{conference.key.urlsafe()}}&status=AcceptAll">Accepted only</a>
+* <a href="/expensesreportpage?conf={{conference.key.urlsafe()}}&status=NoDecision">No decision</a>
+*
+    <br><b>Showing:</b> {{description}}
+<br><br>
+<table border="1">
+    <th>Expenses claimed</th>
+    <th>Claimees</th>
+    {% for exp_category in expense_categories: %}
+    <tr>
+        <td><a href="/expenseslist?conf={{conference.key.urlsafe()}}&expenses={{exp_category}}&status_filter={{filter_key}}">{{conference.expenses_options()[exp_category]}}</td></td>
+        <td>{{expense_categories[exp_category]}}</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+</body>
+</html>

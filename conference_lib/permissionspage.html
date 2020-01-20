@@ -1,0 +1,75 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Permissions page</title>
+</head>
+
+<script language="javascript">
+function storeEmail(email) {
+	document.getElementById("authorityToDeleteId").value = email
+}
+
+function enable_button() {
+	if (document.getElementById("new_email_id").value == "") {
+		document.getElementById("SubmitNewAuthorityId").disabled = true
+	} else {
+		document.getElementById("SubmitNewAuthorityId").disabled = false
+	}
+}
+</script>
+<body onload="enable_button()">
+<div class="container-fluid">
+
+<h1>Conference permissions: {{conference.name}}</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr/>
+	{% include "conference_lib/adminmenu.html" %}
+
+<form name="confpermissions" method="post">
+	<table border=1>
+		<th>Email
+		<th>Permissions
+		<th>
+		{% for holder in conference.user_rights().list_permission_holders(): %}
+			<tr><td><a href="/permissionspage?usr={{holder}}&conf={{conf_key.urlsafe()}}">{{holder}}</a>
+				<td>{{ conference.user_rights().readable_permissions(holder) }}
+				<td><input type="submit" name="remove_authority" value="Delete" onclick="storeEmail('{{holder}}')"/>
+		{% endfor %}
+	</table>
+
+	<p> {% if update: %}<lable>Update authority:</lable>
+		{% else %}<lable>New authority:</lable>
+		{% endif %}
+		<input type="email"
+										   name="new_email"
+										   id="new_email_id"
+										   maxsize=99
+										   value="{{email}}"
+										   oninput="enable_button()">
+		{% for p in sorted_permissions: %}
+			<p><input type="checkbox" name="{{p}}"
+				{% if conference.user_rights().has_permission(email, p) %} checked {% endif %}
+				>{{conference.user_rights().permissions()[p]}}</p>
+		{% endfor %}
+
+	<p><b>Note:</b> <i>Final decision authority</i> requires <i>Review permissions</i> for the same round.</p>
+	<p>{% if update: %}
+			<input type="submit" name="UpdateExisting" id="UpdateExistingAuthorityId" value="Update existing permissions">
+		{% else %}
+			<input type="submit" name="SubmitNew" id="SubmitNewAuthorityId" value="Submit new permission" disabled>
+		{% endif %}
+
+	<input type="hidden" id="authorityToDeleteId" name="authorityToDelete" value="empty"/>
+	<input type="hidden" name="conf_safe_key" value="{{conf_key.urlsafe()}}">
+</form>
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<script>
+{% autoescape false %}
+{{firebase_config_variable}}
+{% endautoescape %}
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.js"></script>
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.css">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+<script>
+{% include "scaffold/fireblogin.js" %}
+
+    function enableSubmitBtn() {
+        if ((document.getElementById("request_name_id").value != "") &&
+           (document.getElementById("request_email_id").value != "")) {
+                document.getElementById("submit_btn_id").disabled = false
+        }
+        else {
+            document.getElementById("submit_btn_id").disabled = true
+        }
+    }
+</script>
+</head>
+
+<body>
+<div class="container-fluid">
+
+{% include "conference_lib/image_frag.html" %}
+<h1>Welcome to {{ crrt_conf.name }}</h1>
+<h3>{{ crrt_conf.dates }}</h3>
+
+Please use this site to: Submit talks, papers and presentations to the conference.
+
+To find out more about the conference see:
+<ul>
+    <li><a target=_blank href="{{crrt_conf.website()}}">{{ crrt_conf.name }} website</a></li>
+    <li><a target=_blank href="{{crrt_conf.cfp_address()}}">{{ crrt_conf.name }} call for papers</a></li>
+</ul>
+
+    <p>If you are reviewing submissions please use the <a href="/">main login</a> page.</p>
+
+<h3>Sign in to access submit</h3>
+<div id="logged-out">
+   <div id="firebaseui-auth-container"></div>
+</div>
+<p  align="center"><b>Your browser needs Third party cookies enabled to login.</b>
+
+<h2>Full login</h2>
+<p>If you would like to:
+<ul>
+    <li>Change or withdraw an existing submission
+    <li>Update your profile
+    <li>Create your own conference
+    <li>Review or administer an existing conference
+</ul>
+<p>Then please <a href="/">login to full Mimas</a>.
+
+</div>
+</body>
+</html>

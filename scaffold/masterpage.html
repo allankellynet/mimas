@@ -1,0 +1,32 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Master Control Page</title>
+</head>
+{% include "scaffold/incbootstrap.html" %}
+<body>
+<div class="container-fluid">
+
+<h1>Master Control page</h1>
+    <i>Some controls that are not public</i>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+<form method="post">
+    <input type="submit" name="BlankBio" value="Blank Bio report">
+    <input type="submit" name="ShortHaul" value="Fix short haul expenses">
+    <input type="submit" name="LongHaul" value="Fix long haul expenses">
+    <p>
+        <input type="submit" name="AckReceipt" value="Fix acknowledge receipt">
+    </p>
+</form>
+
+</body>
+</html>

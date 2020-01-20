@@ -1,0 +1,120 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Reviewers home</title>
+</head>
+
+<script language="javascript">
+function setConferenceKey() {
+	key = document.getElementById("conferenceListId").value;
+	document.getElementById("conferenceKeyId").value = key;
+	document.forms["confselectreview"].submit();
+}
+
+function completeCheckbox(review_round) {
+	document.getElementById("reviewRoundId").value=review_round
+	document.forms["confselectreview"].submit()
+}
+</script>
+
+<body>
+<div class="container-fluid">
+
+<h1>Reviewers home</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+{% if conference_count > 0: %}
+<form name="confselectreview" method="post">
+    <lable>Current conference:</lable>
+	<select id="conferenceListId" name="conference" onchange="setConferenceKey()">
+		{% for c in conferences: %}
+  		<option value="{{c.key.urlsafe()}}"
+			{% if crrt_conference.key.urlsafe()==c.key.urlsafe() %} selected {% endif %}
+			>{{c.conf_name}}</option>
+		{% endfor %}
+	</select>
+	<p>Conference is currently in: <b>{{ crrt_conference.state() }}</b></p>
+<input type="hidden" id="conferenceKeyId" name="conferenceKey" value="{{crrt_conference.key.urlsafe()}}"/>
+<input type="hidden" name="reviewerKey" value="{{reviewerKey}}"/>
+<input type="hidden" name="reviewRound" id="reviewRoundId" value="1"/>
+
+	{% if crrt_conference.user_rights().has_track_review_rights(name): %}
+		<p><b>Your assigned tracks for review</b>
+		<ul>
+		{% for track in crrt_conference.user_rights().track_assignments(name): %}
+			<li>{{crrt_conference.track_options()[track]}}</li>
+		{% endfor %}
+		</ul>
+	{% endif %}
+
+	{% if crrt_conference.state() == "Open": %}
+		{% if reviewerKey == None: %}
+			<a href="/volunteerreviewer?conf={{crrt_conference.key.urlsafe()}}">Volunteer to review submissions</a>
+		{% endif %}
+	{% endif %}
+
+	{% if crrt_conference.is_round1: %}
+	{% if crrt_conference.user_rights().has_permission(name, "Round1"): %}
+		{% if crrt_conference.is_round1: %}
+			<p><a href="/{{review_config.get_round_config(1).reviewpage()}}?conf={{crrt_conference.key.urlsafe()}}&round=1">
+				Review submissions (Round 1)</a></p>
+			{% if reviewerKey != None: %}
+			<p><input type="checkbox" name="CompleteReviewing" onchange="completeCheckbox(1)"
+					  {% if compeleted_reviewing(1): %}checked{%endif%}>Done reviewing</p>
+			{% endif %}
+		{% endif %}
+		{% else %}
+			<p>You do not have round 1 voting permissions
+	{% endif %}
+
+	{% if crrt_conference.user_rights().has_permission(name, "Round1FullView"): %}
+			<p><a href="/{{review_config.get_round_config(1).decisionpage()}}?conf={{crrt_conference.key.urlsafe()}}&round=1">Review & decide summary (Round 1)</a>
+
+
+	{% endif %}
+{% endif %}
+
+{% if crrt_conference.is_round2: %}
+	{% if crrt_conference.user_rights().has_permission(name, "Round2"): %}
+		{% if crrt_conference.is_round2: %}
+			<p><a href="/{{review_config.get_round_config(2).reviewpage()}}?conf={{crrt_conference.key.urlsafe()}}&round=2">Review submissions (Round 2)</a>
+		{% endif %}
+			{% if reviewerKey != None: %}
+			<p><input type="checkbox" name="CompleteReviewing" onchange="completeCheckbox(2)"
+					  {% if compeleted_reviewing(2): %}checked{%endif%}>Done reviewing</p>
+			{% endif %}
+		{% else %}
+			<p>You do not have round 2 voting permissions
+	{% endif %}
+
+	{% if crrt_conference.user_rights().has_permission(name, "Round2FullView"): %}
+		<p><a href="/{{review_config.get_round_config(2).decisionpage()}}?conf={{crrt_conference.key.urlsafe()}}&round=2">Review & decide summary (Round 2)</a>
+	{% endif %}
+{% endif %}
+
+
+</form>
+
+<hr/>
+{% if crrt_conference.user_rights().can_view_all(name) %}
+	<p><a href="/showallpage?conf={{crrt_conference.key.urlsafe()}}">List all submissions</a></p>
+	<p><a href="/votingrecordspage?round=1">Voting and assignments by reviewer</a></p>
+	<p><a href="/subsassignmentspage">Voting and assignment by submission</a></p>
+{% endif %}
+
+{% else %}
+	No current conferences
+{% endif %}
+
+<div>
+</body>
+</html>

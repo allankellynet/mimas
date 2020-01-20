@@ -1,0 +1,67 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Mimas - Conference Submission & Review Systems</title>
+</head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.6.4/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.js"></script>
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/1.0/firebase-ui-auth.css">
+
+<script>
+{% autoescape false %}
+{{firebase_config_variable}}
+{% endautoescape %}
+
+{% include "scaffold/fireblogin.js" %}
+</script>
+
+<body>
+<div class="container-fluid">
+
+<h1>Mimas - Conference Submission & Review System</h1>
+
+<p>Mimas from <a href="http://www.allankellyassociates.co.uk"> Allan Kelly.</a>.
+
+    <h3><a href="/speakerdir">View speaker directory</a></h3>
+<div id="logged-out">
+    <h3>Sign in to access Mimas</h3>
+   <div id="firebaseui-auth-container"></div>
+</div>
+
+<b>Your browser needs Third party cookies enabled to login.</b>
+<div id="logged-in">
+    <h1>Welcome, <span id="user"></span>!</h1>
+    <h2>You are logged in</h2>
+</div>
+
+<br>
+    <h3><a target=_blank href="static/privacy.html">Privacy policy</a></h3>
+    <p>Continued use of this system consitutes accepptance of the privacy policy.</p>
+    <p>In addition, individual conferences may have their own privacy/GPDR policies you may be asked to agree to.</p>
+
+<h2>Terms of service</h2>
+<p>Mimas is currently offered free of charge.</p>
+<p>Mimas is currently offered as a "best efforts."
+<ul>
+    <li>We aim for 100% up time and mostly maintain something close to it but we do take it down for work occasionally.
+    <li>Normally this is a few minutes at a time.
+    <li>If there is a period your conference really needs the system to be operation please let us know and we will work around you.
+</ul>
+
+<p>Created by <a href="https://www.allankellyassociates.co.uk/">Allan Kelly Associates</a>.
+</div>
+</body>
+</html>

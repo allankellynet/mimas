@@ -1,0 +1,29 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<h2>Talk description</h2>
+<table>
+    <tr><td>Title:
+        <td><textarea name="title" id="titleid"
+                      maxsize=256 rows=2 cols=60
+                      oninput="enable_save()"
+    >{{ talk_details.title }}</textarea>
+    <tr><td>Short synopsis:<td>
+    <textarea maxsize=500 rows=10 cols=100 name="shortsynopsis" {{disabled}}>{{ talk_details.field("shortsynopsis") }}</textarea>
+    <p>Max size: 500 chars
+    <tr><td>Long synopsis (optional):<td>
+    <textarea maxsize=5000 rows=10 cols=100 name="longsynopsis" {{disabled}}>{{ talk_details.field("longsynopsis") }}</textarea>
+    <p>Max size: 5000 chars
+    <tr><td>Tags:</td><td>{{tags}}</td></TR>
+	<tr><td>Speaker directory:
+	<td><select name="dirlisting" {{disabled}}>
+		<option value="listed" {% if talk_details.is_listed() %}selected{%endif%}>
+			Listed in directory</option>
+		<option value="notlisted" {% if not(talk_details.is_listed()) %}selected{%endif%}>
+			Not listed</option>
+	</select>
+</table>

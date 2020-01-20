@@ -1,0 +1,45 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Submission thank you</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Thank you</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+
+Your submission to '{{conference.name}}' has been recorded.
+<p></p>
+Submission title: <b>{{sub.title()}}</b>.
+
+<ul>
+{% for co in cospeakers: %}
+    <li>{{co.name}} with e-mail {{co.email}} is
+        {% if co.profile_exists() %}
+            is already in the system, no further action is required.
+        {% else %}
+            is <b>not known</b> to the system.
+            Please have them complete their <a target="_blank"
+                href="/cospeakerpage?cospeaker={{co.key.urlsafe()}}&conf={{conference.key.urlsafe()}}">biography.</a>
+        {% endif %}
+    </li>
+{% endfor %}
+</ul>
+    <p>You can now <a href="/cospeakerlist?sub={{sub.key.urlsafe()}}">add or remove co-speakers</a>
+<br/>
+<br/><a href="/list_submission">Back to submissions</a>
+
+</div>
+</body>
+</html>

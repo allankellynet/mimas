@@ -1,0 +1,82 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Speaker report</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Speaker report</h1>
+	{% include "scaffold/topmenu.html" %}
+<hr>
+
+* <a href="/speakerrptpage?conf={{conference.key.urlsafe()}}">All submissions</a>
+* <a href="/speakerrptpage?conf={{conference.key.urlsafe()}}&f=Accepts">Accepted only</a>
+* <a href="/speakerrptpage?conf={{conference.key.urlsafe()}}&f=Accepts&expand">Accepted only (+pictures)</a>
+* <a href="/speakerrptpage?conf={{conference.key.urlsafe()}}&f=NoDecision">No decision</a>
+*
+<br><br>
+<p>Displaying: <b>{{filter_msg}}</b></p>
+<p>Total number of speakers: {{ speaker_total.total_number_of_speakers() }}
+<p>Total includes submitters and co-speakers.
+<p>Speakers are only counted once even if they are in multiple submissions.
+
+<table border="1">
+    <th>Speaker</th>
+    <th>Email</th>
+    <th>Submission count</th>
+    <th></th>
+    {% for s in sorted_speakers: %}
+        <tr>
+            <td>{{speaker_total.name(s)}} </td>
+            <td>{{s}}</td>
+            <td>{{speaker_total.speaker_totals[s]}}</td>
+            <td>{% if speaker_total.speaker_key(s) == None: %}
+                <b>No bio supplied</b>
+                {% else %}
+                        <a href="/speakerkey?key={{speaker_total.speaker_key(s).urlsafe()}}">Bio</a>
+                        {% if expand_pictures %}
+                            <img src="/speakerfullimg?img_id={{speaker_total.speaker_key(s).urlsafe()}}"></img>
+                        {% endif %}
+                {% endif %}
+            </td>
+       </tr>
+    {% endfor %}
+</table>
+<br>
+<h2>Co-speakers</h2>
+<table border="1">
+    <th>Talk</th>
+    <th>Speakers</th>
+    {% for sub in speakers_map: %}
+    <tr>
+        <td>{{sub.get().title()}}
+            <p>{{conf_tracks[sub.get().track]}}</p>
+        </td>
+        <td>{{sub.get().submitter()}} - <a href="/speakeremail?email={{sub.get().email()}}">{{sub.get().email()}}</a> (Submitter)
+            {% for cospeak in speakers_map[sub]: %}
+            <p>{{cospeak.name}} - <a href="/speakeremail?email={{cospeak.email}}">{{cospeak.email}}</a>
+                    {% if not cospeak.profile_exists(): %}
+                        <b>No profile provided</b>
+                        <a target="_blank"
+                            href="/cospeakerpage?cospeaker={{cospeak.key.urlsafe()}}&conf={{conference.key.urlsafe()}}">
+                            Add now</a>
+                    {% endif %}
+                </p>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+</body>
+</html>

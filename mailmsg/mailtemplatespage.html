@@ -1,0 +1,57 @@
+<!-- 
+-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+-----------------------------------------------------
+--> 
+<!DOCTYPE html>
+<html lang="en">
+{% include "scaffold/incbootstrap.html" %}
+<head>
+    <meta charset="UTF-8">
+    <title>Conference email notification templates</title>
+</head>
+<body>
+<div class="container-fluid">
+
+<h1>Conference email notification templates</h1>
+{% include "scaffold/topmenu.html" %}
+
+{% include "mailmsg/availfields_frag.html" %}
+<form name="MessagesForm" method="post">
+<h2>Decline</h2>
+    <label>Subject line:<input type="text" maxlength="128" size="100" name="DeclineSubject"
+                               value="{{decline.subject()}}"></label>
+    <p>
+    <label>Message:</label>
+    <p>
+    <textarea name="DeclineMsg" maxlength="4096" wrap="hard" cols="80" rows="12">{{decline.message()}}</textarea>
+    <p>
+    <input type="submit" name="SubmitDeclineMsg" value="Update decline message">
+
+<h2>Accept</h2>
+    <label>Subject line:<input type="text" maxlength="128" size="100" name="AcceptSubject"
+                               value="{{accept.subject()}}"></label>
+    <p>
+    <label>Message:</label>
+    <p>
+    <textarea name="AcceptMsg" maxlength="4096" wrap="hard" cols="80" rows="12">{{accept.message()}}</textarea>
+    <p>
+    <input type="submit" name="SubmitAcceptMsg" value="Update accept message">
+
+<h2>Acknowledgement</h2>
+    <label>Subject line:<input type="text" maxlength="128" size="100" name="AckSubject"
+                               value="{{acknowledge.subject()}}"></label>
+    <p>
+    <label>Message:</label>
+    <p>
+    <textarea name="AckMsg" maxlength="4096" wrap="hard" cols="80" rows="12">{{acknowledge.message()}}</textarea>
+    <p>
+    <input type="submit" name="SubmitAckMsg" value="Update acknowledgement message">
+
+    <input type="hidden" name="conf_key" value="{{conf.key.urlsafe()}}">
+</form>
+</div>
+</body>
+</html>
