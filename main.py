@@ -32,7 +32,8 @@ import basehandler
 from speaker_lib import speakerpage, speakermain, cospeakerlistpg, \
     cospeakerpage, dirpage, publicspage
 import scaffold.image_handlers
-from reports import expensereportpage, showallpage, statuslist, speakrptpage, expenseslistpage, speakercommspage
+from reports import expensereportpage, showallpage, statuslist, speakrptpage, expenseslistpage, speakercommspage, \
+    customexportpage
 from submission_lib import subm_thanks, submitpage, singlesubmitpage, flowsubpage, acceptdecline
 from mailmsg import createmsgpage, custommsgedit, mailtemplatespage
 from scaffold import edittags, masterpage
@@ -192,6 +193,7 @@ app = webapp2.WSGIApplication([
     ('/deduppage', deduppage.DedupPage),
     ('/expensesreportpage', expensereportpage.ExpenseReportPage),
     ('/speakerrptpage', speakrptpage.SpeakerReportPage),
+    ('/customexport', customexportpage.CustomExportPage),
     ('/mailmessages', mailtemplatespage.MailTemplatesPage),
     ('/commentreviewpage', commentreviewpage.CommentReviewPage),
     ('/cospeakerpage', cospeakerpage.CoSpeakerPage),
