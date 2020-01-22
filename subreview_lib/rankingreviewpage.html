@@ -129,10 +129,12 @@ function validateRanks() {
 				<td>Shared:
 					<textarea rows="2" cols="50" maxlength=100
 						   name="comment_{{r.key.urlsafe()}}">{{vote_summary.get_shared_comment(r.key.urlsafe()) }}</textarea>
+<!-- Todo: Make this configurable - but today just comment it out
 				<p>Private:
 					<textarea rows="1" cols="50" maxlength=100
 						   name="private_comment_{{r.key.urlsafe()}}">{{vote_summary.get_private_comment(r.key.urlsafe())}}</textarea>
 				</td>
+-->
 		{% endfor %}
 	</table>
 
