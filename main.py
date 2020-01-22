@@ -29,10 +29,10 @@ import subreview_lib.newscoringtask
 from scaffold import sorrypage, attentionpage, welcomepage, volunteerpage, volunteerreviewerpage, firebase, logoutpage, \
     mimasuser
 import basehandler
-from speaker_lib import speakercommspage, speakerpage, speakermain, cospeakerlistpg, \
+from speaker_lib import speakerpage, speakermain, cospeakerlistpg, \
     cospeakerpage, dirpage, publicspage
 import scaffold.image_handlers
-from reports import expensereportpage, showallpage, statuslist, speakrptpage, expenseslistpage
+from reports import expensereportpage, showallpage, statuslist, speakrptpage, expenseslistpage, speakercommspage
 from submission_lib import subm_thanks, submitpage, singlesubmitpage, flowsubpage, acceptdecline
 from mailmsg import createmsgpage, custommsgedit, mailtemplatespage
 from scaffold import edittags, masterpage

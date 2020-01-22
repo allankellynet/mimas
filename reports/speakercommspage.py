@@ -49,7 +49,7 @@ class SpeakerCommsPage(basehandler.BaseHandler):
             "filter_description": filter_description,
         }
 
-        self.write_page('speaker_lib/speakercommspage.html', template_values)
+        self.write_page('reports/speakercommspage.html', template_values)
 
     def retrieve_conf_key(self):
         conference_key = None
