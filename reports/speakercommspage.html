@@ -82,9 +82,16 @@ function toggle_checkboxes(source) {
         </select>
     {% endif %}
     {% if crrt_conference.user_rights().has_permission(name, "ConfExport"): %}
-        <p></p>
+        <hr><p></p>
         <input type="submit" name="Export" value="Export to CSV file">
         <input type="submit" name="ExcelExport" value="Export to Excel file">
+        <br/><br/>
+        <select name="customexport">
+            <option value="None" selected>None</option>
+            <input type="submit" name="CustomExport" value="Report export">
+            <br/><a href="">Edit export report</a>
+            <br/><a href="/customexport?new&conf_key={{crrt_conference.key.urlsafe()}}">Create new export report</a>
+        </select>
     {% endif %}
 </form>
 </div>

@@ -11,7 +11,7 @@ import logging
 from google.appengine.ext import ndb
 
 # Local imports
-import cospeaker
+from speaker_lib import cospeaker
 from mailmsg import custommsg, msgtemplate, postmail
 from reports.exportcsv import export_submissions
 from reports.exportexcel import export_submissions_to_excel
