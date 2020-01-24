@@ -218,7 +218,6 @@ app = webapp2.WSGIApplication([
     ('/publicspage', publicspage.PublicSpeakerPage),
     ('/edittags', edittags.EditTagsPage),
     ('/addtag', edittags.AddTagPost),
-    ('/mastercontrol', masterpage.MasterControlPage),
     ('/flowsubmit', flowsubpage.FlowSubmitPage1),
     ('/flowsubmit2', flowsubpage.FlowSubmitPage2),
     ('/flowsubmit3', flowsubpage.FlowSubmitPage3),
@@ -232,6 +231,7 @@ app = webapp2.WSGIApplication([
     ('/subsassignmentspage', subsassignmentpage.SubmissionAssignmentsPage),
     ('/assignementdetailspage', assignmentdetailpage.AssignmentDetailPage),
     ('/subreviewers', subsreviewerspage.SubmissionReviewersPage),
+    ('/mastercontrol', masterpage.MasterControlPage),                       # no public link
     ('/testdata', testdatapage.TestDataPage),                               # no public link
     ('/delete_con_page', deletepage.DeletePage),                            # no public link
     ('/extracontrols', extracontrolspage.ExtraControlsPage),                # no public link
