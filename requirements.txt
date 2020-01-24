@@ -1,11 +1,24 @@
+# This file is a mess
+# TODO: Sort out at time of Python 3 upgrade
+# Problems loading google.auth causes excessive hacking of this file
+
+#Flask==0.12.2
 pyjwt==1.5.2
 flask-cors==3.0.3
 google-auth==1.0.2
 requests==2.18.4
-requests-toolbelt==0.8.0
+#requests-toolbelt==0.8.0
 
-# Reqirements inheritted from Google Firebase examples
-# TODO: Work out what the Mimas requirements actually are
-# and fix this file up properly
+# pyjwt==1.6.1
+# pyjwt==1.5.2
+
+#google-auth==1.0.2
+# google-auth==1.4.1
+
+# requests==2.18.4
+requests-toolbelt==0.8.0
+# requests-toolbelt==0.9.1
+
+
 
 numpy==1.8.0

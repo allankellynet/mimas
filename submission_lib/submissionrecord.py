@@ -7,7 +7,7 @@
 # system imports
 
 # framework imports
-import numpy
+# import numpy
 from google.appengine.ext import ndb
 
 import submissionnotifynames
@@ -118,9 +118,9 @@ class SubmissionRecord(ndb.Model):
             return SubmissionRecord.ScoresRecord()
 
         rec = SubmissionRecord.ScoresRecord()
-        rec.total_score = numpy.sum(list(v.score for v in voterecords))
-        rec.mean_score = round(numpy.mean(list(v.score for v in voterecords)),2)
-        rec.median_score = round(numpy.median(list(v.score for v in voterecords)),2)
+        rec.total_score = 0 # numpy.sum(list(v.score for v in voterecords))
+        rec.mean_score = 0 #round(numpy.mean(list(v.score for v in voterecords)),2)
+        rec.median_score = 0 #round(numpy.median(list(v.score for v in voterecords)),2)
         rec.votes = len(voterecords)
         rec.scores = map(lambda vr: vr.score, voterecords)
         return rec

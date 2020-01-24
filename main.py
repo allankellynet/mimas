@@ -1,5 +1,9 @@
 #!/usr/bin/env python
-# (c) Allan Kelly & Software Strategy Ltd. 2016-2020
+#-----------------------------------------------------
+# Mimas: conference submission and review system
+# (c) Allan Kelly 2016-2020 http://www.allankelly.net
+# Licensed under MIT License, see LICENSE file
+# -----------------------------------------------------
 
 # system imports
 import datetime, sys
@@ -9,11 +13,13 @@ sys.path.append("lib/sendgrid-python")
 
 # App Engine imports
 import logging
-import google.auth
-import google.auth.transport.requests
-import google.oauth2.id_token
 from google.appengine.api import users
 from google.appengine.ext import ndb
+
+import google.auth.transport.requests
+import google.oauth2.id_token
+import requests_toolbelt.adapters.appengine
+
 import webapp2
 
 # Local imports
@@ -39,6 +45,7 @@ from mailmsg import createmsgpage, custommsgedit, mailtemplatespage
 from scaffold import edittags, masterpage
 from extra import extracontrolspage, speakertalkpage, testdatapage
 
+requests_toolbelt.adapters.appengine.monkeypatch()
 HTTP_REQUEST = google.auth.transport.requests.Request()
 
 class MainHandler(basehandler.BaseHandler):
