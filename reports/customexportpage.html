@@ -17,6 +17,22 @@
 <div class="container-fluid">
 <h1>Customer export</h1>
 	{% include "scaffold/topmenu.html" %}
+<form method="post">
+    <input type="text" name="ExportName">
+    <input type="submit" name="SubmitExport" value="Update report">
+
+    <h3>Talk details</h3>
+    <h3>Speaker details</h3>
+    <h3>Submission details</h3>
+    {% for opt in submission_options.keys(): %}
+        <p/><input type="checkbox" name="SubmissionOption" value="{{opt}}"> {{opt}}
+    {% endfor %}
+    <hr/>
+    <h3>Existing reports</h3>
+    {% for rpt in reports: %}
+        <p>{{rpt}}</p>
+    {% endfor %}
+</form>
 
 </div>
 </body>
