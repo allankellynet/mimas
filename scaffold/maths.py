@@ -11,9 +11,6 @@ def mean(numbers):
     return round(total / float(len(numbers)),2)
 
 def average_middle(sorted_numbers, count):
-    print "------------------------------"
-    print sorted_numbers[(count/2)-1]
-    print sorted_numbers[(count/2)]
     return (sorted_numbers[count/2]+sorted_numbers[(count/2)-1])/float(2)
 
 def median(numbers):
