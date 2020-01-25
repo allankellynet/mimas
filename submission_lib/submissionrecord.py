@@ -13,7 +13,7 @@ from google.appengine.ext import ndb
 import submissionnotifynames
 import voterecord
 from conference_lib import confdb
-
+from scaffold import maths
 
 class SubmissionRecord(ndb.Model):
     # conference object is parent so no need to record that her
@@ -118,9 +118,9 @@ class SubmissionRecord(ndb.Model):
             return SubmissionRecord.ScoresRecord()
 
         rec = SubmissionRecord.ScoresRecord()
-        rec.total_score = 0 # numpy.sum(list(v.score for v in voterecords))
-        rec.mean_score = 0 #round(numpy.mean(list(v.score for v in voterecords)),2)
-        rec.median_score = 0 #round(numpy.median(list(v.score for v in voterecords)),2)
+        rec.total_score = sum(list(v.score for v in voterecords))
+        rec.mean_score = maths.mean((list(v.score for v in voterecords)))
+        rec.median_score = maths.median(list(v.score for v in voterecords))
         rec.votes = len(voterecords)
         rec.scores = map(lambda vr: vr.score, voterecords)
         return rec
