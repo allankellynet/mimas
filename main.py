@@ -23,26 +23,22 @@ import requests_toolbelt.adapters.appengine
 import webapp2
 
 # Local imports
+import basehandler
 from talk_lib import talkpage, pubtalkpage
 from conference_lib import confadmin, confstatepage, confoptionspage, conflimitspage, confemailrecipients, chooseconf, \
-    permissionspage, assigntrackspage, assignvolreviewerspage
-from conference_lib import confquestionspage, deletepage
+    permissionspage, assigntrackspage, assignvolreviewerspage, confquestionspage, deletepage
 from subreview_lib import rankingdecisionpage, classicreviewlistpage, reviewdetailspage, reviewmain, \
     classicreviewdecisionpage, reviewconfigpage, newscoreconfigpage, votingrecordspage, subsassignmentpage, \
     rankingreviewpage, classicsubscoring, commentreviewpage, deduppage, newscoringlistpage, newscoringpage, \
-    assignmentdetailpage, subsreviewerspage
-import subreview_lib.newscoringtask
+    assignmentdetailpage, subsreviewerspage, newscoringtask
 from scaffold import sorrypage, attentionpage, welcomepage, volunteerpage, volunteerreviewerpage, firebase, logoutpage, \
-    mimasuser
-import basehandler
+    mimasuser, edittags, masterpage, image_handlers
 from speaker_lib import speakerpage, speakermain, cospeakerlistpg, \
     cospeakerpage, dirpage, publicspage
-import scaffold.image_handlers
 from reports import expensereportpage, showallpage, statuslist, speakrptpage, expenseslistpage, speakercommspage, \
     customexportpage
 from submission_lib import subm_thanks, submitpage, singlesubmitpage, flowsubpage, acceptdecline
 from mailmsg import createmsgpage, custommsgedit, mailtemplatespage
-from scaffold import edittags, masterpage
 from extra import extracontrolspage, speakertalkpage, testdatapage
 
 requests_toolbelt.adapters.appengine.monkeypatch()
@@ -154,8 +150,8 @@ config['webapp2_extras.sessions'] = {
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/speaker', speakerpage.SpeakerPage),
-    ('/speakerfullimg', scaffold.image_handlers.SpeakerImage),
-    ('/image', scaffold.image_handlers.Image),
+    ('/speakerfullimg', image_handlers.SpeakerImage),
+    ('/image', image_handlers.Image),
     ('/speakeremail', speakerpage.SpeakerPageByEmail),
     ('/speakerkey', speakerpage.SpeakerPageByKey),
     ('/speakerupdate', speakerpage.SpeakerUpdatePage),
@@ -226,7 +222,7 @@ app = webapp2.WSGIApplication([
     ('/expenseslist', expenseslistpage.ExpenseListPage),
     ('/reviewconfig', reviewconfigpage.ReviewMainPage),
     ('/newscoreconfigpage', newscoreconfigpage.NewScoreConfigPage),
-    ('/more_reviews', subreview_lib.newscoringtask.MoreReviewsTask),
+    ('/more_reviews', newscoringtask.MoreReviewsTask),
     ('/votingrecordspage', votingrecordspage.VotingRecordsPage),
     ('/subsassignmentspage', subsassignmentpage.SubmissionAssignmentsPage),
     ('/assignementdetailspage', assignmentdetailpage.AssignmentDetailPage),
