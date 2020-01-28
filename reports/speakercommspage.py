@@ -13,8 +13,7 @@ from google.appengine.ext import ndb
 # Local imports
 from speaker_lib import cospeaker
 from mailmsg import custommsg, msgtemplate, postmail
-from reports.exportcsv import export_submissions
-from reports.exportexcel import export_submissions_to_excel
+from reports import customexport, exportexcel, exportcsv
 from submission_lib import submissionrecord, submission_ans, submissions_aux
 from scaffold import tags
 import basehandler
@@ -47,6 +46,7 @@ class SpeakerCommsPage(basehandler.BaseHandler):
             "conf_questions": confquestion.retrieve_questions(conference_key),
             "retrieve_answer": submission_ans.retrieve_answer,
             "filter_description": filter_description,
+            "custom_reports": customexport.list_all_report_names(conference_key),
         }
 
         self.write_page('reports/speakercommspage.html', template_values)
@@ -104,7 +104,7 @@ class SpeakerCommsPage(basehandler.BaseHandler):
                       self.get_filtered_by_final_decision(self.get_all_checked(), "Accept"))
 
     def export_data(self):
-        url = export_submissions(self.get_all_checked())
+        url = exportcsv.export_submissions(self.get_all_checked())
         message = "Data export complete: " + url
         template_values = {
             "msg": message
@@ -117,7 +117,7 @@ class SpeakerCommsPage(basehandler.BaseHandler):
 
     def export_excel_data(self):
         pass
-        url = export_submissions_to_excel(self.get_all_checked())
+        url = exportexcel.export_submissions_to_excel(self.get_all_checked())
         message = "Data export to Excel complete: " + url
         template_values = {
             "msg": message

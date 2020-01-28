@@ -18,6 +18,8 @@
 <h1>Customer export</h1>
 	{% include "scaffold/topmenu.html" %}
 <form method="post">
+    <a href="/speakercomms?conf={{conf_key.urlsafe()}}">Speaker communications page</a>
+    <br/><br/>
     <input type="text" name="ExportName" value="{{report_name}}">
     <input type="submit" name="SubmitExport" value="Update report">
 
