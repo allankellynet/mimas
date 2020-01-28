@@ -135,6 +135,16 @@ class SpeakerCommsPage(basehandler.BaseHandler):
 
         self.redirect("/speakercomms")
 
+    def custom_export_report(self, report_name):
+        rpt = customexport.get_report_by_name(self.retrieve_conf_key(), report_name)
+        logging.info(rpt.report_name())
+
+    def custom_export(self):
+        if self.request.get("customexportselection") == "None":
+            self.redirect("/speakercomms")
+        else:
+            self.custom_export_report(self.request.get("customexportselection"))
+
     def post(self):
         if self.request.get("SendDeclines"):
             self.send_declines()
@@ -146,3 +156,5 @@ class SpeakerCommsPage(basehandler.BaseHandler):
             self.export_excel_data()
         if self.request.get("SendCustomMgs"):
             self.send_custom_msgs()
+        if self.request.get("CustomExport"):
+            self.custom_export()

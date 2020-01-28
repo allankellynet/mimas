@@ -86,7 +86,7 @@ function toggle_checkboxes(source) {
         <input type="submit" name="Export" value="Export to CSV file">
         <input type="submit" name="ExcelExport" value="Export to Excel file">
         <br/><br/>
-        <select name="customexport">
+        <select name="customexportselection">
             <option value="None" selected>None</option>
             {% for rpt in custom_reports: %}
                 <option value="{{rpt}}">{{rpt}}</option>
