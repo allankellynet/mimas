@@ -27,6 +27,7 @@ class CustomExportPage(basehandler.BaseHandler):
         report_name=""
         report_record = customexport.CustomExport()
         report_key = None
+        report_key_safe = ""
         if self.request.params.has_key("report"):
             report_name = self.request.get("report")
             report_record = customexport.get_report_by_name(conf_key, report_name)
@@ -36,7 +37,7 @@ class CustomExportPage(basehandler.BaseHandler):
                                                           "submission_options": submission_options,
                                                           "reports": customexport.list_all_report_names(conf_key),
                                                           "report_name": report_name,
-                                                          "rpt_key": report_key.urlsafe(),
+                                                          "report_key": report_key,
                                                           "rpt_subs_options": report_record.submission_options(),
                                                           })
     def post(self):
@@ -49,7 +50,12 @@ class CustomExportPage(basehandler.BaseHandler):
             return
 
         conf_key = ndb.Key(urlsafe=self.request.get("conf_key"))
-        report = customexport.mk_report(conf_key, report_name).get()
+
+        if self.request.params.has_key("report_key"):
+            report = ndb.Key(urlsafe=self.request.get("report_key")).get()
+        else:
+            report = customexport.mk_report(conf_key, report_name).get()
+
         submission_options = self.request.get_all("SubmissionOption")
         report.replace_submission_options(submission_options)
 

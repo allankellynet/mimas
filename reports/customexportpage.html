@@ -36,7 +36,9 @@
         <p><a href="/customexport?conf_key={{conf_key.urlsafe()}}&report={{rpt}}">{{rpt}}</a></p>
     {% endfor %}
 
-    <input type="hidden" name="report_key" value="{{rpt_key}}">
+    {% if report_key: %}
+        <input type="hidden" name="report_key" value="{{report_key.urlsafe()}}">
+    {% endif %}
 </form>
 
 </div>
