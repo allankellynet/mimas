@@ -15,6 +15,12 @@ import xlsxwriter
 # app imports
 import exportexcel
 
+def write_created(sub):
+    return str(sub.created)
+
+def write_gdpr(sub):
+    return str(sub.gdpr_agreed_flag)
+
 class CustomExport(ndb.Model):
     report_name_db = ndb.StringProperty()
     submission_options_db = ndb.StringProperty(repeated=True)
@@ -41,16 +47,18 @@ class CustomExport(ndb.Model):
         self.put()
 
     def write_title_row(self, worksheet):
-        print "++++++++++++++++++++++++++++++++ write_title_row"
         column = 1
         for opt in self.submission_options_db:
-            print 1, column, opt
             worksheet_write_wrapper(worksheet, 1, column, opt)
             column = column + 1
 
     def write_submissions_list(self, wks, submissions):
+        row = 2
         for sub in submissions:
-            pass
+            column = 1
+            for opt in self.submission_options_db:
+                self.write_submission_field(opt, sub, wks, row, column)
+                column = column +1
 
     def export_submissions_to_excel(self, submission_keys):
         fullname, url = exportexcel.mk_filename(self.report_name_db, datetime.datetime.now())
@@ -65,6 +73,14 @@ class CustomExport(ndb.Model):
 
         output.close()
         return url
+
+    submission_field_writers = { "Created": write_created,
+                                 "GDPR_agreed" : write_gdpr,
+                                 }
+
+    def write_submission_field(self, opt, sub, wks, row, column):
+        worksheet_write_wrapper(wks, row, column, self.submission_field_writers[opt](sub.get()))
+
 
 def worksheet_write_wrapper(wksheet, row, col, text):
     wksheet.write(row, col, text)

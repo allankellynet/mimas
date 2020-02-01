@@ -12,10 +12,8 @@ from google.appengine.ext import testbed
 
 from conference_lib import conference
 from reports import customexport, exportexcel
-import cloudstorage, xlsxwriter # ************************
-from xlsxwriter import worksheet
-import xlsxwriter
-
+from talk_lib import talk
+from submission_lib import submissionrecord
 
 class TestCustomReport(unittest.TestCase):
     def setUp(self):
@@ -79,7 +77,7 @@ class TestCustomReport(unittest.TestCase):
         potter_report.get().set_name("Weesley")
         self.assertIsNotNone(customexport.get_report_by_name(self.conf.key, "Weesley"))
 
-    def test_submission_optoins(self):
+    def test_submission_options(self):
         potter_report_key = customexport.mk_report(self.conf.key, "Potter")
         potter_report = potter_report_key.get()
         self.assertEquals([], potter_report.submission_options())
@@ -92,7 +90,7 @@ class TestCustomReport(unittest.TestCase):
 
     @patch('reports.customexport.worksheet_write_wrapper')
     @patch('cloudstorage.open')
-    def test_excel_export(self, mock_storage_open, mock_sheet_write):
+    def test_excel_export_basic(self, mock_storage_open, mock_sheet_write):
         potter_report_key = customexport.mk_report(self.conf.key, "Potter")
         potter_report = potter_report_key.get()
 
@@ -126,3 +124,52 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals(4, mock_sheet_write.mock_calls[3][1][2])
         self.assertEquals("Hufflepuff", mock_sheet_write.mock_calls[3][1][3])
 
+    @patch('reports.customexport.worksheet_write_wrapper')
+    @patch('cloudstorage.open')
+    def test_excel_export_with_data(self, mock_storage_open, mock_sheet_write):
+        print "???????????????????????????????????????????????????????????????????????"
+        sub_report_key = customexport.mk_report(self.conf.key, "SubmissionRecord")
+        sub_report = sub_report_key.get()
+        self.assertEquals([], sub_report.submission_options())
+
+        sub_report.add_submission_options(["Created"])
+        sub_report.add_submission_options(["GDPR_agreed"])
+
+        conf_key = None
+        t1 = None # talk.Talk()
+        #t1.title = "Talk T1"
+        #t1.put()
+        sub = submissionrecord.make_submission(t1, None, "track", "format").get()
+
+        print "???????????????????????????????????????????????? export_submissions_to_excel"
+        sub_report.export_submissions_to_excel([sub.key])
+        self.assertEquals(4, mock_sheet_write.call_count)
+        print "???????????????????????????????????????????????? =4"
+
+        print mock_sheet_write.mock_calls[0][1]
+        self.assertEquals(1, mock_sheet_write.mock_calls[0][1][1])
+        self.assertEquals(1, mock_sheet_write.mock_calls[0][1][2])
+        self.assertEquals("Created", mock_sheet_write.mock_calls[0][1][3])
+
+        print mock_sheet_write.mock_calls[1][1]
+        self.assertEquals(1, mock_sheet_write.mock_calls[1][1][1])
+        self.assertEquals(2, mock_sheet_write.mock_calls[1][1][2])
+        self.assertEquals("GDPR_agreed", mock_sheet_write.mock_calls[1][1][3])
+
+        # worksheet entry for Created (cell 2,1)
+        print mock_sheet_write.mock_calls[2][1]
+        self.assertEquals(2, mock_sheet_write.mock_calls[2][1][1])
+        self.assertEquals(1, mock_sheet_write.mock_calls[2][1][2])
+        self.assertIsNot(0, len(mock_sheet_write.mock_calls[2][1][3]))
+
+        # worksheet entry for GDPR (cell 2,2)
+        print mock_sheet_write.mock_calls[3][1]
+        self.assertEquals(2, mock_sheet_write.mock_calls[3][1][1])
+        self.assertEquals(2, mock_sheet_write.mock_calls[3][1][2])
+        self.assertEquals("False", mock_sheet_write.mock_calls[3][1][3])
+
+        # TODO - before going live!!!!
+        # 1. Add more fields - allow all submission record fields to be used
+        # 2. Test multiple rows in export
+        # 3. Add Talk
+        # 4. Add Speaker
