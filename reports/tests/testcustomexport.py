@@ -5,11 +5,17 @@
 # -----------------------------------------------------
 
 import unittest
+from mock import Mock, patch, call
+import mock
 
 from google.appengine.ext import testbed
 
 from conference_lib import conference
-from reports import customexport
+from reports import customexport, exportexcel
+import cloudstorage, xlsxwriter # ************************
+from xlsxwriter import worksheet
+import xlsxwriter
+
 
 class TestCustomReport(unittest.TestCase):
     def setUp(self):
@@ -83,3 +89,40 @@ class TestCustomReport(unittest.TestCase):
 
         potter_report.replace_submission_options(["Ernie", "Meenie", "Moo"])
         self.assertEquals(["Ernie", "Meenie", "Moo"], potter_report.submission_options())
+
+    @patch('reports.customexport.worksheet_write_wrapper')
+    @patch('cloudstorage.open')
+    def test_excel_export(self, mock_storage_open, mock_sheet_write):
+        potter_report_key = customexport.mk_report(self.conf.key, "Potter")
+        potter_report = potter_report_key.get()
+
+        self.assertEquals(0, mock_storage_open.call_count)
+        url = potter_report.export_submissions_to_excel([])
+        self.assertEquals(1, mock_storage_open.call_count)
+        self.assertEquals("https:///mimas-aotb.appspot.com.storage.googleapis.com/Potter", url[0:61])
+
+        # nothing to export
+        self.assertEquals(0, mock_sheet_write.call_count)
+
+        # add some headers
+        potter_report.add_submission_options(["Gryffindor", "Ravenclaw", "Slytherin", "Hufflepuff"])
+        potter_report.export_submissions_to_excel([])
+        self.assertEquals(4, mock_sheet_write.call_count)
+
+        # multiple asserts appears long winded, should be closer to
+        #self.assertEquals(worksheet_object, mock_sheet_write.mock_calls[0][1])
+        # but
+        # a. worksheet object is a memory location so will change
+        # b. "ValueError: too many values to unpack"
+
+        self.assertEquals(1, mock_sheet_write.mock_calls[0][1][1])
+        self.assertEquals(1, mock_sheet_write.mock_calls[0][1][2])
+        self.assertEquals("Gryffindor", mock_sheet_write.mock_calls[0][1][3])
+
+        self.assertEquals("Ravenclaw", mock_sheet_write.mock_calls[1][1][3])
+        self.assertEquals("Slytherin", mock_sheet_write.mock_calls[2][1][3])
+
+        self.assertEquals(1, mock_sheet_write.mock_calls[3][1][1])
+        self.assertEquals(4, mock_sheet_write.mock_calls[3][1][2])
+        self.assertEquals("Hufflepuff", mock_sheet_write.mock_calls[3][1][3])
+

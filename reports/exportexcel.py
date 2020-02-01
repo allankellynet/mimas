@@ -52,10 +52,7 @@ def write_submissions_list(worksheet, subs_keys):
         row = row + 1
 
 def export_submissions_to_excel(submission_keys):
-    now = datetime.now()
-    bucketname = "/mimas-aotb.appspot.com"
-    filename = bucketname + "/Export" + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + ".xlsx"
-    fullname = bucketname + filename
+    fullname, url = mk_filename("Export", datetime.now())
     with cloudstorage.open(fullname, "w",
                            content_type="text/plain; charset=utf-8",
                            options={'x-goog-acl': 'public-read'}) as output:
@@ -66,6 +63,10 @@ def export_submissions_to_excel(submission_keys):
         workbook.close()
 
     output.close()
+    return url
 
-    return "http://" + bucketname + ".storage.googleapis.com" + filename
+def mk_filename(base, now):
+    bucketname = "/mimas-aotb.appspot.com"
+    filename = "/" + base + str(now.month) + str(now.day) + str(now.hour) + str(now.minute) + ".xlsx"
+    return (bucketname + filename), ("https://" + bucketname + ".storage.googleapis.com" + filename)
 

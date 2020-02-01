@@ -5,11 +5,15 @@
 # -----------------------------------------------------
 
 # system imports
+import datetime
 
 # framework imports
 from google.appengine.ext import ndb
+import cloudstorage
+import xlsxwriter
 
 # app imports
+import exportexcel
 
 class CustomExport(ndb.Model):
     report_name_db = ndb.StringProperty()
@@ -36,6 +40,35 @@ class CustomExport(ndb.Model):
         self.submission_options_db = options
         self.put()
 
+    def write_title_row(self, worksheet):
+        print "++++++++++++++++++++++++++++++++ write_title_row"
+        column = 1
+        for opt in self.submission_options_db:
+            print 1, column, opt
+            worksheet_write_wrapper(worksheet, 1, column, opt)
+            column = column + 1
+
+    def write_submissions_list(self, wks, submissions):
+        for sub in submissions:
+            pass
+
+    def export_submissions_to_excel(self, submission_keys):
+        fullname, url = exportexcel.mk_filename(self.report_name_db, datetime.datetime.now())
+        with cloudstorage.open(fullname, "w",
+                           content_type="text/plain; charset=utf-8",
+                           options={'x-goog-acl': 'public-read'}) as output:
+            workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+            worksheet = workbook.add_worksheet()
+            self.write_title_row(worksheet)
+            self.write_submissions_list(worksheet, submission_keys)
+            workbook.close()
+
+        output.close()
+        return url
+
+def worksheet_write_wrapper(wksheet, row, col, text):
+    wksheet.write(row, col, text)
+
 def list_all_report_names(conf_key):
     # Did want to use a projection query here but
     # not for the first time projection query doesn't work
@@ -58,3 +91,4 @@ def mk_report(conf_key, report_name):
     rpt.report_name_db = report_name
     rpt.put()
     return rpt.key
+
