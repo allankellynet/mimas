@@ -3,6 +3,8 @@
 # (c) Allan Kelly 2016-2020 http://www.allankelly.net
 # Licensed under MIT License, see LICENSE file
 # -----------------------------------------------------
+# submissionopts.py - Submission Options
+# Built for custom reports
 
 # System imports
 
@@ -17,6 +19,7 @@ def write_created(sub):
 def write_gdpr(sub):
     return str(sub.gdpr_agreed_flag)
 
+#                      Key -> ("Description", writer_func)
 submission_options = {"created": ("Date and time created", write_created),
                       "track": ("Track", None),
                       "format": ("Format", None),
