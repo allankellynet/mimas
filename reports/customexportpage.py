@@ -11,18 +11,12 @@ from google.appengine.ext import ndb
 
 # Local imports
 import basehandler
-from reports import customexport
+from reports import customexport, submissionopts
 from submission_lib import submissionrecord, submissions_aux
 
 class CustomExportPage(basehandler.BaseHandler):
     def get(self):
         conf_key = ndb.Key(urlsafe=self.request.get("conf_key"))
-
-        submission_options = {"Track": "track",
-                              "Format": "format",
-                              "Decision": "decision",
-                              "Final decision": "final_decision",
-                              }
 
         report_name=""
         report_record = customexport.CustomExport()
@@ -34,7 +28,7 @@ class CustomExportPage(basehandler.BaseHandler):
             report_key = report_record.key
 
         self.write_page('reports/customexportpage.html', {"conf_key": conf_key,
-                                                          "submission_options": submission_options,
+                                                          "submission_options": submissionopts.submission_options,
                                                           "reports": customexport.list_all_report_names(conf_key),
                                                           "report_name": report_name,
                                                           "report_key": report_key,

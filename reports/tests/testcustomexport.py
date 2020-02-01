@@ -132,8 +132,8 @@ class TestCustomReport(unittest.TestCase):
         sub_report = sub_report_key.get()
         self.assertEquals([], sub_report.submission_options())
 
-        sub_report.add_submission_options(["Created"])
-        sub_report.add_submission_options(["GDPR_agreed"])
+        sub_report.add_submission_options(["created"])
+        sub_report.add_submission_options(["grdp_agreed"])
 
         conf_key = None
         t1 = None # talk.Talk()
@@ -149,12 +149,12 @@ class TestCustomReport(unittest.TestCase):
         print mock_sheet_write.mock_calls[0][1]
         self.assertEquals(1, mock_sheet_write.mock_calls[0][1][1])
         self.assertEquals(1, mock_sheet_write.mock_calls[0][1][2])
-        self.assertEquals("Created", mock_sheet_write.mock_calls[0][1][3])
+        self.assertEquals("created", mock_sheet_write.mock_calls[0][1][3])
 
         print mock_sheet_write.mock_calls[1][1]
         self.assertEquals(1, mock_sheet_write.mock_calls[1][1][1])
         self.assertEquals(2, mock_sheet_write.mock_calls[1][1][2])
-        self.assertEquals("GDPR_agreed", mock_sheet_write.mock_calls[1][1][3])
+        self.assertEquals("grdp_agreed", mock_sheet_write.mock_calls[1][1][3])
 
         # worksheet entry for Created (cell 2,1)
         print mock_sheet_write.mock_calls[2][1]
@@ -169,6 +169,8 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals("False", mock_sheet_write.mock_calls[3][1][3])
 
         # TODO - before going live!!!!
+        # 0. Merge submission_options in customexportpage with submission_field_writers
+        #    probably a seperate file map key->(description, function)
         # 1. Add more fields - allow all submission record fields to be used
         # 2. Test multiple rows in export
         # 3. Add Talk

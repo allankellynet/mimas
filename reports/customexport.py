@@ -13,13 +13,7 @@ import cloudstorage
 import xlsxwriter
 
 # app imports
-import exportexcel
-
-def write_created(sub):
-    return str(sub.created)
-
-def write_gdpr(sub):
-    return str(sub.gdpr_agreed_flag)
+import exportexcel, submissionopts
 
 class CustomExport(ndb.Model):
     report_name_db = ndb.StringProperty()
@@ -74,12 +68,9 @@ class CustomExport(ndb.Model):
         output.close()
         return url
 
-    submission_field_writers = { "Created": write_created,
-                                 "GDPR_agreed" : write_gdpr,
-                                 }
-
     def write_submission_field(self, opt, sub, wks, row, column):
-        worksheet_write_wrapper(wks, row, column, self.submission_field_writers[opt](sub.get()))
+        worksheet_write_wrapper(wks, row, column,
+                                submissionopts.submission_options[opt][1](sub.get()))
 
 
 def worksheet_write_wrapper(wksheet, row, col, text):

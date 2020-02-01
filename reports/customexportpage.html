@@ -26,11 +26,11 @@
     <h3>Talk details</h3>
     <h3>Speaker details</h3>
     <h3>Submission details</h3>
-    {% for opt in submission_options.keys(): %}
-        <p/><input type="checkbox" name="SubmissionOption" value="{{opt}}"
-                   {% if opt in rpt_subs_options: %}
+    {% for opt_key in submission_options.keys(): %}
+        <p/><input type="checkbox" name="SubmissionOption" value="{{opt_key}}"
+                   {% if opt_key in rpt_subs_options: %}
                        checked
-                    {% endif %} > {{opt}}
+                    {% endif %} > {{ submission_options[opt_key][0] }}
     {% endfor %}
     <hr/>
     <h3>Existing reports</h3>
