@@ -22,7 +22,7 @@ def write_decision(sub, review_round):
 def write_option(option_list, opt):
     return option_list[opt]
 
-#                      Key -> ("Description", writer_func)
+#  Key -> ("Description", writer_func)
 submission_options = {
     "created": ("Date and time created",
         lambda sub:write_str(sub.created)),
