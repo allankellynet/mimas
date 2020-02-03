@@ -43,7 +43,7 @@ class CustomExport(ndb.Model):
     def write_title_row(self, worksheet):
         column = 1
         for opt in self.submission_options_db:
-            worksheet_write_wrapper(worksheet, 1, column, opt)
+            worksheet_write_wrapper(worksheet, 1, column, submissionopts.submission_options[opt][0])
             column = column + 1
 
     def write_submissions_list(self, wks, submissions):
@@ -69,9 +69,16 @@ class CustomExport(ndb.Model):
         return url
 
     def write_submission_field(self, opt, sub, wks, row, column):
-        worksheet_write_wrapper(wks, row, column,
-                                submissionopts.submission_options[opt][1](sub.get()))
+        write_func = submissionopts.submission_options[opt][1]
+        if write_func is None:
+            write_func = write_null
 
+        worksheet_write_wrapper(wks, row, column,
+                                write_func(sub.get()))
+
+
+def write_null(submission):
+    return ""
 
 def worksheet_write_wrapper(wksheet, row, col, text):
     wksheet.write(row, col, text)

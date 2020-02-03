@@ -134,6 +134,7 @@ class TestCustomReport(unittest.TestCase):
 
         sub_report.add_submission_options(["created"])
         sub_report.add_submission_options(["grdp_agreed"])
+        sub_report.add_submission_options(["track"])
 
         conf_key = None
         t1 = None # talk.Talk()
@@ -141,36 +142,37 @@ class TestCustomReport(unittest.TestCase):
         #t1.put()
         sub = submissionrecord.make_submission(t1, None, "track", "format").get()
 
-        print "???????????????????????????????????????????????? export_submissions_to_excel"
         sub_report.export_submissions_to_excel([sub.key])
-        self.assertEquals(4, mock_sheet_write.call_count)
-        print "???????????????????????????????????????????????? =4"
+        self.assertEquals(6, mock_sheet_write.call_count)
 
+        # test header row
         print mock_sheet_write.mock_calls[0][1]
-        self.assertEquals(1, mock_sheet_write.mock_calls[0][1][1])
-        self.assertEquals(1, mock_sheet_write.mock_calls[0][1][2])
-        self.assertEquals("created", mock_sheet_write.mock_calls[0][1][3])
+        header_row=1
+        # cell A1 (1,1) contains "created"
+        self.assertEquals((header_row,1,"Date and time created"), mock_sheet_write.mock_calls[0][1][1:])
 
         print mock_sheet_write.mock_calls[1][1]
-        self.assertEquals(1, mock_sheet_write.mock_calls[1][1][1])
-        self.assertEquals(2, mock_sheet_write.mock_calls[1][1][2])
-        self.assertEquals("grdp_agreed", mock_sheet_write.mock_calls[1][1][3])
+        self.assertEquals((header_row,2,"Agreed GDPR policy"), mock_sheet_write.mock_calls[1][1][1:])
 
-        # worksheet entry for Created (cell 2,1)
         print mock_sheet_write.mock_calls[2][1]
-        self.assertEquals(2, mock_sheet_write.mock_calls[2][1][1])
-        self.assertEquals(1, mock_sheet_write.mock_calls[2][1][2])
-        self.assertIsNot(0, len(mock_sheet_write.mock_calls[2][1][3]))
+        self.assertEquals((header_row,3,"Track"), mock_sheet_write.mock_calls[2][1][1:])
+
+        # test data rows
+        data_row1 = 2
+        # worksheet entry for Created (cell 2,1)
+        print mock_sheet_write.mock_calls[3][1]
+        self.assertEquals((data_row1, 1), mock_sheet_write.mock_calls[3][1][1:3])
+        # datetime.now hasn't been stubbed so just test it is not empty
+        self.assertIsNot(0, len(mock_sheet_write.mock_calls[3][1][3]))
 
         # worksheet entry for GDPR (cell 2,2)
-        print mock_sheet_write.mock_calls[3][1]
-        self.assertEquals(2, mock_sheet_write.mock_calls[3][1][1])
-        self.assertEquals(2, mock_sheet_write.mock_calls[3][1][2])
-        self.assertEquals("False", mock_sheet_write.mock_calls[3][1][3])
+        self.assertEquals((data_row1, 2, "False"), mock_sheet_write.mock_calls[4][1][1:])
+
+        self.assertEquals((data_row1, 3, "Track"), mock_sheet_write.mock_calls[5][1][1:])
+
 
         # TODO - before going live!!!!
-        # 0. Merge submission_options in customexportpage with submission_field_writers
-        #    probably a seperate file map key->(description, function)
+
         # 1. Add more fields - allow all submission record fields to be used
         # 2. Test multiple rows in export
         # 3. Add Talk
