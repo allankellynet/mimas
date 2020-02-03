@@ -12,6 +12,7 @@
 
 # Local imports
 from submission_lib import submissionrecord
+from speaker_lib import speaker
 
 def write_str(s):
     return str(s)
@@ -60,4 +61,24 @@ submission_options = {
         lambda sub: write_str(sub.talk.parent().get().later_names())),
     "picture": ("Picture",
         lambda sub: write_str(sub.talk.parent().get().full_image_url())),
+    "webpage": ("Webpage",
+        lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_WEBPAGE))),
+    "blog": ("Blog",
+        lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_BLOG))),
+    "linkedin": ("Linkedin",
+        lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_LINKEDIN))),
+    "country": ("Country",
+        lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_COUNTRY))),
+    "twitter": ("Twitter",
+        lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_TWITTER))),
+    "affiliation": ("Affiliation",
+        lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_AFFILICATION))),
+    "experience": ("Experience",
+        lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_EXPERIENCE))),
+    "telephone": ("Telephone",
+        lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_TELEPHONE))),
+    "address": ("Address",
+        lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_ADDRESS))),
+    "jobtitle": ("JobTitle",
+        lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_JOBTITLE))),
 }

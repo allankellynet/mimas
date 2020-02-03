@@ -124,7 +124,7 @@ class TestCustomReport(unittest.TestCase):
         sub_report.add_submission_options(["created", "grdp_agreed", "track", "duration", "decision1", "decision2",
                                            "format", "withdrawn", "speaker_comms", "expenses",
                                            "title", "short_synopsis", "long_synopsis",
-                                           "email", "first_name", "last_name", "picture",
+                                           "email", "first_name", "last_name", "picture", "blog",
                                           ])
 
         # add some detail to conference to check mappings
@@ -137,6 +137,7 @@ class TestCustomReport(unittest.TestCase):
         spk = spk_key.get()
         spk.set_first_name("Harry")
         spk.set_later_names("J Potter")
+        spk.set_field(speaker.Speaker.FIELD_BLOG, "www.myblog.com")
         spk.put()
 
         t1 = talk.Talk(parent=spk_key)
@@ -154,7 +155,7 @@ class TestCustomReport(unittest.TestCase):
         sub.set_review_decision(2, "Decline")
 
         sub_report.export_submissions_to_excel([sub.key])
-        self.assertEquals(34, mock_sheet_write.call_count)
+        self.assertEquals(36, mock_sheet_write.call_count)
 
         # test header row
         call_cnt = 0
@@ -195,6 +196,8 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals((header_row, 16, "Later names"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
         self.assertEquals((header_row, 17, "Picture"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 18, "Blog"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
         # test data rows
@@ -239,9 +242,10 @@ class TestCustomReport(unittest.TestCase):
         call_cnt += 1
         self.assertEquals((data_row1, 17, "/sorry_page?reason=NoImage"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
+        self.assertEquals((data_row1, 18, "www.myblog.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
 
         # TODO - before going live!!!!
-        # 4. Add Speaker
         # 5. Co speakers
 
     def test_excel_export_with_multiple_rows(self):
