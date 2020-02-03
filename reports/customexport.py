@@ -54,6 +54,7 @@ class CustomExport(ndb.Model):
             for opt in self.submission_options_db:
                 self.write_submission_field(opt, sub, wks, row, column)
                 column = column +1
+            row += 1
 
     def export_submissions_to_excel(self, submission_keys):
         fullname, url = exportexcel.mk_filename(self.report_name_db, datetime.datetime.now())
