@@ -13,6 +13,7 @@ from google.appengine.ext import testbed
 from conference_lib import conference, confoptions
 from reports import customexport, exportexcel
 from talk_lib import talk
+from speaker_lib import speaker
 from submission_lib import submissionrecord, submissionnotifynames
 
 class TestCustomReport(unittest.TestCase):
@@ -119,10 +120,12 @@ class TestCustomReport(unittest.TestCase):
         sub_report = sub_report_key.get()
         self.assertEquals([], sub_report.submission_options())
 
-        sub_report.add_submission_options(["created", "grdp_agreed"])
-        sub_report.add_submission_options(["track", "duration", "decision1", "decision2", "format", "withdrawn",
-                                           "speaker_comms", "expenses",
-                                           "title", "short_synopsis", "long_synopsis"])
+        sub_report.add_submission_options([])
+        sub_report.add_submission_options(["created", "grdp_agreed", "track", "duration", "decision1", "decision2",
+                                           "format", "withdrawn", "speaker_comms", "expenses",
+                                           "title", "short_synopsis", "long_synopsis",
+                                           "email", "first_name", "last_name", "picture",
+                                          ])
 
         # add some detail to conference to check mappings
         track_option = confoptions.make_conference_track(self.conf.key, "New Track")
@@ -130,7 +133,13 @@ class TestCustomReport(unittest.TestCase):
         format_option = confoptions.make_conference_option(confoptions.TalkFormatOption, self.conf.key, "Lecture")
         expenses_option = confoptions.make_conference_option(confoptions.ExpenseOptions, self.conf.key, "Longhaul")
 
-        t1 = talk.Talk()
+        spk_key = speaker.make_and_store_new_speaker("harry@hogwarts.com")
+        spk = spk_key.get()
+        spk.set_first_name("Harry")
+        spk.set_later_names("J Potter")
+        spk.put()
+
+        t1 = talk.Talk(parent=spk_key)
         t1.title = "Talk T1"
         t1.set_field("shortsynopsis", "Very short synopsis")
         t1.set_field("longsynopsis", "A much much longer synopsis that goes on and on")
@@ -145,7 +154,7 @@ class TestCustomReport(unittest.TestCase):
         sub.set_review_decision(2, "Decline")
 
         sub_report.export_submissions_to_excel([sub.key])
-        self.assertEquals(26, mock_sheet_write.call_count)
+        self.assertEquals(34, mock_sheet_write.call_count)
 
         # test header row
         call_cnt = 0
@@ -178,6 +187,14 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals((header_row, 12, "Short synopsis"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
         self.assertEquals((header_row, 13, "Long synopsis"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 14, "Email"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 15, "First name"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 16, "Later names"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 17, "Picture"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
         # test data rows
@@ -214,10 +231,20 @@ class TestCustomReport(unittest.TestCase):
         call_cnt += 1
         self.assertEquals((data_row1, 13, "A much much longer synopsis that goes on and on"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
+        self.assertEquals((data_row1, 14, "harry@hogwarts.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row1, 15, "Harry"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row1, 16, "J Potter"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row1, 17, "/sorry_page?reason=NoImage"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
 
         # TODO - before going live!!!!
-
-        # 1. Add more fields - allow all submission record fields to be used
-        # 2. Test multiple rows in export
-        # 3. Add Talk
         # 4. Add Speaker
+        # 5. Co speakers
+
+    def test_excel_export_with_multiple_rows(self):
+        # TO DO ------------------------------------
+        # TEST MULTIPLE ROWS
+        pass

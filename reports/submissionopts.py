@@ -44,10 +44,20 @@ submission_options = {
         lambda sub:write_str(sub.withdrawn)),
     "grdp_agreed": ("Agreed GDPR policy",
         lambda sub:write_str(sub.gdpr_agreed_flag)),
+    # talk details
     "title": ("Talk title",
         lambda sub:write_str(sub.talk.get().title)),
     "short_synopsis": ("Short synopsis",
         lambda sub: write_str(sub.talk.get().field("shortsynopsis"))),
     "long_synopsis": ("Long synopsis",
         lambda sub: write_str(sub.talk.get().field("longsynopsis"))),
+    # speaker details
+    "email": ("Email",
+        lambda sub: write_str(sub.talk.parent().get().email)),
+    "first_name": ("First name",
+        lambda sub: write_str(sub.talk.parent().get().first_name())),
+    "last_name": ("Later names",
+        lambda sub: write_str(sub.talk.parent().get().later_names())),
+    "picture": ("Picture",
+        lambda sub: write_str(sub.talk.parent().get().full_image_url())),
 }
