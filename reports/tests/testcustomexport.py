@@ -13,7 +13,7 @@ from google.appengine.ext import testbed
 from conference_lib import conference, confoptions
 from reports import customexport, exportexcel
 from talk_lib import talk
-from submission_lib import submissionrecord
+from submission_lib import submissionrecord, submissionnotifynames
 
 class TestCustomReport(unittest.TestCase):
     def setUp(self):
@@ -119,14 +119,15 @@ class TestCustomReport(unittest.TestCase):
         sub_report = sub_report_key.get()
         self.assertEquals([], sub_report.submission_options())
 
-        sub_report.add_submission_options(["created"])
-        sub_report.add_submission_options(["grdp_agreed"])
-        sub_report.add_submission_options(["track", "duration", "decision1", "decision2", "format", "withdrawn"])
+        sub_report.add_submission_options(["created", "grdp_agreed"])
+        sub_report.add_submission_options(["track", "duration", "decision1", "decision2", "format", "withdrawn",
+                                           "speaker_comms", "expenses"])
 
         # add some detail to conference to check mappings
         track_option = confoptions.make_conference_track(self.conf.key, "New Track")
         time_option = confoptions.make_conference_option(confoptions.DurationOption, self.conf.key, "30 minutes")
         format_option = confoptions.make_conference_option(confoptions.TalkFormatOption, self.conf.key, "Lecture")
+        expenses_option = confoptions.make_conference_option(confoptions.ExpenseOptions, self.conf.key, "Longhaul")
 
         t1 = None # talk.Talk()
         #t1.title = "Talk T1"
@@ -136,12 +137,12 @@ class TestCustomReport(unittest.TestCase):
                                                     track_option.shortname(),
                                                     format_option.shortname(),
                                                     time_option.shortname(),
-                                                    None).get()
+                                                    expenses_option.shortname()).get()
         sub.set_review_decision(1, "Shortlist")
         sub.set_review_decision(2, "Decline")
 
         sub_report.export_submissions_to_excel([sub.key])
-        self.assertEquals(16, mock_sheet_write.call_count)
+        self.assertEquals(20, mock_sheet_write.call_count)
 
         # test header row
         call_cnt = 0
@@ -164,6 +165,10 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals((header_row, 7, "Format"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
         self.assertEquals((header_row, 8, "Withdrawn"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 9, "Communication"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 10, "Expenses"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
         # test data rows
@@ -190,7 +195,10 @@ class TestCustomReport(unittest.TestCase):
         call_cnt += 1
         self.assertEquals((data_row1, 8, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-
+        self.assertEquals((data_row1, 9, submissionnotifynames.SUBMISSION_NEW), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row1, 10, "Longhaul"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
 
         # TODO - before going live!!!!
 
