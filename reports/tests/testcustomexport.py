@@ -116,11 +116,10 @@ class TestCustomReport(unittest.TestCase):
     @patch('reports.customexport.worksheet_write_wrapper')
     @patch('cloudstorage.open')
     def test_excel_export_with_data(self, mock_storage_open, mock_sheet_write):
-        sub_report_key = customexport.mk_report(self.conf.key, "SubmissionRecord")
+        sub_report_key = customexport.mk_report(self.conf.key, "AllTheFieldsReport")
         sub_report = sub_report_key.get()
         self.assertEquals([], sub_report.submission_options())
 
-        sub_report.add_submission_options([])
         sub_report.add_submission_options(["created", "grdp_agreed", "track", "duration", "decision1", "decision2",
                                            "format", "withdrawn", "speaker_comms", "expenses",
                                            "title", "short_synopsis", "long_synopsis",
@@ -253,7 +252,82 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals((data_row1, 19, "Ron Weesley (ron@howarts.com), H Granger (hgranger@howarts.com)"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
-    def test_excel_export_with_multiple_rows(self):
-        # TO DO ------------------------------------
-        # TEST MULTIPLE ROWS
-        pass
+    @patch('reports.customexport.worksheet_write_wrapper')
+    @patch('cloudstorage.open')
+    def test_excel_export_with_multiple_rows(self, mock_storage_open, mock_sheet_write):
+        sub_report_key = customexport.mk_report(self.conf.key, "MultipleRowsReport")
+        sub_report = sub_report_key.get()
+        sub_report.add_submission_options(["grdp_agreed", "speaker_comms",
+                                            "title",
+                                            "email", "first_name", "last_name"
+                                            ])
+
+        # submission 1
+        spk_key = speaker.make_and_store_new_speaker("harry@hogwarts.com")
+        spk = spk_key.get()
+        spk.set_first_name("Harry")
+        spk.set_later_names("J Potter")
+        spk.put()
+
+        harry_talk = talk.Talk(parent=spk_key)
+        harry_talk.title = "Harry talks"
+        harry_talk.put()
+        sub_key = submissionrecord.make_submission_plus(harry_talk.key, self.conf.key, None, None, None, None)
+
+        # submission 2
+        spk_key2 = speaker.make_and_store_new_speaker("Hermione@hogwarts.com")
+        spk2 = spk_key2.get()
+        spk2.set_first_name("Hermione")
+        spk2.set_later_names("Granger")
+        spk2.put()
+
+        hammy_talk = talk.Talk(parent=spk_key2)
+        hammy_talk.title = "Hermione talks"
+        hammy_talk.put()
+        sub_key2 = submissionrecord.make_submission_plus(hammy_talk.key, self.conf.key, None, None, None, None)
+
+        sub_report.export_submissions_to_excel([sub_key, sub_key2])
+        self.assertEquals(18, mock_sheet_write.call_count)
+
+        call_cnt = 0
+        header_row=1
+        self.assertEquals((header_row,1,"Agreed GDPR policy"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 2, "Communication"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 3, "Talk title"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 4, "Email"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 5, "First name"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 6, "Later names"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+
+        data_row = 2
+        self.assertEquals((data_row, 1, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 2, submissionnotifynames.SUBMISSION_NEW), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 3, "Harry talks"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 4, "harry@hogwarts.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 5, "Harry"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 6, "J Potter"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+
+        data_row = 3
+        self.assertEquals((data_row, 1, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 2, submissionnotifynames.SUBMISSION_NEW), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 3, "Hermione talks"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 4, "Hermione@hogwarts.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 5, "Hermione"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 6, "Granger"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
