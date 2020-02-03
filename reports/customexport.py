@@ -18,6 +18,7 @@ import exportexcel, submissionopts
 class CustomExport(ndb.Model):
     report_name_db = ndb.StringProperty()
     submission_options_db = ndb.StringProperty(repeated=True)
+    talks_options_db = ndb.StringProperty(repeated=True)
 
     def report_name(self):
         return self.report_name_db

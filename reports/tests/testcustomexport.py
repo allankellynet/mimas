@@ -121,7 +121,8 @@ class TestCustomReport(unittest.TestCase):
 
         sub_report.add_submission_options(["created", "grdp_agreed"])
         sub_report.add_submission_options(["track", "duration", "decision1", "decision2", "format", "withdrawn",
-                                           "speaker_comms", "expenses"])
+                                           "speaker_comms", "expenses",
+                                           "title", "short_synopsis", "long_synopsis"])
 
         # add some detail to conference to check mappings
         track_option = confoptions.make_conference_track(self.conf.key, "New Track")
@@ -129,10 +130,12 @@ class TestCustomReport(unittest.TestCase):
         format_option = confoptions.make_conference_option(confoptions.TalkFormatOption, self.conf.key, "Lecture")
         expenses_option = confoptions.make_conference_option(confoptions.ExpenseOptions, self.conf.key, "Longhaul")
 
-        t1 = None # talk.Talk()
-        #t1.title = "Talk T1"
-        #t1.put()
-        sub = submissionrecord.make_submission_plus(t1,
+        t1 = talk.Talk()
+        t1.title = "Talk T1"
+        t1.set_field("shortsynopsis", "Very short synopsis")
+        t1.set_field("longsynopsis", "A much much longer synopsis that goes on and on")
+        t1.put()
+        sub = submissionrecord.make_submission_plus(t1.key,
                                                     self.conf.key,
                                                     track_option.shortname(),
                                                     format_option.shortname(),
@@ -142,7 +145,7 @@ class TestCustomReport(unittest.TestCase):
         sub.set_review_decision(2, "Decline")
 
         sub_report.export_submissions_to_excel([sub.key])
-        self.assertEquals(20, mock_sheet_write.call_count)
+        self.assertEquals(26, mock_sheet_write.call_count)
 
         # test header row
         call_cnt = 0
@@ -169,6 +172,12 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals((header_row, 9, "Communication"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
         self.assertEquals((header_row, 10, "Expenses"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 11, "Talk title"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 12, "Short synopsis"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 13, "Long synopsis"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
         # test data rows
@@ -198,6 +207,12 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals((data_row1, 9, submissionnotifynames.SUBMISSION_NEW), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
         self.assertEquals((data_row1, 10, "Longhaul"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row1, 11, "Talk T1"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row1, 12, "Very short synopsis"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row1, 13, "A much much longer synopsis that goes on and on"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
         # TODO - before going live!!!!

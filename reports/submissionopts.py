@@ -13,8 +13,8 @@
 # Local imports
 from submission_lib import submissionrecord
 
-def write_str(flag):
-    return str(flag)
+def write_str(s):
+    return str(s)
 
 def write_decision(sub, review_round):
     return sub.review_decision(review_round)
@@ -44,4 +44,10 @@ submission_options = {
         lambda sub:write_str(sub.withdrawn)),
     "grdp_agreed": ("Agreed GDPR policy",
         lambda sub:write_str(sub.gdpr_agreed_flag)),
-    }
+    "title": ("Talk title",
+        lambda sub:write_str(sub.talk.get().title)),
+    "short_synopsis": ("Short synopsis",
+        lambda sub: write_str(sub.talk.get().field("shortsynopsis"))),
+    "long_synopsis": ("Long synopsis",
+        lambda sub: write_str(sub.talk.get().field("longsynopsis"))),
+}
