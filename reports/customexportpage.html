@@ -28,7 +28,7 @@
     <input type="submit" name="SubmitExport" value="Update report">
 
     <h3>Available fields</h3>
-    {% for opt_key in submission_options.keys(): %}
+    {% for opt_key in sorted_keys: %}
         <p/><input type="checkbox" name="SubmissionOption" value="{{opt_key}}"
                    {% if opt_key in rpt_subs_options: %}
                        checked

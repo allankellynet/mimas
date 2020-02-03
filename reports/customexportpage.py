@@ -27,8 +27,12 @@ class CustomExportPage(basehandler.BaseHandler):
             report_record = customexport.get_report_by_name(conf_key, report_name)
             report_key = report_record.key
 
+        sorted_keys = submissionopts.submission_options.keys()
+        sorted_keys.sort()
+
         self.write_page('reports/customexportpage.html', {"conf_key": conf_key,
                                                           "submission_options": submissionopts.submission_options,
+                                                          "sorted_keys": sorted_keys,
                                                           "reports": customexport.list_all_report_names(conf_key),
                                                           "report_name": report_name,
                                                           "report_key": report_key,
