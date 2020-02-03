@@ -25,11 +25,15 @@ def write_track(sub):
 def write_duration(sub):
     return sub.key.parent().get().duration_options()[sub.duration]
 
+def write_decision(sub, review_round):
+    return sub.review_decision(review_round)
+
 #                      Key -> ("Description", writer_func)
 submission_options = {"created": ("Date and time created", write_created),
                       "track": ("Track", write_track),
                       "format": ("Format", None),
-                      "decision": ("Decision", None),
+                      "decision1": ("Decision round 1", lambda sub:write_decision(sub, 1)),
+                      "decision2": ("Decision round 2", lambda sub:write_decision(sub, 2)),
                       "final_decision": ("Final decision", None),
                       "grdp_agreed": ("Agreed GDPR policy", write_gdpr),
                       "duration": ("Length", write_duration),

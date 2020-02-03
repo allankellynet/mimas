@@ -103,20 +103,14 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals(0, mock_sheet_write.call_count)
 
         # add some headers
-        potter_report.add_submission_options(["created", "track", "format", "decision"])
+        potter_report.add_submission_options(["created", "track", "format", "decision1"])
         potter_report.export_submissions_to_excel([])
         self.assertEquals(4, mock_sheet_write.call_count)
-
-        # multiple asserts appears long winded, should be closer to
-        #self.assertEquals(worksheet_object, mock_sheet_write.mock_calls[0][1])
-        # but
-        # a. worksheet object is a memory location so will change
-        # b. "ValueError: too many values to unpack"
 
         self.assertEquals( (1,1, "Date and time created"), mock_sheet_write.mock_calls[0][1][1:])
         self.assertEquals( (1,2, "Track"), mock_sheet_write.mock_calls[1][1][1:])
         self.assertEquals( (1,3, "Format"), mock_sheet_write.mock_calls[2][1][1:])
-        self.assertEquals( (1,4, "Decision"), mock_sheet_write.mock_calls[3][1][1:])
+        self.assertEquals( (1,4, "Decision round 1"), mock_sheet_write.mock_calls[3][1][1:])
 
     @patch('reports.customexport.worksheet_write_wrapper')
     @patch('cloudstorage.open')
@@ -127,13 +121,12 @@ class TestCustomReport(unittest.TestCase):
 
         sub_report.add_submission_options(["created"])
         sub_report.add_submission_options(["grdp_agreed"])
-        sub_report.add_submission_options(["track", "duration"])
+        sub_report.add_submission_options(["track", "duration", "decision1", "decision2"])
 
         # add some detail to conference to check mappings
         track_option = confoptions.make_conference_track(self.conf.key, "New Track")
         time_option = confoptions.make_conference_option(confoptions.DurationOption, self.conf.key, "30 minutes")
 
-        self.assertEquals(track_option.shortname(), "Option1")
 
         t1 = None # talk.Talk()
         #t1.title = "Talk T1"
@@ -144,11 +137,11 @@ class TestCustomReport(unittest.TestCase):
                                                     None,
                                                     time_option.shortname(),
                                                     None).get()
-
-        # submissionrecord.make_submission(t1, self.conf.key, track_option.shortname(), "format").get()
+        sub.set_review_decision(1, "Shortlist")
+        sub.set_review_decision(2, "Decline")
 
         sub_report.export_submissions_to_excel([sub.key])
-        self.assertEquals(8, mock_sheet_write.call_count)
+        self.assertEquals(12, mock_sheet_write.call_count)
 
         # test header row
         call_cnt = 0
@@ -162,7 +155,12 @@ class TestCustomReport(unittest.TestCase):
 
         self.assertEquals((header_row,3,"Track"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 4, "Length"), mock_sheet_write.mock_calls[3][1][1:])
+        self.assertEquals((header_row, 4, "Length"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+
+        self.assertEquals((header_row, 5, "Decision round 1"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 6, "Decision round 2"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
         # test data rows
@@ -180,6 +178,10 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals((data_row1, 3, "New Track"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
         self.assertEquals((data_row1, 4, "30 minutes"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row1, 5, "Shortlist"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row1, 6, "Decline"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
 
