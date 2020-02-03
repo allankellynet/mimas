@@ -10,7 +10,7 @@ import mock
 
 from google.appengine.ext import testbed
 
-from conference_lib import conference
+from conference_lib import conference, confoptions
 from reports import customexport, exportexcel
 from talk_lib import talk
 from submission_lib import submissionrecord
@@ -103,7 +103,7 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals(0, mock_sheet_write.call_count)
 
         # add some headers
-        potter_report.add_submission_options(["Gryffindor", "Ravenclaw", "Slytherin", "Hufflepuff"])
+        potter_report.add_submission_options(["created", "track", "format", "decision"])
         potter_report.export_submissions_to_excel([])
         self.assertEquals(4, mock_sheet_write.call_count)
 
@@ -113,62 +113,74 @@ class TestCustomReport(unittest.TestCase):
         # a. worksheet object is a memory location so will change
         # b. "ValueError: too many values to unpack"
 
-        self.assertEquals(1, mock_sheet_write.mock_calls[0][1][1])
-        self.assertEquals(1, mock_sheet_write.mock_calls[0][1][2])
-        self.assertEquals("Gryffindor", mock_sheet_write.mock_calls[0][1][3])
-
-        self.assertEquals("Ravenclaw", mock_sheet_write.mock_calls[1][1][3])
-        self.assertEquals("Slytherin", mock_sheet_write.mock_calls[2][1][3])
-
-        self.assertEquals(1, mock_sheet_write.mock_calls[3][1][1])
-        self.assertEquals(4, mock_sheet_write.mock_calls[3][1][2])
-        self.assertEquals("Hufflepuff", mock_sheet_write.mock_calls[3][1][3])
+        self.assertEquals( (1,1, "Date and time created"), mock_sheet_write.mock_calls[0][1][1:])
+        self.assertEquals( (1,2, "Track"), mock_sheet_write.mock_calls[1][1][1:])
+        self.assertEquals( (1,3, "Format"), mock_sheet_write.mock_calls[2][1][1:])
+        self.assertEquals( (1,4, "Decision"), mock_sheet_write.mock_calls[3][1][1:])
 
     @patch('reports.customexport.worksheet_write_wrapper')
     @patch('cloudstorage.open')
     def test_excel_export_with_data(self, mock_storage_open, mock_sheet_write):
-        print "???????????????????????????????????????????????????????????????????????"
         sub_report_key = customexport.mk_report(self.conf.key, "SubmissionRecord")
         sub_report = sub_report_key.get()
         self.assertEquals([], sub_report.submission_options())
 
         sub_report.add_submission_options(["created"])
         sub_report.add_submission_options(["grdp_agreed"])
-        sub_report.add_submission_options(["track"])
+        sub_report.add_submission_options(["track", "duration"])
 
-        conf_key = None
+        # add some detail to conference to check mappings
+        track_option = confoptions.make_conference_track(self.conf.key, "New Track")
+        time_option = confoptions.make_conference_option(confoptions.DurationOption, self.conf.key, "30 minutes")
+
+        self.assertEquals(track_option.shortname(), "Option1")
+
         t1 = None # talk.Talk()
         #t1.title = "Talk T1"
         #t1.put()
-        sub = submissionrecord.make_submission(t1, None, "track", "format").get()
+        sub = submissionrecord.make_submission_plus(t1,
+                                                    self.conf.key,
+                                                    track_option.shortname(),
+                                                    None,
+                                                    time_option.shortname(),
+                                                    None).get()
+
+        # submissionrecord.make_submission(t1, self.conf.key, track_option.shortname(), "format").get()
 
         sub_report.export_submissions_to_excel([sub.key])
-        self.assertEquals(6, mock_sheet_write.call_count)
+        self.assertEquals(8, mock_sheet_write.call_count)
 
         # test header row
-        print mock_sheet_write.mock_calls[0][1]
+        call_cnt = 0
         header_row=1
         # cell A1 (1,1) contains "created"
-        self.assertEquals((header_row,1,"Date and time created"), mock_sheet_write.mock_calls[0][1][1:])
+        self.assertEquals((header_row,1,"Date and time created"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
 
-        print mock_sheet_write.mock_calls[1][1]
-        self.assertEquals((header_row,2,"Agreed GDPR policy"), mock_sheet_write.mock_calls[1][1][1:])
+        self.assertEquals((header_row,2,"Agreed GDPR policy"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
 
-        print mock_sheet_write.mock_calls[2][1]
-        self.assertEquals((header_row,3,"Track"), mock_sheet_write.mock_calls[2][1][1:])
+        self.assertEquals((header_row,3,"Track"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 4, "Length"), mock_sheet_write.mock_calls[3][1][1:])
+        call_cnt += 1
 
         # test data rows
         data_row1 = 2
         # worksheet entry for Created (cell 2,1)
-        print mock_sheet_write.mock_calls[3][1]
-        self.assertEquals((data_row1, 1), mock_sheet_write.mock_calls[3][1][1:3])
+        self.assertEquals((data_row1, 1), mock_sheet_write.mock_calls[call_cnt][1][1:3])
         # datetime.now hasn't been stubbed so just test it is not empty
-        self.assertIsNot(0, len(mock_sheet_write.mock_calls[3][1][3]))
+        self.assertIsNot(0, len(mock_sheet_write.mock_calls[call_cnt][1][3]))
+        call_cnt += 1
 
         # worksheet entry for GDPR (cell 2,2)
-        self.assertEquals((data_row1, 2, "False"), mock_sheet_write.mock_calls[4][1][1:])
+        self.assertEquals((data_row1, 2, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
 
-        self.assertEquals((data_row1, 3, "Track"), mock_sheet_write.mock_calls[5][1][1:])
+        self.assertEquals((data_row1, 3, "New Track"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row1, 4, "30 minutes"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
 
 
         # TODO - before going live!!!!
