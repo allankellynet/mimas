@@ -19,23 +19,20 @@
 	{% include "scaffold/topmenu.html" %}
 <form method="post">
     <a href="/speakercomms?conf={{conf_key.urlsafe()}}">Speaker communications page</a>
-    <br/><br/>
+    <h3>Existing reports</h3>
+    {% for rpt in reports: %}
+        <p><a href="/customexport?conf_key={{conf_key.urlsafe()}}&report={{rpt}}">{{rpt}}</a></p>
+    {% endfor %}
+    <hr/>
     <input type="text" name="ExportName" value="{{report_name}}">
     <input type="submit" name="SubmitExport" value="Update report">
 
-    <h3>Talk details</h3>
-    <h3>Speaker details</h3>
-    <h3>Submission details</h3>
+    <h3>Available fields</h3>
     {% for opt_key in submission_options.keys(): %}
         <p/><input type="checkbox" name="SubmissionOption" value="{{opt_key}}"
                    {% if opt_key in rpt_subs_options: %}
                        checked
                     {% endif %} > {{ submission_options[opt_key][0] }}
-    {% endfor %}
-    <hr/>
-    <h3>Existing reports</h3>
-    {% for rpt in reports: %}
-        <p><a href="/customexport?conf_key={{conf_key.urlsafe()}}&report={{rpt}}">{{rpt}}</a></p>
     {% endfor %}
 
     {% if report_key: %}
