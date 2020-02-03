@@ -13,7 +13,7 @@ from google.appengine.ext import testbed
 from conference_lib import conference, confoptions
 from reports import customexport, exportexcel
 from talk_lib import talk
-from speaker_lib import speaker
+from speaker_lib import speaker, cospeaker
 from submission_lib import submissionrecord, submissionnotifynames
 
 class TestCustomReport(unittest.TestCase):
@@ -125,6 +125,7 @@ class TestCustomReport(unittest.TestCase):
                                            "format", "withdrawn", "speaker_comms", "expenses",
                                            "title", "short_synopsis", "long_synopsis",
                                            "email", "first_name", "last_name", "picture", "blog",
+                                           "cospeakers",
                                           ])
 
         # add some detail to conference to check mappings
@@ -154,8 +155,11 @@ class TestCustomReport(unittest.TestCase):
         sub.set_review_decision(1, "Shortlist")
         sub.set_review_decision(2, "Decline")
 
+        cospeaker.make_cospeaker(sub.key, "Ron Weesley", "ron@howarts.com")
+        cospeaker.make_cospeaker(sub.key, "H Granger", "hgranger@howarts.com")
+
         sub_report.export_submissions_to_excel([sub.key])
-        self.assertEquals(36, mock_sheet_write.call_count)
+        self.assertEquals(38, mock_sheet_write.call_count)
 
         # test header row
         call_cnt = 0
@@ -198,6 +202,8 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals((header_row, 17, "Picture"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
         self.assertEquals((header_row, 18, "Blog"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 19, "Co-speakers"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
         # test data rows
@@ -244,9 +250,8 @@ class TestCustomReport(unittest.TestCase):
         call_cnt += 1
         self.assertEquals((data_row1, 18, "www.myblog.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-
-        # TODO - before going live!!!!
-        # 5. Co speakers
+        self.assertEquals((data_row1, 19, "Ron Weesley (ron@howarts.com), H Granger (hgranger@howarts.com)"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
 
     def test_excel_export_with_multiple_rows(self):
         # TO DO ------------------------------------

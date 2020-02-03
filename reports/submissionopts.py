@@ -12,7 +12,7 @@
 
 # Local imports
 from submission_lib import submissionrecord
-from speaker_lib import speaker
+from speaker_lib import speaker, cospeaker
 
 def write_str(s):
     return str(s)
@@ -81,4 +81,6 @@ submission_options = {
         lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_ADDRESS))),
     "jobtitle": ("JobTitle",
         lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_JOBTITLE))),
+    "cospeakers": ("Co-speakers",
+        lambda sub: write_str(cospeaker.get_pretty_list(sub.key))),
 }
