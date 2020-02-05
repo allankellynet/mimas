@@ -32,6 +32,8 @@ def retrieve_special_rights_conferences(user_email):
 
     return results
 
+def test_retrieve_conferences_not_finished():
+    return Conference.query(Conference.conf_state != "Finished").filter().fetch()
 
 def get_conf_by_name(n):
     confs = Conference.query().filter(Conference.conf_name == n).fetch(1)

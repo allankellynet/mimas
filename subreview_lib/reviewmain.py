@@ -19,7 +19,7 @@ import confreviewconfig, reviewer
 class ReviewMainPage(basehandler.BaseHandler):
     def get(self):
         username = self.get_crrt_user().email()
-        all_conf = confdb.retrieve_all_conferences()
+        all_conf = confdb.test_retrieve_conferences_not_finished()
 
         conference_key = self.get_crrt_conference_key()
         if conference_key is None:
