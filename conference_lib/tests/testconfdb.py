@@ -169,30 +169,35 @@ class TestConferenceRetrieval(unittest.TestCase):
         self.assertEquals(None, conf2_key.get())
         self.assertEquals(None, confdb.get_conf_by_name("WorldConf 2000"))
 
-    def test_retrieve_conferences_not_finished(self):
+    def test_retrieve_conferences_in_review(self):
         self.assertEquals([], confdb.test_retrieve_conferences_not_finished())
 
-        conf2016 = conference.Conference()
-        conf2016.name = "WorldConf 2016"
-        conf2016.open_for_submissions()
-        conf2016.put()
+        conf_open = conference.Conference()
+        conf_open.name = "WorldConf 2016"
+        conf_open.open_for_submissions()
+        conf_open.put()
 
-        conf2017 = conference.Conference()
-        conf2017.name = "WorldConf 2017"
-        conf2017.close_submissions()
-        conf2017.put()
+        conf_closed = conference.Conference()
+        conf_closed.name = "WorldConf 2017"
+        conf_closed.close_submissions()
+        conf_closed.put()
 
-        conf2018 = conference.Conference()
-        conf2018.name = "WorldConf 2018"
-        conf2018.start_round1_reviews()
-        conf2018.put()
+        conf_r1_review = conference.Conference()
+        conf_r1_review.name = "WorldConf 2018"
+        conf_r1_review.start_round1_reviews()
+        conf_r1_review.put()
 
-        conf2019 = conference.Conference()
-        conf2019.name = "WorldConf 2019"
-        conf2019.finish_reviews()
-        conf2019.put()
+        conf_r2_review = conference.Conference()
+        conf_r2_review.name = "WorldConf 2019"
+        conf_r2_review.start_round2_reviews()
+        conf_r2_review.put()
 
-        expected_results = [conf2016, conf2017, conf2018]
+        conf_finished = conference.Conference()
+        conf_finished.name = "WorldConf 2020"
+        conf_finished.finish_reviews()
+        conf_finished.put()
+
+        expected_results = [conf_r1_review, conf_r2_review]
         expected_results.sort()
         actual_results = confdb.test_retrieve_conferences_not_finished()
         actual_results.sort()
