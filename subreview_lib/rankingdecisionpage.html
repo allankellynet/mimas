@@ -1,4 +1,4 @@
-<!-- 
+<!--
 -----------------------------------------------------
 # Mimas: conference submission and review system
 # (c) Allan Kelly 2016-2020 http://www.allankelly.net
@@ -10,7 +10,7 @@
 {% include "scaffold/incbootstrap.html" %}
 
 <head>
-    <meta charset="UTF-8">
+	<meta charset="UTF-8">
     <title>Round 2 Review Summary</title>
 </head>
 
@@ -90,7 +90,7 @@ function orderByMedian() {
 		{% if decision_maker == False %} disabled {% endif %}
 	/>
 		<input type="hidden" name="review_round" value="{{review_round}}"/>
-</from>
+</form>
 <hr/>
 	<table>
 		<th>Decision
@@ -101,6 +101,8 @@ function orderByMedian() {
 		<tr><td><b>Total submissions</b>
 			<td>{{ submissions_len }}
 	</table>
+
+
 </div>
 </body>
 </html>
