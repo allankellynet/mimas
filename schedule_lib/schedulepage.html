@@ -34,10 +34,29 @@ function setDay() {
 	</select>
 
     <p/>
-    TODO
+    {% if selectedDay: %}
+    <table>
+        <tr><th>Start time</th>
+        <th>End time</th>
+        {% for t in sched.tracks(selectedDay): %}
+            <th>{{t}}</th>
+        {% endfor %}</tr>
+        {% for slot in sched.slots(selectedDay): %}
+            <tr>
+                <td>{{slot.start_time}}</td>
+                <td>{{slot.end_time}}</td>
+                {% for t in sched.tracks(selectedDay): %}
+                    <td>...</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    <p/>TODO
     1. Show schedule
-    2. List talks
-    3. Use radio buttons to assign talk to slot
+    <p/>2. List talks ---> Steal from showall pages
+    <p/>3. Use radio buttons to assign talk to slot
+    {% endif %} <!-- selected day -->
 
     <input type="hidden" name="sched_key" value="{{sched.key.urlsafe()}}"/>
 </form>
