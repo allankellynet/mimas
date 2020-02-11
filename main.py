@@ -40,6 +40,7 @@ from reports import expensereportpage, showallpage, statuslist, speakrptpage, ex
 from submission_lib import subm_thanks, submitpage, singlesubmitpage, flowsubpage, acceptdecline
 from mailmsg import createmsgpage, custommsgedit, mailtemplatespage
 from extra import extracontrolspage, speakertalkpage, testdatapage
+from schedule import schedulepage, scheduleconfigpage
 
 requests_toolbelt.adapters.appengine.monkeypatch()
 HTTP_REQUEST = google.auth.transport.requests.Request()
@@ -227,6 +228,8 @@ app = webapp2.WSGIApplication([
     ('/subsassignmentspage', subsassignmentpage.SubmissionAssignmentsPage),
     ('/assignementdetailspage', assignmentdetailpage.AssignmentDetailPage),
     ('/subreviewers', subsreviewerspage.SubmissionReviewersPage),
+    ('/schedulepage', schedulepage.SchedulePage),
+    ('/scheduleconfigpage', scheduleconfigpage.ScheduleConfigPage),
     ('/mastercontrol', masterpage.MasterControlPage),                       # no public link
     ('/testdata', testdatapage.TestDataPage),                               # no public link
     ('/delete_con_page', deletepage.DeletePage),                            # no public link
