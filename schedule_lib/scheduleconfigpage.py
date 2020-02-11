@@ -17,7 +17,7 @@ class ScheduleConfigPage(basehandler.BaseHandler):
     def get(self):
         conf = self.get_crrt_conference_key().get()
 
-        self.write_page('schedule/scheduleconfigpage.html',
+        self.write_page('schedule_lib/scheduleconfigpage.html',
                         {
                         })
 
