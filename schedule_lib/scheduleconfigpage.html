@@ -6,9 +6,18 @@
     <meta charset="UTF-8">
     <title>Conference schedule configuration</title>
 </head>
+
+<script language="JavaScript">
+{% include "scaffold/enablers.js" %}
+
+function setDay() {
+	window.location = "/scheduleconfigpage?day="+document.getElementById("daysListId").value
+}
+</script>
+
 <body>
 <div class="container-fluid">
-
+<form method="post">
     <h1>Conference schedule configuration</h1>
     	{% include "scaffold/topmenu.html" %}
     <hr/>
@@ -18,9 +27,41 @@
     Days
     Tracks
     Slots
+    <p/>
+    <select id="daysListId" name="daysList" onchange="setDay()">
+        <option value="None"/>
+		{% for d in sched.day_names(): %}
+			<option name="{{d}}" value="{{d}}"
+				{% if d==selectedDay: %} selected {% endif %}
+            >{{d}}</option>
+		{% endfor %}
+	</select>
 
+    <p/>
+    <input type="text" maxlength="16" name="newDay" id="newDayId" onchange='enable_box("newDayId","submitNewDayId")'>
+    <input type="submit" name="submitNewDay" id="submitNewDayId" disabled>
+    <p/>
+    <input type="submit" name="deleteDay" value="Delete this day"/>
 
+    {% if selectedDay: %}
+        <hr/>
+        <h3>Tracks</h3>
+        {% for t in sched.tracks(selectedDay): %}
+            <p/>
+            <input type="checkbox" name="trackCheck" value="{{t}}">{{t}}
+        {% endfor %}
+        <p/>
+        <input type="text" maxlength="32" name="newTrack" id="newTrackId" onchange='enable_box("newTrackId","submitNewTrackId")'>
+        <input type="submit" name="submitNewTrack" id="submitNewTrackId" disabled>
+        <p/>
+        <input type="submit" name="deleteTrack" value="Delete selected tracks"/>
+
+    {% endif %}
+
+    <p/>
+
+    <input type="hidden" name="sched_key" value="{{sched.key.urlsafe()}}"/>
+</form>
 </div>
-
 </body>
 </html>

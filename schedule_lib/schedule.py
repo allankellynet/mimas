@@ -9,27 +9,15 @@
 # System imports
 
 # Google imports
+import logging
 from google.appengine.ext import ndb
 
 # Local imports
 
 class ScheduleDay():
-
-    def __init__(self, day_pos):
-        self.day_pos = day_pos
+    def __init__(self):
         self.day_tracks = []
 
-    def day_number(self):
-        return self.day_pos
-
-    def tracks(self):
-        return self.day_tracks
-
-    def add_track(self, track):
-        self.day_tracks.append(track)
-
-    def del_track(self, track):
-        self.day_tracks.remove(track)
 
 class Schedule(ndb.Model):
     days_db = ndb.PickleProperty()
@@ -41,8 +29,8 @@ class Schedule(ndb.Model):
     def day_names(self):
         return self.days_db.keys()
 
-    def add_day(self, day_name, day_position):
-        self.days_db[day_name] = ScheduleDay(day_position)
+    def add_day(self, day_name):
+        self.days_db[day_name] = ScheduleDay()
         self.put()
 
     def get_day(self, day_name):
@@ -52,6 +40,20 @@ class Schedule(ndb.Model):
         if self.days_db.has_key(day_name):
             del self.days_db[day_name]
             self.put()
+
+    def tracks(self, day_name):
+        if self.days_db.has_key(day_name):
+            return self.days_db[day_name].day_tracks
+
+        return []
+
+    def add_track(self, day_name, track):
+        self.days_db[day_name].day_tracks.append(track)
+        self.put()
+
+    def del_track(self, day_name, track):
+        self.days_db[day_name].day_tracks.remove(track)
+        self.put()
 
 def make_schedule(conf_key):
     sched = Schedule(parent=conf_key)

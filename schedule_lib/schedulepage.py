@@ -9,6 +9,7 @@
 # System imports
 
 # Google imports
+import logging
 from google.appengine.ext import ndb
 
 # Local imports
@@ -31,26 +32,3 @@ class SchedulePage(basehandler.BaseHandler):
                           "selectedDay": selected_day,
                         })
 
-    def post(self):
-        if self.request.get("submitNewDay"):
-            self.add_new_day()
-
-        if self.request.get("deleteDay"):
-            self.delete_day()
-
-        if self.request.get("submitNewTrack"):
-            self.add_track()
-
-        self.redirect("/schedulepage")
-
-    def add_new_day(self):
-        sched = ndb.Key(urlsafe=self.request.get("sched_key")).get()
-        sched.add_day(self.request.get("newDay"), 1)
-
-    def delete_day(self):
-        sched = ndb.Key(urlsafe=self.request.get("sched_key")).get()
-        sched.delete_day(self.request.get("daysList"))
-
-    def add_track(self):
-        sched = ndb.Key(urlsafe=self.request.get("sched_key")).get()
-        sched.get_day(self.request.get("daysList")).add_track(self.request.get("newTrack"))

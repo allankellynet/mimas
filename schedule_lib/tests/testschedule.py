@@ -35,10 +35,10 @@ class TestSchedule(unittest.TestCase):
         sched = sched_key.get()
         self.assertEquals([], sched.day_names())
 
-        sched.add_day("Thursday", 1)
+        sched.add_day("Thursday")
         self.assertEquals(["Thursday"], sched.day_names())
 
-        sched.add_day("Friday", 2)
+        sched.add_day("Friday")
         expected_days = ["Thursday", "Friday"]
         expected_days.sort()
         retrieved_days = sched.day_names()
@@ -46,8 +46,7 @@ class TestSchedule(unittest.TestCase):
         self.assertEquals(expected_days, retrieved_days)
 
         thursday = sched.get_day("Thursday")
-        self.assertEqual(1, thursday.day_number())
-        self.assertEquals([], thursday.tracks())
+        self.assertEquals([], sched.tracks("Thursday"))
 
         sched.delete_day("Thursday")
         self.assertEquals(["Friday"], sched.day_names())
@@ -58,13 +57,13 @@ class TestSchedule(unittest.TestCase):
     def testTracks(self):
         sched_key = schedule.get_conference_schedule(self.c.key)
         sched = sched_key.get()
-        sched.add_day("Thursday", 1)
+        sched.add_day("Thursday")
 
-        self.assertEquals([], sched.get_day("Thursday").tracks())
-        sched.get_day("Thursday").add_track("Software")
-        self.assertEquals(["Software"], sched.get_day("Thursday").tracks())
-        sched.get_day("Thursday").add_track("Hardware")
-        self.assertEquals(["Software", "Hardware"], sched.get_day("Thursday").tracks())
+        self.assertEquals([], sched.tracks("Thursday"))
+        sched.add_track("Thursday", "Software")
+        self.assertEquals(["Software"], sched.tracks("Thursday"))
+        sched.add_track("Thursday", "Hardware")
+        self.assertEquals(["Software", "Hardware"], sched.tracks("Thursday"))
 
-        sched.get_day("Thursday").del_track("Software")
-        self.assertEquals(["Hardware"], sched.get_day("Thursday").tracks())
+        sched.del_track("Thursday", "Software")
+        self.assertEquals(["Hardware"], sched.tracks("Thursday"))

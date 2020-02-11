@@ -19,7 +19,6 @@ function setDay() {
 <body>
 <div class="container-fluid">
 <form method="post">
-
     <h1>Conference schedule</h1>
     	{% include "scaffold/topmenu.html" %}
     <hr/>
@@ -33,26 +32,6 @@ function setDay() {
             >{{d}}</option>
 		{% endfor %}
 	</select>
-
-    <p/>
-    <input type="text" maxlength="16" name="newDay" id="newDayId" onchange='enable_box("newDayId","submitNewDayId")'>
-    <input type="submit" name="submitNewDay" id="submitNewDayId" disabled>
-    <p/>
-    <input type="submit" name="deleteDay" value="Delete this day"/>
-
-    {% if selectedDay: %}
-        <hr/>
-        <h3>Tracks</h3>
-        {% for t in sched.get_day(selectedDay).tracks(): %}
-            <p/>
-            <input type="checkbox" name="trackCheck" value="{{t}}">{{t}}
-        {% endfor %}
-        <input type="text" maxlength="32" name="newTrack" id="newTrackId" onchange='enable_box("newTrackId","submitNewTrackId")'>
-        <input type="submit" name="submitNewTrack" id="submitNewTrackId" disabled>
-        <p/>
-        <input type="submit" name="deleteTrack" value="Delete selected tracks"/>
-
-    {% endif %}
 
     <p/>
     TODO
