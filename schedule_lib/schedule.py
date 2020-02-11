@@ -14,10 +14,16 @@ from google.appengine.ext import ndb
 
 # Local imports
 
+class Slot():
+    def __init__(self, start, end, type):
+        self.start_time = start
+        self.end_time = end
+        self.slot_type = type # Tracks or Plenary
+
 class ScheduleDay():
     def __init__(self):
         self.day_tracks = []
-
+        self.day_slots = []
 
 class Schedule(ndb.Model):
     days_db = ndb.PickleProperty()
@@ -55,6 +61,29 @@ class Schedule(ndb.Model):
         self.days_db[day_name].day_tracks.remove(track)
         self.put()
 
+    def slots(self, day_name):
+        if self.days_db.has_key(day_name):
+            return self.days_db[day_name].day_slots
+
+        return []
+
+    def add_slot(self, day_name, slot):
+        self.days_db[day_name].day_slots.append(slot)
+        self.put()
+
+    def delete_slot(self, day_name, slot_number):
+        if slot_number < len(self.days_db[day_name].day_slots):
+            del self.days_db[day_name].day_slots[slot_number]
+            self.put()
+
+    def delete_slot_by_start_time(self, day_name, start_time):
+        slot_count = len(self.days_db[day_name].day_slots)
+        for idx in range(0, slot_count-1):
+            if self.days_db[day_name].day_slots[idx].start_time == start_time:
+                del self.days_db[day_name].day_slots[idx]
+
+        self.put()
+
 def make_schedule(conf_key):
     sched = Schedule(parent=conf_key)
     sched.put()
@@ -66,3 +95,4 @@ def get_conference_schedule(conf_key):
         sched_keys = make_schedule(conf_key)
 
     return sched_keys[0]
+

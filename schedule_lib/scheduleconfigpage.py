@@ -45,6 +45,12 @@ class ScheduleConfigPage(basehandler.BaseHandler):
         if self.request.get("deleteTrack"):
             self.delete_tracks()
 
+        if self.request.get("submitNewSlot"):
+            self.add_slot()
+
+        if self.request.get("deleteSlot"):
+            self.delete_slots()
+
         self.redirect("/scheduleconfigpage?day=" + self.request.get("daysList"))
 
     def add_new_day(self):
@@ -63,3 +69,21 @@ class ScheduleConfigPage(basehandler.BaseHandler):
         sched = ndb.Key(urlsafe=self.request.get("sched_key")).get()
         for track_name in self.request.get_all("trackCheck"):
             sched.del_track(self.request.get("daysList"), track_name)
+
+    def add_slot(self):
+        start = self.request.get("newSlotStart")
+        end = self.request.get("newSlotEnd")
+        if (start == "") | (end==""):
+            return
+
+        audience = self.request.get("audiencetype")
+
+        sched = ndb.Key(urlsafe=self.request.get("sched_key")).get()
+        sched.add_slot(self.request.get("daysList"), schedule.Slot(start, end, audience))
+
+    def delete_slots(self):
+        sched = ndb.Key(urlsafe=self.request.get("sched_key")).get()
+        slots_to_delete = self.request.get_all("slotCheck")
+        for slot in slots_to_delete:
+            print "-------------", slot
+            sched.delete_slot_by_start_time(self.request.get("daysList"), slot)

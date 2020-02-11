@@ -23,11 +23,7 @@ function setDay() {
     <hr/>
     <a href="schedulepage">Back to schedule</a>
 
-    <p/>
-    Days
-    Tracks
-    Slots
-    <p/>
+    <h3>Conference days</h3>
     <select id="daysListId" name="daysList" onchange="setDay()">
         <option value="None"/>
 		{% for d in sched.day_names(): %}
@@ -56,9 +52,37 @@ function setDay() {
         <p/>
         <input type="submit" name="deleteTrack" value="Delete selected tracks"/>
 
-    {% endif %}
+        <hr/>
+        <h3>Slots</h3>
+        <table border="1">
+            <tr>
+                <th></th>
+                <th>Start time</th>
+                <th>End time</th>
+                <th>Audience type</th>
+            </tr>
+            {% for s in sched.slots(selectedDay): %}
+                <tr>
+                <td><input type="checkbox" name="slotCheck" value="{{s.start_time}}"></td>
+                <td>{{s.start_time}}</td>
+                <td>{{s.end_time}}</td>
+                <td>{{s.slot_type}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <p/>
+        <input type="submit" name="deleteSlot" value="Delete selected slots"/>
+        <p/><b>Add new slot</b>
+        <p/><label>Start time:</label><input type="text" maxlength="10" name="newSlotStart" id="newSlotStartId">
+        <p/><label>End time:</label><input type="text" maxlength="10" name="newSlotEnd" id="newSlotEndId">
+        <p/><label>Audience type:</label>
+        <input type="radio" name="audiencetype" value="Tracks" checked>Tracks
+        <input type="radio" name="audiencetype" value="Plenary">Plenary
+        <p/><input type="submit" name="submitNewSlot" id="submitNewSlotId">
+        <p/>
 
-    <p/>
+
+    {% endif %} <!-- selectedDay -->
 
     <input type="hidden" name="sched_key" value="{{sched.key.urlsafe()}}"/>
 </form>
