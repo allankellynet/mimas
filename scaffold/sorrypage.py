@@ -53,6 +53,8 @@ class SorryPage(basehandler.BaseHandler):
         "IncompleteSetup": "Until conference setup is complete this report cannot be shown",
         "VolunteerFailure": "Something went wrong in the volunteer login",
         "VolunteerReviewerClosed": "The conference is currently not accepting reviewers",
+        "NoSchedulingAtThisTime": "Conference scheduling can only happen when lineup has been set",
+        "NoSchedulingPerissoms": "You do not have conferene scheduling permissions",
     }
 
     def get(self):

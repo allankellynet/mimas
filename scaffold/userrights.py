@@ -146,6 +146,7 @@ class UserRights():
             userrightsnames.SPEAK_COMMS_COMMS: "Speaker communications",
             userrightsnames.CONF_DATA_DUMPS: "Export conferences data to files",
             userrightsnames.CONF_ADMINISTRATOR: "Conference administrator",
+            userrightsnames.CONF_SCHEDULE: "Conference scheduler",
         }
 
     def list_permission_holders(self):
