@@ -99,3 +99,20 @@ class TestSchedule(unittest.TestCase):
         self.assertFalse(sched.slots("Friday").has_key(datetime.time(9,30)))
         self.assertTrue(sched.slots("Friday").has_key(datetime.time(9,0)))
         self.assertTrue(sched.slots("Friday").has_key(datetime.time(14,0)))
+
+    def testOrderedSlots(self):
+        sched_key = schedule.get_conference_schedule(self.c.key)
+        sched = sched_key.get()
+        sched.add_day("Friday")
+
+        self.assertEquals({}, sched.slots("Friday"))
+        sched.add_slot("Friday", schedule.Slot(datetime.time(9, 0), datetime.time(9, 0), "Nine"))
+        sched.add_slot("Friday", schedule.Slot(datetime.time(9, 30), datetime.time(9, 30), "Nine thirty"))
+        sched.add_slot("Friday", schedule.Slot(datetime.time(8, 30), datetime.time(8, 30), "Eight thirty"))
+        sched.add_slot("Friday", schedule.Slot(datetime.time(9, 15), datetime.time(9, 15), "Nine ffiteen"))
+
+        self.assertEquals([ datetime.time(8,30),
+                            datetime.time(9,0),
+                            datetime.time(9,15),
+                            datetime.time(9,30)], sched.orderd_slot_keys("Friday"))
+
