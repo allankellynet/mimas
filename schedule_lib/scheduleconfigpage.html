@@ -21,7 +21,7 @@ function setDay() {
     <h1>Conference schedule configuration</h1>
     	{% include "scaffold/topmenu.html" %}
     <hr/>
-    <a href="schedulepage">Back to schedule</a>
+    <a href="schedulepage?day={{selectedDay}}">Back to schedule</a>
 
     <h3>Conference days</h3>
     <select id="daysListId" name="daysList" onchange="setDay()">
@@ -61,20 +61,20 @@ function setDay() {
                 <th>End time</th>
                 <th>Audience type</th>
             </tr>
-            {% for s in sched.slots(selectedDay): %}
+            {% for s in sched.orderd_slot_keys(selectedDay): %}
                 <tr>
                 <td><input type="checkbox" name="slotCheck" value="{{s.start_time}}"></td>
-                <td>{{s.start_time}}</td>
-                <td>{{s.end_time}}</td>
-                <td>{{s.slot_type}}</td>
+                <td>{{sched.slots(selectedDay)[s].start_time.strftime("%H:%M")}}</td>
+                <td>{{sched.slots(selectedDay)[s].end_time.strftime("%H:%M")}}  </td>
+                <td>{{sched.slots(selectedDay)[s].slot_type}}</td>
                 </tr>
             {% endfor %}
         </table>
         <p/>
         <input type="submit" name="deleteSlot" value="Delete selected slots"/>
         <p/><b>Add new slot</b>
-        <p/><label>Start time:</label><input type="text" maxlength="10" name="newSlotStart" id="newSlotStartId">
-        <p/><label>End time:</label><input type="text" maxlength="10" name="newSlotEnd" id="newSlotEndId">
+        <p/><label>Start time:</label><input type="time" name="newSlotStart" id="newSlotStartId">
+        <p/><label>End time:</label><input type="time" name="newSlotEnd" id="newSlotEndId">
         <p/><label>Audience type:</label>
         <input type="radio" name="audiencetype" value="Tracks" checked>Tracks
         <input type="radio" name="audiencetype" value="Plenary">Plenary

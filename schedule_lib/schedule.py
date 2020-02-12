@@ -68,6 +68,15 @@ class Schedule(ndb.Model):
 
         return []
 
+    def orderd_slot_keys(self, day_name):
+        if self.days_db.has_key(day_name):
+            keys = self.days_db[day_name].day_slots.keys()
+            keys.sort()
+            return keys
+
+        return []
+
+
     def add_slot(self, day_name, slot):
         self.days_db[day_name].day_slots[slot.start_time]=slot
         self.put()

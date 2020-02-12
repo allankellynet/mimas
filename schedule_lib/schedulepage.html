@@ -22,7 +22,7 @@ function setDay() {
     <h1>Conference schedule</h1>
     	{% include "scaffold/topmenu.html" %}
     <hr/>
-    <a href="scheduleconfigpage">Schedule configuration</a>
+    <a href="scheduleconfigpage?day={{selectedDay}}">Schedule configuration</a>
     <p/>
     <select id="daysListId" name="daysList" onchange="setDay()">
         <option value="None"/>
