@@ -20,6 +20,9 @@ from schedule_lib import schedule
 
 class SchedulePage(basehandler.BaseHandler):
     def get(self):
+        # TO DO Check conference is closed
+        # Check user has permissions: introduce new permission for scheduler access
+
         conf_key = self.get_crrt_conference_key()
         sched = schedule.get_conference_schedule(conf_key)
 
