@@ -7,6 +7,7 @@
 #
 
 # System imports
+import datetime
 
 # Google imports
 import logging
@@ -23,7 +24,7 @@ class Slot():
 class ScheduleDay():
     def __init__(self):
         self.day_tracks = []
-        self.day_slots = []
+        self.day_slots = {}
 
 class Schedule(ndb.Model):
     days_db = ndb.PickleProperty()
@@ -68,20 +69,11 @@ class Schedule(ndb.Model):
         return []
 
     def add_slot(self, day_name, slot):
-        self.days_db[day_name].day_slots.append(slot)
+        self.days_db[day_name].day_slots[slot.start_time]=slot
         self.put()
 
-    def delete_slot(self, day_name, slot_number):
-        if slot_number < len(self.days_db[day_name].day_slots):
-            del self.days_db[day_name].day_slots[slot_number]
-            self.put()
-
     def delete_slot_by_start_time(self, day_name, start_time):
-        slot_count = len(self.days_db[day_name].day_slots)
-        for idx in range(0, slot_count-1):
-            if self.days_db[day_name].day_slots[idx].start_time == start_time:
-                del self.days_db[day_name].day_slots[idx]
-
+        self.days_db[day_name].day_slots.pop(start_time, None)
         self.put()
 
 def make_schedule(conf_key):

@@ -5,6 +5,7 @@
 # -----------------------------------------------------
 
 import unittest
+import datetime
 
 from google.appengine.ext import testbed
 
@@ -73,37 +74,28 @@ class TestSchedule(unittest.TestCase):
         sched = sched_key.get()
         sched.add_day("Friday")
 
-        self.assertEquals([], sched.slots("Friday"))
-        sched.add_slot("Friday", schedule.Slot("9.00am", "9.30am", "Tracks"))
+        self.assertEquals({}, sched.slots("Friday"))
+        sched.add_slot("Friday", schedule.Slot(datetime.time(9,0), datetime.time(9,30), "Tracks"))
         self.assertEquals(1, len(sched.slots("Friday")))
-        first_slot = sched.slots("Friday")[0]
-        self.assertEquals("9.00am", first_slot.start_time)
-        self.assertEquals("9.30am", first_slot.end_time)
+        self.assertTrue(sched.slots("Friday").has_key(datetime.time(9,0)))
+        first_slot = sched.slots("Friday")[datetime.time(9,0)]
+        self.assertEquals(datetime.time(9,0), first_slot.start_time)
+        self.assertEquals(datetime.time(9,30), first_slot.end_time)
         self.assertEquals("Tracks", first_slot.slot_type)
 
-        sched.add_slot("Friday", schedule.Slot("9.30am", "10.30am", "Plenary"))
+        sched.add_slot("Friday", schedule.Slot(datetime.time(9,30), datetime.time(10,30), "Plenary"))
         self.assertEquals(2, len(sched.slots("Friday")))
-        second_slot = sched.slots("Friday")[1]
-        self.assertEquals("9.30am", second_slot.start_time)
-        self.assertEquals("10.30am", second_slot.end_time)
+        self.assertTrue(sched.slots("Friday").has_key(datetime.time(9,30)))
+        second_slot = sched.slots("Friday")[datetime.time(9,30)]
+        self.assertEquals(datetime.time(9,30), second_slot.start_time)
+        self.assertEquals(datetime.time(10,30), second_slot.end_time)
         self.assertEquals("Plenary", second_slot.slot_type)
 
-        sched.delete_slot("Friday", 0)
-        self.assertEquals(1, len(sched.slots("Friday")))
-        one_slot = sched.slots("Friday")[0]
-        self.assertEquals("9.30am", one_slot.start_time)
-        self.assertEquals("10.30am", one_slot.end_time)
-        self.assertEquals("Plenary", one_slot.slot_type)
-
-        sched.add_slot("Friday", schedule.Slot("12pm", "1pm", "Plenary"))
-        sched.add_slot("Friday", schedule.Slot("2pm", "3pm", "Plenary"))
+        sched.add_slot("Friday", schedule.Slot(datetime.time(14,0), datetime.time(15,0), "Plenary"))
         self.assertEquals(3, len(sched.slots("Friday")))
-        sched.delete_slot_by_start_time("Friday", "12pm")
+        sched.delete_slot_by_start_time("Friday", datetime.time(9,30))
         self.assertEquals(2, len(sched.slots("Friday")))
-        one_left = sched.slots("Friday")[0]
-        self.assertEquals("9.30am", one_left.start_time)
-        two_left = sched.slots("Friday")[1]
-        self.assertEquals("2pm", two_left.start_time)
 
-        sched.delete_slot_by_start_time("Friday", "12am")
-        self.assertEquals(2, len(sched.slots("Friday")))
+        self.assertFalse(sched.slots("Friday").has_key(datetime.time(9,30)))
+        self.assertTrue(sched.slots("Friday").has_key(datetime.time(9,0)))
+        self.assertTrue(sched.slots("Friday").has_key(datetime.time(14,0)))
