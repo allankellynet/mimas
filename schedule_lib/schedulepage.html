@@ -14,6 +14,32 @@ function setDay() {
 	window.location = "/schedulepage?day="+document.getElementById("daysListId").value
 }
 
+function checkSchedulingButtons() {
+    if (document.getElementById("selectedSlotIdentifierId").value != "None")
+        if (document.getElementById("selectedTalkKeyId").value != "None") {
+            document.getElementById("scheduleId").disabled = false
+            document.getElementById("descheduleId").disabled = true
+        } else {
+            document.getElementById("scheduleId").disabled = true
+            document.getElementById("descheduleId").disabled = false
+        } else {
+        document.getElementById("scheduleId").disabled = true
+        document.getElementById("descheduleId").disabled = true
+    }
+}
+
+function populatedSelectedTalk(sub_key, title) {
+    document.getElementById("selectedTalkKeyId").value = sub_key
+    document.getElementById("selectedTalkId").value = title
+    checkSchedulingButtons()
+}
+
+function populatedSelectedSlot(slot_identifier, description) {
+    document.getElementById("selectedSlotIdentifierId").value = slot_identifier
+    document.getElementById("selectedSlotId").value = description
+    checkSchedulingButtons()
+}
+
 </script>
 
 <body>
@@ -24,6 +50,7 @@ function setDay() {
     <hr/>
     <a href="scheduleconfigpage?day={{selectedDay}}">Schedule configuration</a>
     <p/>
+    Day:
     <select id="daysListId" name="daysList" onchange="setDay()">
         <option value="None"/>
 		{% for d in sched.day_names(): %}
@@ -35,18 +62,28 @@ function setDay() {
 
     <p/>
     {% if selectedDay: %}
+    <p><label>Selected talk: </label><b><input type="text" id="selectedTalkId" value="None" readonly/></b></p>
+        <input type="hidden" name="selectedTalkKey" id="selectedTalkKeyId" value="None"/>
+    <p><label>Selected slot: </label><b><input type="text" id="selectedSlotId" value="None" readonly/></b>
+        <input type="hidden" name="selectedSlotIdentifier" id="selectedSlotIdentifierId" value="None">
+    <input type="submit" name="schedule" id="scheduleId" value="Schedule talk" disabled/>
+    <input type="submit" name="deschedule" id="descheduleId" value="Deschedule talk" disabled/>
+
     <table border="1">
         <tr><th>Start time</th>
         <th>End time</th>
         {% for t in sched.tracks(selectedDay): %}
             <th>{{t}}</th>
         {% endfor %}</tr>
-        {% for slot in sched.slots(selectedDay): %}
+        {% for slot in sched.orderd_slot_keys(selectedDay): %}
             <tr>
-                <td>{{slot.start_time}}</td>
-                <td>{{slot.end_time}}</td>
+                <td>{{sched.slots(selectedDay)[slot].start_time.strftime("%H:%M")}}</td>
+                <td>{{sched.slots(selectedDay)[slot].end_time.strftime("%H:%M")}}</td>
                 {% for t in sched.tracks(selectedDay): %}
-                    <td><input type="radio" name="slotSelector" value="{{t}}${{slot.start_time}}">Empty</td>
+                    <td><input type="radio" name="slotSelector" value="{{t}}${{slot.start_time}}"
+                            onclick='populatedSelectedSlot("help",
+                            "{{sched.slots(selectedDay)[slot].start_time}}")'
+                        />Empty</td>
                 {% endfor %}
             </tr>
         {% endfor %}
@@ -63,7 +100,8 @@ function setDay() {
 
             {% for s in submissions[t]: %}
             <tr>
-                <td><input type="radio" name="talkSelector" value="{{s.key.urlsafe()}}" </td>
+                <td><input type="radio" name="talkSelector" value="{{s.key.urlsafe()}}"
+                           onclick='populatedSelectedTalk("{{s.key.urlsafe()}}","{{s.title()}}")'/></td>
                 <td><a target=_blank href="/speakerkey?key={{s.talk.parent().urlsafe()}}">{{s.submitter()}}</a></td>
                 <td><a target=_blank href="/submit_page?sub={{s.key.urlsafe()}}&reviewer">Details</a></td>
                 <td>{{crrt_conference.duration_options()[s.duration]}}</td>
@@ -71,8 +109,8 @@ function setDay() {
         {% endfor %}
         </table>
     {% endfor %}
+    {% endif %} <!-- selected day -->
 
-    
     <input type="hidden" name="sched_key" value="{{sched.key.urlsafe()}}"/>
 </form>
 </div>
