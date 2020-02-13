@@ -15,7 +15,7 @@ function setDay() {
 }
 
 function checkSchedulingButtons() {
-    if (document.getElementById("selectedSlotIdentifierId").value != "None")
+    if (document.getElementById("selectedSlotId").value != "None")
         if (document.getElementById("selectedTalkKeyId").value != "None") {
             document.getElementById("scheduleId").disabled = false
             document.getElementById("descheduleId").disabled = true
@@ -34,9 +34,9 @@ function populatedSelectedTalk(sub_key, title) {
     checkSchedulingButtons()
 }
 
-function populatedSelectedSlot(slot_identifier, description) {
-    document.getElementById("selectedSlotIdentifierId").value = slot_identifier
-    document.getElementById("selectedSlotId").value = description
+function populatedSelectedSlot(track, slot_identifier) {
+    document.getElementById("selectedSlotTrackId").value = track
+    document.getElementById("selectedSlotId").value = slot_identifier
     checkSchedulingButtons()
 }
 
@@ -62,12 +62,12 @@ function populatedSelectedSlot(slot_identifier, description) {
 
     <p/>
     {% if selectedDay: %}
-    <p><label>Selected talk: </label><b><input type="text" id="selectedTalkId" value="None" readonly/></b></p>
+    <p><label>Selected slot: </label><b><input type="text" name="selectedSlot" id="selectedSlotId" value="None" readonly/></b>
+        <input type="input" name="selectedSlotTrack" id="selectedSlotTrackId" value="None" readonly/>
+        <input type="submit" name="deschedule" id="descheduleId" value="Deschedule talk" disabled/>
+    <p><label>Selected talk: </label><b><input type="text" id="selectedTalkId" value="None" readonly/></b>
         <input type="hidden" name="selectedTalkKey" id="selectedTalkKeyId" value="None"/>
-    <p><label>Selected slot: </label><b><input type="text" id="selectedSlotId" value="None" readonly/></b>
-        <input type="hidden" name="selectedSlotIdentifier" id="selectedSlotIdentifierId" value="None">
-    <input type="submit" name="schedule" id="scheduleId" value="Schedule talk" disabled/>
-    <input type="submit" name="deschedule" id="descheduleId" value="Deschedule talk" disabled/>
+    <input type="submit" name="scheduleTalk" id="scheduleId" value="Schedule talk" disabled/>
 
     <table border="1">
         <tr><th>Start time</th>
@@ -81,10 +81,10 @@ function populatedSelectedSlot(slot_identifier, description) {
                 <td>{{sched.slots(selectedDay)[slot].end_time.strftime("%H:%M")}}</td>
                 {% for t in sched.tracks(selectedDay): %}
                     <td><input type="radio" name="slotSelector" value="{{t}}${{slot.start_time}}"
-                            onclick='populatedSelectedSlot("help",
-                            "{{sched.slots(selectedDay)[slot].start_time}}")'
-                        />Empty</td>
-                {% endfor %}
+                            onclick='populatedSelectedSlot("{{t}}",
+                            "{{sched.slots(selectedDay)[slot].start_time}}")'/>
+                        {{talkTitle(sched.get_assignment(selectedDay, t, slot))}}</td>
+        {% endfor %}
             </tr>
         {% endfor %}
     </table>

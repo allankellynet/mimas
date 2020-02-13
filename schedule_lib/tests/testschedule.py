@@ -116,3 +116,32 @@ class TestSchedule(unittest.TestCase):
                             datetime.time(9,15),
                             datetime.time(9,30)], sched.orderd_slot_keys("Friday"))
 
+    def testAssignments(self):
+        sched_key = schedule.get_conference_schedule(self.c.key)
+        sched = sched_key.get()
+        sched.add_day("Friday")
+        sched.add_slot("Friday", schedule.Slot(datetime.time(9, 0), datetime.time(9, 0), "Nine"))
+        self.assertEquals("Empty", sched.get_assignment("Friday", "Track1", datetime.time(9, 0)))
+        sched.add_slot("Friday", schedule.Slot(datetime.time(10, 0), datetime.time(10, 30), "Ten"))
+        self.assertEquals("Empty", sched.get_assignment("Friday", "Track1", datetime.time(10, 0)))
+        sched.add_slot("Friday", schedule.Slot(datetime.time(11, 0), datetime.time(11, 30), "Elevent"))
+        self.assertEquals("Empty", sched.get_assignment("Friday", "Track1", datetime.time(11,0)))
+
+        sched.assign_talk("Random talk", "Friday", "Track1", datetime.time(9, 0))
+        self.assertEquals("Random talk", sched.get_assignment("Friday", "Track1", datetime.time(9, 0)))
+
+        sched.assign_talk("Another talk", "Friday", "Track1", datetime.time(10, 0))
+        self.assertEquals("Another talk", sched.get_assignment("Friday", "Track1", datetime.time(10, 0)))
+
+        sched.assign_talk("Last talk", "Friday", "Track1", datetime.time(11, 0))
+        self.assertEquals("Last talk", sched.get_assignment("Friday", "Track1", datetime.time(11, 0)))
+
+        sched.assign_talk("No such slot - accidentally supported but shouldnt happen talk",
+                          "Friday", "Track1", datetime.time(12, 0))
+        self.assertEquals("No such slot - accidentally supported but shouldnt happen talk",
+                          sched.get_assignment("Friday", "Track1", datetime.time(12, 0)))
+
+        sched.assign_talk("Allan talk", "Friday", "Track1", datetime.time(9, 0))
+        self.assertEquals("Allan talk", sched.get_assignment("Friday", "Track1", u"09:00:00"))
+
+        self.assertEquals("Empty", sched.get_assignment("Friday", "Track1", datetime.time(13, 0)))

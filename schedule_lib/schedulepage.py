@@ -7,6 +7,7 @@
 #
 
 # System imports
+from datetime import datetime, time
 
 # Google imports
 import logging
@@ -33,13 +34,7 @@ class SchedulePage(basehandler.BaseHandler):
             sorrypage.redirect_sorry(self, "NoSchedulingAtThisTime")
 
     def show_schedule_page(self, crrt_conference):
-        if self.request.params.has_key("day"):
-            selected_day = self.request.get("day")
-        else:
-            selected_day = ""
-
         tracks = crrt_conference.track_options()
-
         submissions = {}
         for t in tracks:
             submissions[t] = submissionrecord.retrieve_conference_submissions_by_track_round_and_decision(
@@ -47,8 +42,37 @@ class SchedulePage(basehandler.BaseHandler):
 
         self.write_page('schedule_lib/schedulepage.html',
                         { "sched": schedule.get_conference_schedule(crrt_conference.key).get(),
-                          "selectedDay": selected_day,
+                          "selectedDay": self.selectedDay(),
                           "conf_tracks": tracks,
                           "submissions": submissions,
                           "crrt_conference": crrt_conference,
+                          "talkTitle": talkTitle,
                           })
+
+    def selectedDay(self):
+        if self.request.params.has_key("day"):
+            selected_day = self.request.get("day")
+        else:
+            selected_day = ""
+        return selected_day
+
+    def post(self):
+        if self.request.get("scheduleTalk"):
+            self.scheduleTalk()
+
+        self.redirect("/schedulepage?day="+self.selectedDay())
+
+    def scheduleTalk(self):
+        day = self.request.get("daysList")
+        track = self.request.get("selectedSlotTrack")
+        slot = datetime.strptime(self.request.get("selectedSlot"),"%H:%M:%S").time()
+        sub_key = self.request.get("selectedTalkKey")
+
+        schedule.get_conference_schedule(self.get_crrt_conference_key()).get().assign_talk(sub_key, day, track, slot)
+
+def talkTitle(safeKey):
+    if safeKey=="Empty":
+        return "Empty"
+
+    sub = ndb.Key(urlsafe=safeKey).get()
+    return sub.title()
