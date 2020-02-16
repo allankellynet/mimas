@@ -142,6 +142,6 @@ class TestSchedule(unittest.TestCase):
                           sched.get_assignment("Friday", "Track1", datetime.time(12, 0)))
 
         sched.assign_talk("Allan talk", "Friday", "Track1", datetime.time(9, 0))
-        self.assertEquals("Allan talk", sched.get_assignment("Friday", "Track1", u"09:00:00"))
+        self.assertEquals("Allan talk", sched.get_assignment("Friday", "Track1", datetime.time(9, 0)))
 
         self.assertEquals("Empty", sched.get_assignment("Friday", "Track1", datetime.time(13, 0)))
