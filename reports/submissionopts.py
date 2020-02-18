@@ -78,7 +78,7 @@ submission_options = {
     "telephone": ("Telephone",
         lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_TELEPHONE))),
     "address": ("Address",
-        lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_ADDRESS))),
+        lambda sub: (sub.talk.parent().get().field(speaker.Speaker.FIELD_ADDRESS))),
     "jobtitle": ("JobTitle",
         lambda sub: write_str(sub.talk.parent().get().field(speaker.Speaker.FIELD_JOBTITLE))),
     "cospeakers": ("Co-speakers",

@@ -116,7 +116,6 @@ class SpeakerCommsPage(basehandler.BaseHandler):
         self.write_page('scaffold/attentionpage.html', template_values)
 
     def export_excel_data(self):
-        pass
         url = exportexcel.export_submissions_to_excel(self.get_all_checked())
         message = "Data export to Excel complete: " + url
         template_values = {
@@ -137,7 +136,10 @@ class SpeakerCommsPage(basehandler.BaseHandler):
 
     def custom_export_report(self, report_name):
         rpt = customexport.get_report_by_name(self.retrieve_conf_key(), report_name)
-        logging.info(rpt.report_name())
+        url = rpt.export_submissions_to_excel(self.get_all_checked())
+        self.write_page('scaffold/attentionpage.html', {
+                "msg": "Data export to Excel complete: " + url
+            })
 
     def custom_export(self):
         if self.request.get("customexportselection") == "None":

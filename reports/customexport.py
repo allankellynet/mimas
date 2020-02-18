@@ -42,15 +42,15 @@ class CustomExport(ndb.Model):
         self.put()
 
     def write_title_row(self, worksheet):
-        column = 1
+        column = 0
         for opt in self.submission_options_db:
-            worksheet_write_wrapper(worksheet, 1, column, submissionopts.submission_options[opt][0])
+            worksheet_write_wrapper(worksheet, 0, column, submissionopts.submission_options[opt][0])
             column = column + 1
 
     def write_submissions_list(self, wks, submissions):
-        row = 2
+        row = 1
         for sub in submissions:
-            column = 1
+            column = 0
             for opt in self.submission_options_db:
                 self.write_submission_field(opt, sub, wks, row, column)
                 column = column +1

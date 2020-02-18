@@ -108,10 +108,10 @@ class TestCustomReport(unittest.TestCase):
         potter_report.export_submissions_to_excel([])
         self.assertEquals(4, mock_sheet_write.call_count)
 
-        self.assertEquals( (1,1, "Date and time created"), mock_sheet_write.mock_calls[0][1][1:])
-        self.assertEquals( (1,2, "Track"), mock_sheet_write.mock_calls[1][1][1:])
-        self.assertEquals( (1,3, "Format"), mock_sheet_write.mock_calls[2][1][1:])
-        self.assertEquals( (1,4, "Decision round 1"), mock_sheet_write.mock_calls[3][1][1:])
+        self.assertEquals( (0,0, "Date and time created"), mock_sheet_write.mock_calls[0][1][1:])
+        self.assertEquals( (0,1, "Track"), mock_sheet_write.mock_calls[1][1][1:])
+        self.assertEquals( (0,2, "Format"), mock_sheet_write.mock_calls[2][1][1:])
+        self.assertEquals( (0,3, "Decision round 1"), mock_sheet_write.mock_calls[3][1][1:])
 
     @patch('reports.customexport.worksheet_write_wrapper')
     @patch('cloudstorage.open')
@@ -124,7 +124,7 @@ class TestCustomReport(unittest.TestCase):
                                            "format", "withdrawn", "speaker_comms", "expenses",
                                            "title", "short_synopsis", "long_synopsis",
                                            "email", "first_name", "last_name", "picture", "blog",
-                                           "cospeakers",
+                                           "cospeakers", "address"
                                           ])
 
         # add some detail to conference to check mappings
@@ -138,6 +138,8 @@ class TestCustomReport(unittest.TestCase):
         spk.set_first_name("Harry")
         spk.set_later_names("J Potter")
         spk.set_field(speaker.Speaker.FIELD_BLOG, "www.myblog.com")
+        zurich = "Z\xc3\xbcric"
+        spk.set_field(speaker.Speaker.FIELD_ADDRESS, zurich)
         spk.put()
 
         t1 = talk.Talk(parent=spk_key)
@@ -158,98 +160,102 @@ class TestCustomReport(unittest.TestCase):
         cospeaker.make_cospeaker(sub.key, "H Granger", "hgranger@howarts.com")
 
         sub_report.export_submissions_to_excel([sub.key])
-        self.assertEquals(38, mock_sheet_write.call_count)
+        self.assertEquals(40, mock_sheet_write.call_count)
 
         # test header row
         call_cnt = 0
-        header_row=1
+        header_row=0
         # cell A1 (1,1) contains "created"
-        self.assertEquals((header_row,1,"Date and time created"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row,0,"Date and time created"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
-        self.assertEquals((header_row,2,"Agreed GDPR policy"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row,1,"Agreed GDPR policy"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
-        self.assertEquals((header_row,3,"Track"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row,2,"Track"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 4, "Length"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 3, "Length"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 5, "Decision round 1"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 4, "Decision round 1"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 6, "Decision round 2"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 5, "Decision round 2"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 7, "Format"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 6, "Format"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 8, "Withdrawn"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 7, "Withdrawn"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 9, "Communication"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 8, "Communication"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 10, "Expenses"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 9, "Expenses"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 11, "Talk title"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 10, "Talk title"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 12, "Short synopsis"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 11, "Short synopsis"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 13, "Long synopsis"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 12, "Long synopsis"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 14, "Email"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 13, "Email"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 15, "First name"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 14, "First name"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 16, "Later names"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 15, "Later names"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 17, "Picture"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 16, "Picture"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 18, "Blog"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 17, "Blog"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 19, "Co-speakers"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 18, "Co-speakers"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((header_row, 19, "Address"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
         # test data rows
-        data_row1 = 2
-        # worksheet entry for Created (cell 2,1)
-        self.assertEquals((data_row1, 1), mock_sheet_write.mock_calls[call_cnt][1][1:3])
+        data_row1 = 1
+        # worksheet entry for Created (cell 2,1) - excel is zero based so A1 is 0,0
+        self.assertEquals((data_row1, 0), mock_sheet_write.mock_calls[call_cnt][1][1:3])
         # datetime.now hasn't been stubbed so just test it is not empty
         self.assertIsNot(0, len(mock_sheet_write.mock_calls[call_cnt][1][3]))
         call_cnt += 1
 
         # worksheet entry for GDPR (cell 2,2)
-        self.assertEquals((data_row1, 2, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 1, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
-        self.assertEquals((data_row1, 3, "New Track"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 2, "New Track"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 4, "30 minutes"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 3, "30 minutes"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 5, "Shortlist"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 4, "Shortlist"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 6, "Decline"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 5, "Decline"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 7, "Lecture"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 6, "Lecture"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 8, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 7, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 9, submissionnotifynames.SUBMISSION_NEW), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 8, submissionnotifynames.SUBMISSION_NEW), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 10, "Longhaul"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 9, "Longhaul"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 11, "Talk T1"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 10, "Talk T1"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 12, "Very short synopsis"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 11, "Very short synopsis"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 13, "A much much longer synopsis that goes on and on"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 12, "A much much longer synopsis that goes on and on"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 14, "harry@hogwarts.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 13, "harry@hogwarts.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 15, "Harry"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 14, "Harry"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 16, "J Potter"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 15, "J Potter"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 17, "/sorry_page?reason=NoImage"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 16, "/sorry_page?reason=NoImage"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 18, "www.myblog.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 17, "www.myblog.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 19, "Ron Weesley (ron@howarts.com), H Granger (hgranger@howarts.com)"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row1, 18, "Ron Weesley (ron@howarts.com), H Granger (hgranger@howarts.com)"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row1, 19, "Z\xc3\xbcric"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
     @patch('reports.customexport.worksheet_write_wrapper')
@@ -290,44 +296,44 @@ class TestCustomReport(unittest.TestCase):
         self.assertEquals(18, mock_sheet_write.call_count)
 
         call_cnt = 0
-        header_row=1
-        self.assertEquals((header_row,1,"Agreed GDPR policy"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        header_row=0
+        self.assertEquals((header_row, 0,"Agreed GDPR policy"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 2, "Communication"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 1, "Communication"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 3, "Talk title"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 2, "Talk title"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 4, "Email"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 3, "Email"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 5, "First name"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 4, "First name"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((header_row, 6, "Later names"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((header_row, 5, "Later names"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+
+        data_row = 1
+        self.assertEquals((data_row, 0, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 1, submissionnotifynames.SUBMISSION_NEW), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 2, "Harry talks"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 3, "harry@hogwarts.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 4, "Harry"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        call_cnt += 1
+        self.assertEquals((data_row, 5, "J Potter"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
 
         data_row = 2
-        self.assertEquals((data_row, 1, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row, 0, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row, 2, submissionnotifynames.SUBMISSION_NEW), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row, 1, submissionnotifynames.SUBMISSION_NEW), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row, 3, "Harry talks"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row, 2, "Hermione talks"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row, 4, "harry@hogwarts.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row, 3, "Hermione@hogwarts.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row, 5, "Harry"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row, 4, "Hermione"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row, 6, "J Potter"), mock_sheet_write.mock_calls[call_cnt][1][1:])
-        call_cnt += 1
-
-        data_row = 3
-        self.assertEquals((data_row, 1, "False"), mock_sheet_write.mock_calls[call_cnt][1][1:])
-        call_cnt += 1
-        self.assertEquals((data_row, 2, submissionnotifynames.SUBMISSION_NEW), mock_sheet_write.mock_calls[call_cnt][1][1:])
-        call_cnt += 1
-        self.assertEquals((data_row, 3, "Hermione talks"), mock_sheet_write.mock_calls[call_cnt][1][1:])
-        call_cnt += 1
-        self.assertEquals((data_row, 4, "Hermione@hogwarts.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
-        call_cnt += 1
-        self.assertEquals((data_row, 5, "Hermione"), mock_sheet_write.mock_calls[call_cnt][1][1:])
-        call_cnt += 1
-        self.assertEquals((data_row, 6, "Granger"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        self.assertEquals((data_row, 5, "Granger"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
