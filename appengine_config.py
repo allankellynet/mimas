@@ -23,5 +23,5 @@ google.__path__ = [os.path.join(lib_directory, 'google')] + google.__path__
 vendor.add(lib_directory)
 
 # Before problems lib was added very simply:
-# vendor.add('lib')
+#vendor.add('lib')
 # - that is all there was in this file
