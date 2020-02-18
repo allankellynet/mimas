@@ -85,14 +85,14 @@ function toggle_checkboxes(source) {
         <hr><p></p>
         <input type="submit" name="Export" value="Export to CSV file">
         <input type="submit" name="ExcelExport" value="Export to Excel file">
-        <br/><br/>
+        <br/><br/>Custom export reports:
         <select name="customexportselection">
             <option value="None" selected>None</option>
             {% for rpt in custom_reports: %}
                 <option value="{{rpt}}">{{rpt}}</option>
             {% endfor %}
         </select>
-            <input type="submit" name="CustomExport" value="Custom export">
+            <input type="submit" name="CustomExport" value="Do custom export">
             <br/><a href="/customexport?conf_key={{crrt_conference.key.urlsafe()}}">Edit custom exports</a>
         </select>
     {% endif %}
