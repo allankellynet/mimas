@@ -17,7 +17,7 @@ from google.appengine.ext import ndb
 import basehandler
 from conference_lib import conference
 from scaffold import userrights, userrightsnames, sorrypage
-from submission_lib import submissionrecord
+from submission_lib import submissionrecord, submissions_aux
 from schedule_lib import schedule
 
 class SchedulePage(basehandler.BaseHandler):
@@ -35,10 +35,8 @@ class SchedulePage(basehandler.BaseHandler):
 
     def show_schedule_page(self, crrt_conference):
         tracks = crrt_conference.track_options()
-        submissions = {}
-        for t in tracks:
-            submissions[t] = submissionrecord.retrieve_conference_submissions_by_track_round_and_decision(
-                                crrt_conference.key, t, 2, "Accept")
+
+        submissions = submissions_aux.retrieve_by_final_decision_track_ordered(crrt_conference.key, "Accept")
 
         self.write_page('schedule_lib/schedulepage.html',
                         { "sched": schedule.get_conference_schedule(crrt_conference.key).get(),
@@ -59,6 +57,8 @@ class SchedulePage(basehandler.BaseHandler):
     def post(self):
         if self.request.get("scheduleTalk"):
             self.scheduleTalk()
+        if self.request.get("deschedule"):
+            self.deScheduleTalk()
 
         self.redirect("/schedulepage?day="+self.selectedDay())
 
@@ -69,6 +69,12 @@ class SchedulePage(basehandler.BaseHandler):
         sub_key = self.request.get("selectedTalkKey")
 
         schedule.get_conference_schedule(self.get_crrt_conference_key()).get().assign_talk(sub_key, day, track, slot)
+
+    def deScheduleTalk(self):
+        day = self.request.get("daysList")
+        track = self.request.get("selectedSlotTrack")
+        slot = datetime.strptime(self.request.get("selectedSlot"),"%H:%M:%S").time()
+        schedule.get_conference_schedule(self.get_crrt_conference_key()).get().clear_talk(day, track, slot)
 
 def talkTitle(safeKey):
     if safeKey=="Empty":

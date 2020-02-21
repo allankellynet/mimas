@@ -145,3 +145,16 @@ class TestSchedule(unittest.TestCase):
         self.assertEquals("Allan talk", sched.get_assignment("Friday", "Track1", datetime.time(9, 0)))
 
         self.assertEquals("Empty", sched.get_assignment("Friday", "Track1", datetime.time(13, 0)))
+
+    def testClearAssignments(self):
+        sched_key = schedule.get_conference_schedule(self.c.key)
+        sched = sched_key.get()
+        sched.add_day("Friday")
+        sched.add_slot("Friday", schedule.Slot(datetime.time(9, 0), datetime.time(9, 0), "Nine"))
+        self.assertEquals("Empty", sched.get_assignment("Friday", "Track1", datetime.time(9, 0)))
+
+        sched.assign_talk("Random talk", "Friday", "Track1", datetime.time(9, 0))
+        self.assertEquals("Random talk", sched.get_assignment("Friday", "Track1", datetime.time(9, 0)))
+
+        sched.clear_slot("Friday", "Track1", datetime.time(9, 0))
+        self.assertEquals("Empty", sched.get_assignment("Friday", "Track1", datetime.time(9, 0)))

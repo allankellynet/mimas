@@ -78,7 +78,6 @@ class Schedule(ndb.Model):
 
         return []
 
-
     def add_slot(self, day_name, slot):
         self.setup_days_db[day_name].day_slots[slot.start_time]=slot
         self.put()
@@ -103,6 +102,16 @@ class Schedule(ndb.Model):
             self.assignment_db[day][track] = {}
 
         self.assignment_db[day][track][slot] = sub_key
+        self.put()
+
+    def clear_talk(self, day, track, slot):
+        if not(self.assignment_db.has_key(day)):
+            return
+
+        if not(self.assignment_db[day].has_key(track)):
+            return
+
+        del self.assignment_db[day][track][slot]
         self.put()
 
 def make_schedule(conf_key):
