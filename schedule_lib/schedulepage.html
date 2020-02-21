@@ -89,27 +89,27 @@ function populatedSelectedSlot(track, slot_identifier) {
         {% endfor %}
     </table>
 
-    {% for t in conf_tracks: %}
-        <h3 id="{{t}}">{{conf_tracks[t]}}</h3>
-        <table border="1">
-            <th></th>
-            <th>Speaker
-            <th>Details</th>
-            <th>Duration
-            <th>Title
+    <h3>Accepted talks</h3>
+    <table border="1">
+        <th></th>
+        <th>Speaker
+        <th>Details</th>
+        <th>Duration
+        <th>Title
+        <th>Track</th>
 
-            {% for s in submissions[t]: %}
-            <tr>
-                <td><input type="radio" name="talkSelector" value="{{s.key.urlsafe()}}"
-                           onclick='populatedSelectedTalk("{{s.key.urlsafe()}}","{{s.title()}}")'/></td>
-                <td><a target=_blank href="/speakerkey?key={{s.talk.parent().urlsafe()}}">{{s.submitter()}}</a></td>
-                <td><a target=_blank href="/submit_page?sub={{s.key.urlsafe()}}&reviewer">Details</a></td>
-                <td>{{crrt_conference.duration_options()[s.duration]}}</td>
-                <td><a target=_blank href="/pubtalk?talk={{s.talk.urlsafe()}}">{{s.title()}}</a></td>
+        {% for s in submissions: %}
+        <tr>
+            <td><input type="radio" name="talkSelector" value="{{s.key.urlsafe()}}"
+                       onclick='populatedSelectedTalk("{{s.key.urlsafe()}}","{{s.title()}}")'/></td>
+            <td><a target=_blank href="/speakerkey?key={{s.talk.parent().urlsafe()}}">{{s.submitter()}}</a></td>
+            <td><a target=_blank href="/submit_page?sub={{s.key.urlsafe()}}&reviewer">Details</a></td>
+            <td>{{crrt_conference.duration_options()[s.duration]}}</td>
+            <td><a target=_blank href="/pubtalk?talk={{s.talk.urlsafe()}}">{{s.title()}}</a></td>
+            <td>{{conf_tracks[s.track]}}</td>
         {% endfor %}
-        </table>
-    {% endfor %}
-    {% endif %} <!-- selected day -->
+    </table>
+{% endif %} <!-- selected day -->
 
     <input type="hidden" name="sched_key" value="{{sched.key.urlsafe()}}"/>
 </form>
