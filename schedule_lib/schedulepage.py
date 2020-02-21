@@ -33,15 +33,25 @@ class SchedulePage(basehandler.BaseHandler):
         else:
             sorrypage.redirect_sorry(self, "NoSchedulingAtThisTime")
 
-    def show_schedule_page(self, crrt_conference):
-        tracks = crrt_conference.track_options()
+    def remove_scheduled(self, accepted, scheduled):
+        for sched in scheduled:
+            sched_key = ndb.Key(urlsafe = sched)
+            for i in range(0, len(accepted)):
+                if accepted[i].key == sched_key:
+                    del accepted[i]
+                    break
 
-        submissions = submissions_aux.retrieve_by_final_decision_track_ordered(crrt_conference.key, "Accept")
+        return accepted
+
+    def show_schedule_page(self, crrt_conference):
+        sched = schedule.get_conference_schedule(crrt_conference.key).get()
+        accepted_subs = submissions_aux.retrieve_by_final_decision_track_ordered(crrt_conference.key, "Accept")
+        submissions = self.remove_scheduled(accepted_subs, sched.get_assigned_submissions())
 
         self.write_page('schedule_lib/schedulepage.html',
-                        { "sched": schedule.get_conference_schedule(crrt_conference.key).get(),
+                        { "sched": sched,
                           "selectedDay": self.selectedDay(),
-                          "conf_tracks": tracks,
+                          "conf_tracks": crrt_conference.track_options(),
                           "submissions": submissions,
                           "crrt_conference": crrt_conference,
                           "talkTitle": talkTitle,

@@ -156,5 +156,23 @@ class TestSchedule(unittest.TestCase):
         sched.assign_talk("Random talk", "Friday", "Track1", datetime.time(9, 0))
         self.assertEquals("Random talk", sched.get_assignment("Friday", "Track1", datetime.time(9, 0)))
 
-        sched.clear_slot("Friday", "Track1", datetime.time(9, 0))
+        sched.clear_talk("Friday", "Track1", datetime.time(9, 0))
         self.assertEquals("Empty", sched.get_assignment("Friday", "Track1", datetime.time(9, 0)))
+
+    def testListAssignedSubmissions(self):
+        sched_key = schedule.get_conference_schedule(self.c.key)
+        sched = sched_key.get()
+        self.assertEquals([], sched.get_assigned_submissions())
+        sched.add_day("Friday")
+        sched.add_slot("Friday", schedule.Slot(datetime.time(9, 0), datetime.time(9, 0), "Nine"))
+        sched.add_slot("Friday", schedule.Slot(datetime.time(10, 0), datetime.time(10, 30), "Ten"))
+        sched.add_slot("Friday", schedule.Slot(datetime.time(11, 0), datetime.time(11, 30), "Elevent"))
+
+        sched.assign_talk("Talk1", "Friday", "Track1", datetime.time(9, 0))
+        sched.assign_talk("Talk2", "Friday", "Track1", datetime.time(10, 0))
+        sched.assign_talk("Talk3", "Friday", "Track1", datetime.time(11, 0))
+
+        assigned_talks = sched.get_assigned_submissions()
+        assigned_talks.sort()
+        self.assertEquals(["Talk1", "Talk2", "Talk3"], assigned_talks)
+

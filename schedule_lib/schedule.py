@@ -28,7 +28,7 @@ class ScheduleDay():
 
 class Schedule(ndb.Model):
     setup_days_db = ndb.PickleProperty()
-    assignment_db = ndb.PickleProperty() # map: Dayname -> SlotsName -> SubKey
+    assignment_db = ndb.PickleProperty() # map: Dayname -> Track -> Slot -> SubKey
 
     def __init__(self, *args, **kwargs):
         super(Schedule, self).__init__(*args, **kwargs)
@@ -113,6 +113,17 @@ class Schedule(ndb.Model):
 
         del self.assignment_db[day][track][slot]
         self.put()
+
+    def get_assigned_submissions(self):
+        submissions = []
+        for day in self.assignment_db:
+            for track in self.assignment_db[day]:
+                for slot in self.assignment_db[day][track]:
+                    submissions.append(self.assignment_db[day][track][slot])
+
+        return submissions
+
+
 
 def make_schedule(conf_key):
     sched = Schedule(parent=conf_key)
