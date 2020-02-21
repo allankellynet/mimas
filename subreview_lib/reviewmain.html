@@ -76,10 +76,8 @@ function completeCheckbox(review_round) {
 			<p>You do not have round 1 voting permissions
 	{% endif %}
 
-	{% if crrt_conference.user_rights().has_permission(name, "Round1FullView"): %}
+	{% if crrt_conference.user_rights().has_permission(name, "Round1DecisionMaker"): %}
 			<p><a href="/{{review_config.get_round_config(1).decisionpage()}}?conf={{crrt_conference.key.urlsafe()}}&round=1">Review & decide summary (Round 1)</a>
-
-
 	{% endif %}
 {% endif %}
 
@@ -96,7 +94,7 @@ function completeCheckbox(review_round) {
 			<p>You do not have round 2 voting permissions
 	{% endif %}
 
-	{% if crrt_conference.user_rights().has_permission(name, "Round2FullView"): %}
+	{% if crrt_conference.user_rights().has_permission(name, "Round2DecisionMaker"): %}
 		<p><a href="/{{review_config.get_round_config(2).decisionpage()}}?conf={{crrt_conference.key.urlsafe()}}&round=2">Review & decide summary (Round 2)</a>
 	{% endif %}
 {% endif %}
@@ -107,6 +105,9 @@ function completeCheckbox(review_round) {
 <hr/>
 {% if crrt_conference.user_rights().can_view_all(name) %}
 	<p><a href="/showallpage?conf={{crrt_conference.key.urlsafe()}}">List all submissions</a></p>
+{% endif %}
+
+{% if crrt_conference.user_rights().has_permission(name, "AppointReviewers") %}
 	<p><a href="/votingrecordspage?round=1">Voting and assignments by reviewer</a></p>
 	<p><a href="/subsassignmentspage">Voting and assignment by submission</a></p>
 {% endif %}
