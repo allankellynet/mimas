@@ -36,7 +36,7 @@ from scaffold import sorrypage, attentionpage, welcomepage, volunteerpage, volun
 from speaker_lib import speakerpage, speakermain, cospeakerlistpg, \
     cospeakerpage, dirpage, publicspage
 from reports import expensereportpage, showallpage, statuslist, speakrptpage, expenseslistpage, speakercommspage, \
-    customexportpage
+    customexportpage, exportspage
 from submission_lib import subm_thanks, submitpage, singlesubmitpage, flowsubpage, acceptdecline
 from mailmsg import createmsgpage, custommsgedit, mailtemplatespage
 from extra import extracontrolspage, speakertalkpage, testdatapage
@@ -198,6 +198,7 @@ app = webapp2.WSGIApplication([
     ('/expensesreportpage', expensereportpage.ExpenseReportPage),
     ('/speakerrptpage', speakrptpage.SpeakerReportPage),
     ('/customexport', customexportpage.CustomExportPage),
+    ('/exportspage', exportspage.ExportsPage),
     ('/mailmessages', mailtemplatespage.MailTemplatesPage),
     ('/commentreviewpage', commentreviewpage.CommentReviewPage),
     ('/cospeakerpage', cospeakerpage.CoSpeakerPage),
