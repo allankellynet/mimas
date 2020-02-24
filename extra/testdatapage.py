@@ -14,6 +14,7 @@ from conference_lib import confoptions, conference
 from submission_lib import submissionrecord
 from speaker_lib import speaker
 from talk_lib import talk
+from reports import reportrecord
 
 class TestDataPage(basehandler.BaseHandler):
     def get(self):
@@ -144,6 +145,8 @@ class TestDataPage(basehandler.BaseHandler):
                                                     track2.shortname())
         conference.user_rights().add_track_reviewer("test@example.com",
                                                     track3.shortname())
+
+        reportrecord.mk_report_record(conf_key, "Export", "none.such")
 
         return '/confoptionspage?conf='+conf_key.urlsafe()
 

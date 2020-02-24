@@ -18,8 +18,22 @@
 <h1>Export list: {{ crrt_conference.name }}</h1>
 {% include "scaffold/topmenu.html" %}
 <br>
-    	{% include "conference_lib/adminmenu.html" %}
-
+    {% include "conference_lib/adminmenu.html" %}
+    {% if newrpt != None: %}
+    <p>New report: <b>{{newrpt.name_db}}</b>: <a target="_blank" href="{{newrpt.url_db}}">{{newrpt.url_db}}</a> </p>
+    {% endif %}
+<table border="1">
+    <th>Date</th>
+    <th>Name</th>
+    <th>URL</th>
+    {% for r in reports: %}
+    <tr>
+        <td>{{r.created_db.strftime("%d-%B-%Y %H:%m")}}</td>
+        <td>{{r.name_db}}</td>
+        <td><a target=_blank href="{{r.url_db}}">{{r.url_db}}</a></td>
+    </tr>
+    {% endfor %}
+</table>
 <p>
 </div>
 </body>

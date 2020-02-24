@@ -7,15 +7,30 @@
 # System imports
 
 # Google imports
+from google.appengine.ext import ndb
 
 # Local imports
 import basehandler
+from reports import reportrecord
+from scaffold import userrights, userrightsnames, sorrypage
 
 class ExportsPage(basehandler.BaseHandler):
     def get(self):
-        crrt_conference = self.get_crrt_conference_key().get()
+        crrt_conf = self.get_crrt_conference_key().get()
 
-        ## TODO Permissions check -> should have admin
+        if not(crrt_conf.user_rights().has_permission(self.get_crrt_user().email(),
+                                                        userrightsnames.CONF_ADMINISTRATOR)):
+            sorrypage.redirect_sorry(self, "NoAccess")
+            return
 
-        self.write_page('reports/exportspage.html', {"crrt_conference": crrt_conference,
-                                                     "conf_key": crrt_conference.key})
+        if self.request.params.has_key("newrpt"):
+            newrpt = ndb.Key(urlsafe=self.request.get("newrpt")).get()
+        else:
+            newrpt = None
+
+        self.write_page('reports/exportspage.html', {
+            "crrt_conference": crrt_conf,
+            "conf_key": crrt_conf.key,
+            "reports": reportrecord.retrieve_reports_newest_to_oldset(crrt_conf.key),
+            "newrpt": newrpt,
+        })

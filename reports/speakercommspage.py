@@ -13,7 +13,7 @@ from google.appengine.ext import ndb
 # Local imports
 from speaker_lib import cospeaker
 from mailmsg import custommsg, msgtemplate, postmail
-from reports import customexport, exportexcel, exportcsv
+from reports import customexport, exportexcel, exportcsv, reportrecord
 from submission_lib import submissionrecord, submission_ans, submissions_aux
 from scaffold import tags
 import basehandler
@@ -105,24 +105,13 @@ class SpeakerCommsPage(basehandler.BaseHandler):
 
     def export_data(self):
         url = exportcsv.export_submissions(self.get_all_checked())
-        message = "Data export complete: " + url
-        template_values = {
-            "msg": message
-        }
-
-        # Unconventional use of attentionpage but it works
-        # Now attention is in scaffold it looks odd
-        # Should add helper function in attentionpage to deal with this scenario
-        self.write_page('scaffold/attentionpage.html', template_values)
+        rpt_key = reportrecord.mk_report_record(self.retrieve_conf_key(), "CSV export", url)
+        self.redirect("/exportspage?newrpt=" + rpt_key.urlsafe())
 
     def export_excel_data(self):
         url = exportexcel.export_submissions_to_excel(self.get_all_checked())
-        message = "Data export to Excel complete: " + url
-        template_values = {
-            "msg": message
-        }
-
-        self.write_page('scaffold/attentionpage.html', template_values)
+        rpt_key = reportrecord.mk_report_record(self.retrieve_conf_key(), "Excel export", url)
+        self.redirect("/exportspage?newrpt=" + rpt_key.urlsafe())
 
     def send_custom_msgs(self):
         msg_selected = self.request.get("custommsglist")
@@ -137,9 +126,8 @@ class SpeakerCommsPage(basehandler.BaseHandler):
     def custom_export_report(self, report_name):
         rpt = customexport.get_report_by_name(self.retrieve_conf_key(), report_name)
         url = rpt.export_submissions_to_excel(self.get_all_checked())
-        self.write_page('scaffold/attentionpage.html', {
-                "msg": "Data export to Excel complete: " + url
-            })
+        rpt_key = reportrecord.mk_report_record(self.retrieve_conf_key(), report_name, url)
+        self.redirect("/exportspage?newrpt=" + rpt_key.urlsafe())
 
     def custom_export(self):
         if self.request.get("customexportselection") == "None":
