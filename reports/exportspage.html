@@ -28,7 +28,7 @@
     <th>URL</th>
     {% for r in reports: %}
     <tr>
-        <td>{{r.created_db.strftime("%d-%B-%Y %H:%m")}}</td>
+        <td>{{r.created_db.strftime("%d-%B-%Y %H:%M")}}</td>
         <td>{{r.name_db}}</td>
         <td><a target=_blank href="{{r.url_db}}">{{r.url_db}}</a></td>
     </tr>
