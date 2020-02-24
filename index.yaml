@@ -11,6 +11,12 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: ReportRecord
+  ancestor: yes
+  properties:
+  - name: created_db
+    direction: desc
+
 - kind: SubmissionRecord
   ancestor: yes
   properties:
