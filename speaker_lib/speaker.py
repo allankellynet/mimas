@@ -20,7 +20,6 @@ class Speaker(ndb.Model):
     FIELD_COUNTRY = "country"
     FIELD_TWITTER = "twitter"
     FIELD_AFFILICATION = "affiliation"
-    FIELD_EXPERIENCE = "experience"
     FIELD_TELEPHONE = "Telephone"
     FIELD_ADDRESS = "Address"
     FIELD_JOBTITLE = "JobTitle"

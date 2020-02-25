@@ -13,6 +13,7 @@
 # Local imports
 from submission_lib import submissionrecord
 from speaker_lib import speaker, cospeaker
+from scaffold import sysinfo
 
 def write_str(s):
     return str(s)
@@ -62,7 +63,7 @@ submission_options = {
     "bio": ("Biography",
         lambda sub: (sub.talk.parent().get().bio)),
     "picture": ("Picture",
-        lambda sub: write_str("https://" + sub.talk.parent().get().full_image_url())),
+        lambda sub: write_str("https://" + sysinfo.home_url() + sub.talk.parent().get().full_image_url())),
     "webpage": ("Webpage",
         lambda sub: (sub.talk.parent().get().field(speaker.Speaker.FIELD_WEBPAGE))),
     "blog": ("Blog",
@@ -75,8 +76,6 @@ submission_options = {
         lambda sub: "https://twitter.com/" + (sub.talk.parent().get().field(speaker.Speaker.FIELD_TWITTER))),
     "affiliation": ("Affiliation",
         lambda sub: (sub.talk.parent().get().field(speaker.Speaker.FIELD_AFFILICATION))),
-    "experience": ("Experience",
-        lambda sub: (sub.talk.parent().get().field(speaker.Speaker.FIELD_EXPERIENCE))),
     "telephone": ("Telephone",
         lambda sub: (sub.talk.parent().get().field(speaker.Speaker.FIELD_TELEPHONE))),
     "address": ("Address",

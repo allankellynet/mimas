@@ -62,7 +62,7 @@ def write_sub(out, sub):
     write_with_comma(out, speaker.field(speaker.FIELD_AFFILICATION))
     write_with_comma(out, speaker.field(speaker.FIELD_TWITTER))
     write_with_comma(out, speaker.bio)
-    write_with_comma(out, speaker.field(speaker.FIELD_EXPERIENCE))
+
     # Field for URL to speaker photo
     if speaker.fullsize_picture == None:
         write_with_comma(out, "None")

@@ -88,7 +88,6 @@ class TestExportCsv(unittest.TestCase):
         s.set_field("affiliation", "Mining Corp")
         s.set_field("twitter", "@arnold")
         s.bio = "Arnold 'J' Rimmer joined Mining Corp (Space Division) at, what now seems, a very young age."
-        s.set_field("experience", "None at all")
         s.put()
 
         t = talk.Talk(parent=s.key)
@@ -116,19 +115,18 @@ class TestExportCsv(unittest.TestCase):
         self.assertEquals(output.sequence[7], 'Mining Corp, ')
         self.assertEquals(output.sequence[8], '@arnold, ')
         self.assertEquals(output.sequence[9], """"Arnold 'J' Rimmer joined Mining Corp (Space Division) at, what now seems, a very young age.", """)
-        self.assertEquals(output.sequence[10], 'None at all, ')
-        self.assertEquals(output.sequence[11], 'None, ')
+        self.assertEquals(output.sequence[10], 'None, ')
 
-        self.assertEquals(output.sequence[12], 'A testing talk, ')
-        self.assertEquals(output.sequence[13], "A few words about the tests you need, ")
-        self.assertEquals(output.sequence[14], '"Many more words about testing.... 1, 2, 3", ')
+        self.assertEquals(output.sequence[11], 'A testing talk, ')
+        self.assertEquals(output.sequence[12], "A few words about the tests you need, ")
+        self.assertEquals(output.sequence[13], '"Many more words about testing.... 1, 2, 3", ')
 
-        self.assertEquals(output.sequence[15], 'track, ')
-        self.assertEquals(output.sequence[16], 'lecture, ')
-        self.assertEquals(output.sequence[17], '10mins, ')
-        self.assertEquals(output.sequence[18], 'Long haul, ')
+        self.assertEquals(output.sequence[14], 'track, ')
+        self.assertEquals(output.sequence[15], 'lecture, ')
+        self.assertEquals(output.sequence[16], '10mins, ')
+        self.assertEquals(output.sequence[17], 'Long haul, ')
 
-        self.assertEquals(output.number_of_writes(), 19)
+        self.assertEquals(output.number_of_writes(), 18)
 
     def test_export_submissions_list(self):
         c = conference.Conference()
@@ -160,7 +158,7 @@ class TestExportCsv(unittest.TestCase):
 
         output = MockOutStream()
         exportcsv.write_sub_list(output, [sub_key, sub_key2])
-        self.assertEquals(output.number_of_writes(), 40)
+        self.assertEquals(output.number_of_writes(), 38)
 
     def test_header_row(self):
         output = MockOutStream()

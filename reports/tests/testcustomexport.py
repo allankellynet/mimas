@@ -249,7 +249,8 @@ class TestCustomReport(unittest.TestCase):
         call_cnt += 1
         self.assertEquals((data_row1, 15, "J Potter"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
-        self.assertEquals((data_row1, 16, "/sorry_page?reason=NoImage"), mock_sheet_write.mock_calls[call_cnt][1][1:])
+        # odd return on local but server address makes sense when live
+        self.assertEquals((data_row1, 16, "https:///sorry_page?reason=NoImage"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
         self.assertEquals((data_row1, 17, "www.myblog.com"), mock_sheet_write.mock_calls[call_cnt][1][1:])
         call_cnt += 1
