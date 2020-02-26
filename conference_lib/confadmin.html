@@ -129,6 +129,14 @@ img {
 		{% endif %}
 
 	</form>
+	<h3>More options</h3>
+	<li><a href="/confoptionspage?conf={{conf_key.urlsafe()}}">Submission options</a>: Tracks, durations, etc.</li>
+	<li><a href="/confconfigpage?conf={{conf_key.urlsafe()}}">Submission limits</a>: co-speakers, submissions</li>
+	<li><a href="/confquestionspage?conf={{conf_key.urlsafe()}}">Conference specific submission questions</a></li>
+	<li><a href="/reviewconfig">Review configuration</a></li>
+    <li><a href="/confemailcopy?conf={{conf_key.urlsafe()}}">Email recipients</a></li>
+    <li><a href="/mailmessages?conf={{conf_key.urlsafe()}}">Email message templates</a></li>
+
 </div>
 </body>
 </html>
