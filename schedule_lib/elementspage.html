@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+{% include "scaffold/incbootstrap.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule Elements</title>
+</head>
+<body>
+<div class="container-fluid">
+<form method="post">
+    <h1>Schedule Elements</h1>
+    	{% include "scaffold/topmenu.html" %}
+    <a href="schedulepage">Back to schedule</a>
+    <hr/>
+    <table border="1">
+        <th></th>
+        <th>Element</th>
+        {% for e in elements: %}
+        <tr>
+            <td><input type="checkbox" name="elementSelect" value="{{e.key.urlsafe()}}"/></td>
+            <td>{{e.title()}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br/>
+    <input type="text" maxlength="64" name="newElement"/>
+    <input type="submit" name="addNewElement" value="Add new element"/>
+    <br/><br/>
+    <input type="submit" name="commonElements" value="Add common elements"/>
+    <hr/>
+    <input type="submit" name="deleteElements" value="Delete selected elements"/>
+</form>
+</div>
+</body>
+</html>
