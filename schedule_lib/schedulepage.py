@@ -48,10 +48,12 @@ class SchedulePage(basehandler.BaseHandler):
         accepted_subs = submissions_aux.retrieve_by_final_decision_track_ordered(crrt_conference.key, "Accept")
         submissions = self.remove_scheduled(accepted_subs, sched.get_assigned_submissions())
 
+        tracks = crrt_conference.track_options()
         self.write_page('schedule_lib/schedulepage.html',
                         { "sched": sched,
                           "selectedDay": self.selectedDay(),
-                          "conf_tracks": crrt_conference.track_options(),
+                          "conf_tracks": tracks,
+                          "track_count": len(tracks),
                           "submissions": submissions,
                           "crrt_conference": crrt_conference,
                           "talkTitle": talkTitle,

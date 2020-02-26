@@ -80,12 +80,20 @@ function populatedSelectedSlot(track, slot_identifier) {
             <tr>
                 <td>{{sched.slots(selectedDay)[slot].start_time.strftime("%H:%M")}}</td>
                 <td>{{sched.slots(selectedDay)[slot].end_time.strftime("%H:%M")}}</td>
-                {% for t in sched.tracks(selectedDay): %}
-                    <td><input type="radio" name="slotSelector" value="{{t}}${{slot.start_time}}"
-                            onclick='populatedSelectedSlot("{{t}}",
-                            "{{sched.slots(selectedDay)[slot].start_time}}")'/>
-                        {{talkTitle(sched.get_assignment(selectedDay, t, slot))}}</td>
-                {% endfor %}
+                {% if sched.slots(selectedDay)[slot].slot_type == "Tracks": %}
+                    {% for t in sched.tracks(selectedDay): %}
+                        <td><input type="radio" name="slotSelector" value="{{t}}${{slot.start_time}}"
+                                onclick='populatedSelectedSlot("{{t}}",
+                                "{{sched.slots(selectedDay)[slot].start_time}}")'/>
+                            {{talkTitle(sched.get_assignment(selectedDay, t, slot))}}</td>
+                    {% endfor %}
+                {% else: %} <!-- plenary -->
+                    <td align=center colspan="{{track_count}}">
+                        <input type="radio" name="slotSelector" value="{{Plenary}}${{slot.start_time}}"
+                                onclick='populatedSelectedSlot("Plenary",
+                                "{{sched.slots(selectedDay)[slot].start_time}}")'/>
+                        {{talkTitle(sched.get_assignment(selectedDay, "Plenary", slot))}}</td>
+                {% endif %}
             </tr>
         {% endfor %}
     </table>
