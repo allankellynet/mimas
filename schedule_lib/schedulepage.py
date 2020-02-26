@@ -18,7 +18,7 @@ import basehandler
 from conference_lib import conference
 from scaffold import userrights, userrightsnames, sorrypage
 from submission_lib import submissionrecord, submissions_aux
-from schedule_lib import schedule
+from schedule_lib import schedule, schedelement
 
 class SchedulePage(basehandler.BaseHandler):
     def get(self):
@@ -54,6 +54,7 @@ class SchedulePage(basehandler.BaseHandler):
                           "selectedDay": self.selectedDay(),
                           "conf_tracks": tracks,
                           "track_count": len(tracks),
+                          "elements": schedelement.retreieve_elements(sched.key),
                           "submissions": submissions,
                           "crrt_conference": crrt_conference,
                           "talkTitle": talkTitle,

@@ -118,6 +118,21 @@ function populatedSelectedSlot(track, slot_identifier) {
             <td>{{conf_tracks[s.track]}}</td>
         {% endfor %}
     </table>
+
+    <h3>Conference elements</h3>
+    <table border="1">
+        <th></th>
+        <th>Element
+        </th>
+        {% for e in elements: %}
+        <tr>
+            <td><input type="radio" name="talkSelector" value="{{e.key.urlsafe()}}"
+                       onclick='populatedSelectedTalk("{{e.key.urlsafe()}}","{{e.title()}}")'/></td>
+            <td>{{e.title()}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
 {% endif %} <!-- selected day -->
 
     <input type="hidden" name="sched_key" value="{{sched.key.urlsafe()}}"/>
