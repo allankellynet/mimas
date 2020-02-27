@@ -25,30 +25,30 @@ def write_title_row(sched, day, worksheet):
     row = 0
     col = 2
     for t in sched.tracks(day):
-        worksheet_write_wrapper(row, col, t)
+        worksheet_write_wrapper(worksheet, row, col, t)
         col += 1
 
 def write_tracks(row, col, day, slot, sched, worksheet):
     for t in sched.tracks(day):
-        worksheet_write_wrapper(row, col, sched.get_assignment(day, t, slot))
+        worksheet_write_wrapper(worksheet, row, col, schedule.talkTitle(sched.get_assignment(day, t, slot)))
         col += 1
 
 def write_plenary(row, col, description, worksheet):
-    worksheet_write_wrapper(row, col, description)
+    worksheet_write_wrapper(worksheet, row, col, description)
 
 def write_slots_and_content(sched, day, worksheet):
     row = 1
     for slot in sched.orderd_slot_keys(day):
         col = 0
-        worksheet_write_wrapper(row, col, "'"+sched.slots(day)[slot].start_time.strftime("%H:%M"))
+        worksheet_write_wrapper(worksheet, row, col, sched.slots(day)[slot].start_time.strftime("%H:%M"))
         col += 1
-        worksheet_write_wrapper(row, col, "'"+sched.slots(day)[slot].end_time.strftime("%H:%M"))
+        worksheet_write_wrapper(worksheet, row, col, sched.slots(day)[slot].end_time.strftime("%H:%M"))
         col += 1
 
         if sched.slots(day)[slot].slot_type == "Tracks":
             write_tracks(row, col, day, slot, sched, worksheet)
         else:
-            write_plenary(row, col, sched.get_assignment(day, "Plenary", slot), worksheet)
+            write_plenary(row, col, schedule.talkTitle(sched.get_assignment(day, "Plenary", slot)), worksheet)
 
         row += 1
 

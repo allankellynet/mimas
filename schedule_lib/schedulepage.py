@@ -7,17 +7,15 @@
 #
 
 # System imports
-from datetime import datetime, time
+from datetime import datetime
 
 # Google imports
-import logging
 from google.appengine.ext import ndb
 
 # Local imports
 import basehandler
-from conference_lib import conference
-from scaffold import userrights, userrightsnames, sorrypage
-from submission_lib import submissionrecord, submissions_aux
+from scaffold import userrightsnames, sorrypage
+from submission_lib import submissions_aux
 from schedule_lib import schedule, schedelement, schedexport
 from reports import reportrecord
 
@@ -58,7 +56,7 @@ class SchedulePage(basehandler.BaseHandler):
                           "elements": schedelement.retreieve_elements(sched.key),
                           "submissions": submissions,
                           "crrt_conference": crrt_conference,
-                          "talkTitle": talkTitle,
+                          "talkTitle": schedule.talkTitle,
                           })
 
     def selectedDay(self):
@@ -69,8 +67,8 @@ class SchedulePage(basehandler.BaseHandler):
         return selected_day
 
     def mkExport(self):
-        url = schedexport.schedule_to_excel(schedule.get_conference_schedule(self.get_crrt_conference_key()))
-        rpt_key = reportrecord.mk_report_record(self.retrieve_conf_key(), "Schedule", url)
+        url = schedexport.schedule_to_excel(schedule.get_conference_schedule(self.get_crrt_conference_key()).get())
+        rpt_key = reportrecord.mk_report_record(self.get_crrt_conference_key(), "Schedule", url)
         self.redirect("/exportspage?newrpt=" + rpt_key.urlsafe())
 
     def post(self):
@@ -99,9 +97,3 @@ class SchedulePage(basehandler.BaseHandler):
         slot = datetime.strptime(self.request.get("selectedSlot"),"%H:%M:%S").time()
         schedule.get_conference_schedule(self.get_crrt_conference_key()).get().clear_talk(day, track, slot)
 
-def talkTitle(safeKey):
-    if safeKey=="Empty":
-        return "Empty"
-
-    sub = ndb.Key(urlsafe=safeKey).get()
-    return sub.title()

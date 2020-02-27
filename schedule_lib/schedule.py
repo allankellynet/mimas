@@ -137,3 +137,10 @@ def get_conference_schedule(conf_key):
 
     return sched_keys[0]
 
+
+def talkTitle(safeKey):
+    if safeKey=="Empty":
+        return "Empty"
+
+    sub = ndb.Key(urlsafe=safeKey).get()
+    return sub.title()

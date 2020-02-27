@@ -34,8 +34,10 @@ function setDay() {
 	</select>
 
     <p/>
-    <input type="text" maxlength="16" name="newDay" id="newDayId" onchange='enable_box("newDayId","submitNewDayId")'>
-    <input type="submit" name="submitNewDay" id="submitNewDayId" disabled>
+    <input type="text" maxlength="16" name="newDay" id="newDayId"
+           onchange='enable_box("newDayId","submitNewDayId")'>
+    <input type="submit" name="submitNewDay" id="submitNewDayId"
+           value="Submit new day" disabled>
     <p/>
     <input type="submit" name="deleteDay" value="Delete this day"/>
 
@@ -48,7 +50,8 @@ function setDay() {
         {% endfor %}
         <p/>
         <input type="text" maxlength="32" name="newTrack" id="newTrackId" onchange='enable_box("newTrackId","submitNewTrackId")'>
-        <input type="submit" name="submitNewTrack" id="submitNewTrackId" disabled>
+        <input type="submit" name="submitNewTrack" id="submitNewTrackId"
+               value="Submit new track" disabled>
         <p/>
         <input type="submit" name="deleteTrack" value="Delete selected tracks"/>
 
@@ -78,7 +81,7 @@ function setDay() {
         <p/><label>Audience type:</label>
         <input type="radio" name="audiencetype" value="Tracks" checked>Tracks
         <input type="radio" name="audiencetype" value="Plenary">Plenary
-        <p/><input type="submit" name="submitNewSlot" id="submitNewSlotId">
+        <p/><input type="submit" name="submitNewSlot" id="submitNewSlotId" value="Add new slot">
         <p/>
 
 
