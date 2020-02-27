@@ -5,7 +5,8 @@
 # -----------------------------------------------------
 
 import unittest
-from mock import Mock, patch, call
+from mock import Mock, patch
+import datetime
 
 from google.appengine.ext import testbed
 
@@ -32,17 +33,30 @@ class TestScheduleExport(unittest.TestCase):
         sched_key = schedule.get_conference_schedule(self.c.key)
         sched = sched_key.get()
 
-        print "---------------------"
-        print sched
-
         sched.add_day("Monday")
+        sched.add_track("Monday", "Software")
+        sched.add_track("Monday", "Hardware")
+
+        sched.add_slot("Monday", schedule.Slot(datetime.time(9,0), datetime.time(9,30), "Tracks"))
+        sched.add_slot("Monday", schedule.Slot(datetime.time(10,0), datetime.time(10,30), "Plenary"))
+        sched.assign_talk("Random talk", "Monday", "Hardware", datetime.time(9, 0))
 
         self.assertEquals(0, mock_storage_open.call_count)
         url = schedexport.schedule_to_excel(sched)
         self.assertEquals(1, mock_storage_open.call_count)
-        self.assertEquals(0, mock_sheet_write.call_count)
+        self.assertEquals(9, mock_sheet_write.call_count)
 
         self.assertEquals("https:///mimas-aotb.appspot.com.storage.googleapis.com/Schedule", url[0:63])
-        self.assertEquals(".xlsx", url[70:])
+        self.assertEquals(".xlsx", url[len(url)-5:])
 
-# https:///mimas-aotb.appspot.com.storage.googleapis.com/Schedule2271133.xlsx
+        self.assertEquals((0, 2, "Software"), mock_sheet_write.mock_calls[0][1])
+        self.assertEquals((0, 3, "Hardware"), mock_sheet_write.mock_calls[1][1])
+
+        self.assertEquals((1, 0, "'09:00"), mock_sheet_write.mock_calls[2][1])
+        self.assertEquals((1, 1, "'09:30"), mock_sheet_write.mock_calls[3][1])
+        self.assertEquals((1, 2, "Empty"), mock_sheet_write.mock_calls[4][1])
+        self.assertEquals((1, 3, "Random talk"), mock_sheet_write.mock_calls[5][1])
+
+        self.assertEquals((2, 0, "'10:00"), mock_sheet_write.mock_calls[6][1])
+        self.assertEquals((2, 1, "'10:30"), mock_sheet_write.mock_calls[7][1])
+        self.assertEquals((2, 2, "Empty"), mock_sheet_write.mock_calls[8][1])

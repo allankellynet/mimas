@@ -23,7 +23,7 @@ def worksheet_write_wrapper(wksheet, row, col, text):
 
 def write_title_row(sched, day, worksheet):
     row = 0
-    col = 1
+    col = 2
     for t in sched.tracks(day):
         worksheet_write_wrapper(row, col, t)
         col += 1
@@ -48,7 +48,7 @@ def write_slots_and_content(sched, day, worksheet):
         if sched.slots(day)[slot].slot_type == "Tracks":
             write_tracks(row, col, day, slot, sched, worksheet)
         else:
-            write_plenary(sched.get_assignment(row, col, day, "Plenary", slot), worksheet)
+            write_plenary(row, col, sched.get_assignment(day, "Plenary", slot), worksheet)
 
         row += 1
 
