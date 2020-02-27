@@ -29,9 +29,10 @@ class TestScheduleExport(unittest.TestCase):
     def test_dummy(self):
         self.assertTrue(True)
 
+    @patch('schedule_lib.schedexport.worksheet_merge_wrapper')
     @patch('schedule_lib.schedexport.worksheet_write_wrapper')
     @patch('cloudstorage.open')
-    def test_schedule_to_excel(self, mock_storage_open, mock_sheet_write):
+    def test_schedule_to_excel(self, mock_storage_open, mock_sheet_write, mock_merge):
         sched_key = schedule.get_conference_schedule(self.c.key)
         sched = sched_key.get()
 
@@ -49,7 +50,8 @@ class TestScheduleExport(unittest.TestCase):
         self.assertEquals(0, mock_storage_open.call_count)
         url = schedexport.schedule_to_excel(sched)
         self.assertEquals(1, mock_storage_open.call_count)
-        self.assertEquals(9, mock_sheet_write.call_count)
+        self.assertEquals(8, mock_sheet_write.call_count)
+        self.assertEquals(1, mock_merge.call_count)
 
         self.assertEquals("https:///mimas-aotb.appspot.com.storage.googleapis.com/Schedule", url[0:63])
         self.assertEquals(".xlsx", url[len(url)-5:])
@@ -64,4 +66,4 @@ class TestScheduleExport(unittest.TestCase):
 
         self.assertEquals((2, 0, "10:00"), mock_sheet_write.mock_calls[6][1][1:])
         self.assertEquals((2, 1, "10:30"), mock_sheet_write.mock_calls[7][1][1:])
-        self.assertEquals((2, 2, "Empty"), mock_sheet_write.mock_calls[8][1][1:])
+        self.assertEquals((2, 2, 2, 3, "Empty"), mock_merge.mock_calls[0][1][1:])

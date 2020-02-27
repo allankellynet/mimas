@@ -21,6 +21,9 @@ from reports import exportexcel
 def worksheet_write_wrapper(wksheet, row, col, text):
     wksheet.write(row, col, text)
 
+def worksheet_merge_wrapper(wksheet, row_start, col_start, row_end, col_end, text):
+    wksheet.merge_range(row_start, col_start, row_end, col_end, text)
+
 def write_title_row(sched, day, worksheet):
     row = 0
     col = 2
@@ -33,8 +36,9 @@ def write_tracks(row, col, day, slot, sched, worksheet):
         worksheet_write_wrapper(worksheet, row, col, schedule.talkTitle(sched.get_assignment(day, t, slot)))
         col += 1
 
-def write_plenary(row, col, description, worksheet):
-    worksheet_write_wrapper(worksheet, row, col, description)
+def write_plenary(row, col, description, track_count, worksheet):
+    #worksheet.merge_range(row, col, row, col+track_count, description)
+    worksheet_merge_wrapper(worksheet, row, col, row, (col+track_count-1), description)
 
 def write_slots_and_content(sched, day, worksheet):
     row = 1
@@ -48,7 +52,10 @@ def write_slots_and_content(sched, day, worksheet):
         if sched.slots(day)[slot].slot_type == "Tracks":
             write_tracks(row, col, day, slot, sched, worksheet)
         else:
-            write_plenary(row, col, schedule.talkTitle(sched.get_assignment(day, "Plenary", slot)), worksheet)
+            write_plenary(row, col,
+                          schedule.talkTitle(sched.get_assignment(day, "Plenary", slot)),
+                          len(sched.tracks(day)),
+                          worksheet)
 
         row += 1
 
