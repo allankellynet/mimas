@@ -18,7 +18,8 @@ import basehandler
 from conference_lib import conference
 from scaffold import userrights, userrightsnames, sorrypage
 from submission_lib import submissionrecord, submissions_aux
-from schedule_lib import schedule, schedelement
+from schedule_lib import schedule, schedelement, schedexport
+from reports import reportrecord
 
 class SchedulePage(basehandler.BaseHandler):
     def get(self):
@@ -67,7 +68,16 @@ class SchedulePage(basehandler.BaseHandler):
             selected_day = ""
         return selected_day
 
+    def mkExport(self):
+        url = schedexport.schedule_to_excel(schedule.get_conference_schedule(self.get_crrt_conference_key()))
+        rpt_key = reportrecord.mk_report_record(self.retrieve_conf_key(), "Schedule", url)
+        self.redirect("/exportspage?newrpt=" + rpt_key.urlsafe())
+
     def post(self):
+        if self.request.get("exportExcel"):
+            self.mkExport()
+            return
+
         if self.request.get("scheduleTalk"):
             self.scheduleTalk()
         if self.request.get("deschedule"):
