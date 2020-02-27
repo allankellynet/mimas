@@ -37,5 +37,5 @@ class TestScheduleElement(unittest.TestCase):
         element2 = element_key2.get()
         self.assertEquals("Lunch", element2.title())
         elements = schedelement.retreieve_elements(sched_key)
-        elements.sort()
-        self.assertEquals([element, element2], elements)
+        sorted_elements = sorted(elements, key=(lambda t: t.title_db))
+        self.assertEquals([element, element2], sorted_elements)
