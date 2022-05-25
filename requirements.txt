@@ -3,14 +3,14 @@
 # Problems loading google.auth causes excessive hacking of this file
 
 #Flask==0.12.2
-pyjwt==1.5.2
+pyjwt==2.4.0
 flask-cors==3.0.3
 google-auth==1.0.2
 requests==2.18.4
 #requests-toolbelt==0.8.0
 
 # pyjwt==1.6.1
-# pyjwt==1.5.2
+# pyjwt==2.4.0
 
 #google-auth==1.0.2
 # google-auth==1.4.1
